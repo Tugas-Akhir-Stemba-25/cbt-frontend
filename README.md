@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  
+  # CBT SYSTEM
 
-## Getting Started
+Frontend application the will be use for CBT SYSTEM
 
-First, run the development server:
+</div>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Prerequisite
+
+1. NodeJS (^18)
+2. pnpm (package manager)
+
+## Installation
+
+1. Clone this repository
+
+   ```sh
+   git clone https://github.com/Mediko-id/cms-system.git
+   ```
+
+2. Install dependencies
+
+   > NOTE: please use **pnpm**, don't use other package manager like _npm, yarn, etc_
+
+   ```sh
+   pnpm install
+   ```
+
+3. Run app
+
+   ```sh
+   pnpm dev
+   # or
+   pnpm run dev
+   ```
+
+## Workflow
+
+1. Git
+
+   We will use git for version control system, please use branching workflow if you want to make the new feature or
+   others works.
+
+2. Branch
+
+   We will use 2 important branch for the workflow development
+
+   - main (the main or production branch)
+   - development (all the development process)
+
+   There is not limited to only use 2 branch above, again if we want make a new feature please make the **new branch**
+   from the source **development branch**.
+
+3. Commit
+
+   This project is already setup the checking commit message, so the commit message must follow the best practice commit
+   message convention.
+
+   The convention is follow this rules https://www.conventionalcommits.org/
+
+4. Github
+
+   All the source code will be saved on the remote repository (in this case Github), so after make changes in local,
+   make sure to push the changes code to the Github.
+
+5. Pull Request
+
+   The changes of merging from the **2 important branch** (main, staging, and development) must be from the Pull Request
+   flow, don't be directly push or merge the code when it's in the **2 important branch**.
+
+## Folder Structure
+
+```
+.
+└── cms-system/
+    ├── .husky
+    ├── .next
+    ├── node_modules
+    ├── public
+    ├── src/
+    │   ├── app
+    │   ├── components/
+    │   │   ├── atoms
+    │   │   ├── layouts
+    │   │   ├── molecules
+    │   │   └── organisms
+    │   ├── hooks
+    │   ├── http
+    │   ├── lib
+    │   ├── stores
+    │   ├── utils
+    │   ├── validators
+    │   └── types
+    └── ...configfiles
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- .husky : for the git hooks call manipulation
+- .next : cache folder for nextjs
+- node_modules : all dependencies of the app
+- public : it's store all static files
+- src : the main of source code app
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+  - app : the routing folder of nextjs
+  - components : all the fraction of components site
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+    - atoms : smallest components
+    - layouts : store the layout of pages
+    - molecules : middle to large components (combination of atoms)
+    - organisms : largest components (combination of atoms and molecules)
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- hooks : custom react hooks
+- http :http call api function
+- lib : function related to local lib, like custom Axios, etc.
+- stores : context related configuartion (redux, zustand, react-context, etc)
+- utils : utilities custom function
+- validators : validator function to validate data (like validate form, http request, etc)
+- types : typescript custom types

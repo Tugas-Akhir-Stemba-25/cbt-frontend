@@ -1,16 +1,32 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { FlatCompat } from '@eslint/eslintrc'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Mendapatkan __dirname dalam modul ESM
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
+// Inisialisasi FlatCompat untuk kompatibilitas dengan aturan lama
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+  baseDirectory: __dirname
+})
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
+  // Mengimpor aturan dari konfigurasi lama
+  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  {
+    files: ['**/*.ts', '**/*.tsx'], // Berlaku untuk file TypeScript
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
+      ],
+      '@typescript-eslint/no-explicit-any': 'off'
+    }
+  }
+]
 
-export default eslintConfig;
+export default eslintConfig
