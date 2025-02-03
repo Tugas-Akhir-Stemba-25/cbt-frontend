@@ -16,7 +16,7 @@ Frontend application the will be use for CBT SYSTEM
 1. Clone this repository
 
    ```sh
-   git clone https://github.com/Mediko-id/cms-system.git
+   git clone https://github.com/Tugas-Akhir-Stemba-25/cbt-frontend.git
    ```
 
 2. Install dependencies
