@@ -22,15 +22,22 @@ export default {
         },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))'
+          foreground: 'hsl(var(--primary-foreground))',
+          bg: 'hsl(var(--primary-bg))',
+          border: 'hsl(var(--primary-border))',
+          icon: 'hsl(var(--primary-icon))'
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))'
+          foreground: 'hsl(var(--secondary-foreground))',
+          bg: 'hsl(var(--secondary-bg))',
+          border: 'hsl(var(--secondary-border))',
+          icon: 'hsl(var(--secondary-icon))'
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))'
+          foreground: 'hsl(var(--muted-foreground))',
+          border: 'hsl(var(--muted-border))'
         },
         accent: {
           DEFAULT: 'hsl(var(--accent))',
@@ -38,7 +45,14 @@ export default {
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))'
+          foreground: 'hsl(var(--destructive-foreground))',
+          bg: 'hsl(var(--destructive-bg))',
+          border: 'hsl(var(--destructive-border))',
+          icon: 'hsl(var(--destructive-icon))'
+        },
+        disabled: {
+          DEFAULT: 'hsl(var(--disabled))',
+          foreground: 'hsl(var(--disabled-foreground))'
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
