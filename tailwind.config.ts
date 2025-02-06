@@ -1,3 +1,4 @@
+
 import type { Config } from 'tailwindcss'
 
 export default {
@@ -21,38 +22,38 @@ export default {
           foreground: 'hsl(var(--popover-foreground))'
         },
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-          bg: 'hsl(var(--primary-bg))',
-          border: 'hsl(var(--primary-border))',
-          icon: 'hsl(var(--primary-icon))'
+          DEFAULT: 'hsla(var(--primary))',
+          foreground: 'hsla(var(--primary-foreground))',
+          bg: 'hsla(var(--primary-bg))',
+          border: 'hsla(var(--primary-border))',
+          icon: 'hsla(var(--primary-icon))'
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-          bg: 'hsl(var(--secondary-bg))',
-          border: 'hsl(var(--secondary-border))',
-          icon: 'hsl(var(--secondary-icon))'
+          DEFAULT: 'hsla(var(--secondary))',
+          foreground: 'hsla(var(--secondary-foreground))',
+          bg: 'hsla(var(--secondary-bg))',
+          border: 'hsla(var(--secondary-border))',
+          icon: 'hsla(var(--secondary-icon))'
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-          border: 'hsl(var(--muted-border))'
+          DEFAULT: 'hsla(var(--muted))',
+          foreground: 'hsla(var(--muted-foreground))',
+          border: 'hsla(var(--muted-border))'
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))'
+          DEFAULT: 'hsla(var(--accent))',
+          foreground: 'hsla(var(--accent-foreground))'
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-          bg: 'hsl(var(--destructive-bg))',
-          border: 'hsl(var(--destructive-border))',
-          icon: 'hsl(var(--destructive-icon))'
+          DEFAULT: 'hsla(var(--destructive))',
+          foreground: 'hsla(var(--destructive-foreground))',
+          bg: 'hsla(var(--destructive-bg))',
+          border: 'hsla(var(--destructive-border))',
+          icon: 'hsla(var(--destructive-icon))'
         },
         disabled: {
-          DEFAULT: 'hsl(var(--disabled))',
-          foreground: 'hsl(var(--disabled-foreground))'
+          DEFAULT: 'hsla(var(--disabled))',
+          foreground: 'hsla(var(--disabled-foreground))'
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
