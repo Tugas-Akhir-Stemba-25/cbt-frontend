@@ -25,7 +25,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, separator, className, ma
                 {item.label}
               </a>
             ) : (
-              <span className="font-bold text-gray-900 dark:text-gray-100">{item.label}</span>
+              <span className="font-semibold text-gray-900 dark:text-gray-100">{item.label}</span>
             )}
             {index < displayedItems.length - 1 && (
               <span className="text-gray-500">{separator || <ChevronRight size={16} />}</span>
