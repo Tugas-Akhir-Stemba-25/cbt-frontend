@@ -27,7 +27,13 @@ Frontend application the will be use for CBT SYSTEM
    pnpm install
    ```
 
-3. Run app
+3. Copy Environment Variable
+
+   ```sh
+   cp .env.example .env.local
+   ```
+
+4. Run app
 
    ```sh
    pnpm dev
