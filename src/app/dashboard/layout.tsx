@@ -6,7 +6,7 @@ import { auth } from '@/lib/auth'
 
 async function Layout({ children }: PropsWithChildren) {
   const session = await auth()
-  if (!session) return redirect('/masuk')
+  if (!session) return redirect('/login')
 
   return <>{children}</>
 }

@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 
 import { LoginType, loginSchema } from '@/validators/auth/login-validator'
 
+import { PasswordInput } from '@/components/atoms/input/PasswordInput'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -80,7 +81,7 @@ const LoginForm = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="******" type="password" {...field} />
+                  <PasswordInput placeholder="*****" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
