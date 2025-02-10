@@ -6,7 +6,7 @@ import { Search } from 'lucide-react'
 
 import { cn } from '@/utils/shadcn'
 
-import { Input } from './Input'
+import { Input } from '../../ui/input'
 
 interface SearchInputProps extends React.ComponentProps<'input'> {}
 

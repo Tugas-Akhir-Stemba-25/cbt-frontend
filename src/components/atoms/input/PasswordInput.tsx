@@ -6,7 +6,7 @@ import { Eye, EyeOff } from 'lucide-react'
 
 import { cn } from '@/utils/shadcn'
 
-import { Input } from './Input'
+import { Input } from '@/components/ui/input'
 
 interface PasswordInputProps extends React.ComponentProps<'input'> {}
 
