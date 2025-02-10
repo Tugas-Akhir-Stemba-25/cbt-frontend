@@ -1,31 +1,65 @@
 'use client'
 
+import { useState } from 'react'
+
+import { useRouter } from 'next/navigation'
+
 import { zodResolver } from '@hookform/resolvers/zod'
+import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 import { LoginType, loginSchema } from '@/validators/auth/login-validator'
 
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
 const LoginForm = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const form = useForm<LoginType>({
     defaultValues: {
       username: '',
       password: ''
     },
+    mode: 'onChange',
     resolver: zodResolver(loginSchema)
   })
 
+  const router = useRouter()
+
+  const onSubmit = async (data: LoginType) => {
+    setIsLoading(true)
+    const res = await signIn('credentials', {
+      redirect: false,
+      ...data
+    })
+
+    if (!res || res.error == '') {
+      toast.error('Gagal Masuk', { description: 'Terjadi kesalahan, coba lagi.' })
+      setIsLoading(false)
+      return
+    }
+
+    if (res.error === 'CredentialsSignin') {
+      toast.error('Gagal Masuk', { description: 'Username atau password salah' })
+      setIsLoading(false)
+      return
+    }
+
+    toast.success('Berhasil Masuk', { description: 'Anda akan diarahkan ke dashboard dalam beberapa saat' })
+    setIsLoading(false)
+    return router.push('/dashboard')
+  }
+
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex w-full flex-col items-center gap-8 sm:w-3/4 lg:w-full xl:w-2/3">
       <div className="flex flex-col items-center gap-3 text-center">
-        <h1 className="text-[40px]">Masuk Akun</h1>
-        <p>Masukkan username dan password akun Anda</p>
+        <h1 className="text-3xl font-medium">Masuk Akun</h1>
+        <p className="text-sm">Masukkan username dan password akun Anda</p>
       </div>
       <Form {...form}>
-        <form onSubmit={() => console.log('ok')} className="w-full space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8 p-5">
           <FormField
             control={form.control}
             name="username"
@@ -33,14 +67,33 @@ const LoginForm = () => {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Username" {...field} />
                 </FormControl>
-                <FormDescription>This is your public display name.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="******" type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={!form.formState.isValid || isLoading}
+            isLoading={isLoading}
+          >
+            Masuk
+          </Button>
         </form>
       </Form>
     </div>

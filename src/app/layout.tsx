@@ -3,7 +3,9 @@ import { Plus_Jakarta_Sans } from 'next/font/google'
 
 import { defineMetadata } from '@/lib/metadata'
 
-import { ThemeProvider } from '@/providers/ThemeProvider'
+import { Toaster } from '@/components/ui/sonner'
+
+import GlobalProvider from '@/providers/GlobalProvider'
 
 import './globals.css'
 
@@ -19,9 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${plusJakartaSans.className} bg-background text-foreground antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
+        <GlobalProvider>
+          <main>{children}</main>
+          <Toaster />
+        </GlobalProvider>
       </body>
     </html>
   )

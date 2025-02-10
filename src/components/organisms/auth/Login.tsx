@@ -3,7 +3,7 @@ import LoginRightSide from './LoginRightSide'
 
 const Login = () => {
   return (
-    <div className="grid h-screen grid-cols-2 p-2">
+    <div className="grid h-screen grid-cols-1 p-2 lg:grid-cols-2">
       <LoginLeftSide />
       <LoginRightSide />
     </div>
