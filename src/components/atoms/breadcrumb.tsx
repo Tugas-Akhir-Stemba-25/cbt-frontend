@@ -18,20 +18,36 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, separator, className, ma
   return (
     <nav className={cn('w-full p-3', className)} aria-label="breadcrumb">
       <ol className="flex flex-wrap items-center space-x-2 text-base">
-        {displayedItems.map((item, index) => (
-          <li key={index} className="flex items-center space-x-2">
-            {item.href ? (
-              <a href={item.href} className="font-medium text-gray-500 hover:underline dark:text-gray-400">
-                {item.label}
-              </a>
-            ) : (
-              <span className="font-semibold text-gray-900 dark:text-gray-100">{item.label}</span>
-            )}
-            {index < displayedItems.length - 1 && (
-              <span className="text-gray-500">{separator || <ChevronRight size={16} />}</span>
-            )}
-          </li>
-        ))}
+        {displayedItems.map((item, index) => {
+          const isLastItem = index === displayedItems.length - 1
+          return (
+            <li key={index} className="flex items-center space-x-2">
+              {item.href ? (
+                <a
+                  href={item.href}
+                  className={cn(
+                    'text-sm font-medium text-gray-500 hover:underline dark:text-gray-400',
+                    isLastItem ? 'text-gray-900 dark:text-gray-100' : ''
+                  )}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <span
+                  className={cn(
+                    'font-semibold text-gray-900 dark:text-gray-100',
+                    isLastItem ? 'text-gray-900 dark:text-gray-100' : ''
+                  )}
+                >
+                  {item.label}
+                </span>
+              )}
+              {index < displayedItems.length - 1 && (
+                <span className="text-gray-500">{separator || <ChevronRight size={16} />}</span>
+              )}
+            </li>
+          )
+        })}
       </ol>
     </nav>
   )
