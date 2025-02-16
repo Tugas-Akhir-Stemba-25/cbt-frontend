@@ -1,4 +1,9 @@
-import { Book, Files, FilesIcon, Folders, LayoutGrid, User, Users } from 'lucide-react'
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
+import { Book, Files, FilesIcon, Folders, LucideIcon, User, Users } from 'lucide-react'
 
 import {
   Sidebar,
@@ -15,7 +20,7 @@ import {
 type MenuItem = {
   title: string
   path: string
-  icon: React.ComponentType
+  icon: LucideIcon
   roles: string[]
 }
 
@@ -31,7 +36,7 @@ const sidebarMenuConfig: MenuGroup[] = [
       {
         title: 'Dashboard',
         path: '/dashboard/',
-        icon: LayoutGrid,
+        icon: User,
         roles: ['admin', 'guru', 'siswa']
       }
     ]
@@ -108,6 +113,7 @@ const sidebarMenuConfig: MenuGroup[] = [
 ]
 
 const AppSidebar = ({ role }: { role: string }) => {
+  const pathname = usePathname()
   return (
     <Sidebar>
       <SidebarHeader>LOGO</SidebarHeader>
@@ -120,18 +126,27 @@ const AppSidebar = ({ role }: { role: string }) => {
 
             return (
               <SidebarGroup key={`group-${index}`}>
-                {group.label && <SidebarGroupLabel>Master Data</SidebarGroupLabel>}
+                {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {group.items.map(
                       (item, itemIndex) =>
                         item.roles.includes(role) && (
                           <SidebarMenuItem key={`item-${itemIndex}`}>
-                            <SidebarMenuButton asChild>
-                              <a href={item.path}>
-                                <item.icon />
-                                <span>{item.title}</span>
-                              </a>
+                            <SidebarMenuButton asChild isActive={pathname.includes(item.path)}>
+                              <Link href={item.path}>
+                                <item.icon
+                                  className={` ${
+                                    pathname.includes(item.path) ? 'text-primary-icon' : 'text-foreground'
+                                  }`}
+                                />
+
+                                <span
+                                  className={`${pathname.includes(item.path) ? 'text-primary' : 'text-foreground'}`}
+                                >
+                                  {item.title}
+                                </span>
+                              </Link>
                             </SidebarMenuButton>
                           </SidebarMenuItem>
                         )

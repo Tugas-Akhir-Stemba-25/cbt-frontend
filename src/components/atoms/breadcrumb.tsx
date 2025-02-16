@@ -1,17 +1,21 @@
+'use client'
+
 import * as React from 'react'
 
 import { ChevronRight } from 'lucide-react'
 
 import { cn } from '@/utils/shadcn'
 
+import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
+
 interface BreadcrumbProps {
-  items: { label: string; href?: string }[]
   separator?: React.ReactNode
   className?: string
   maxItems?: number
 }
 
-const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, separator, className, maxItems = 4 }) => {
+const Breadcrumb: React.FC<BreadcrumbProps> = ({ separator, className, maxItems = 4 }) => {
+  const { breadcrumbs: items } = useBreadcrumbs()
   const shouldShowEllipsis = items.length > maxItems
   const displayedItems = shouldShowEllipsis ? [items[0], { label: '...', href: '#' }, ...items.slice(-2)] : items
 

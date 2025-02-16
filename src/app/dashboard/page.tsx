@@ -1,11 +1,12 @@
-import InitialDashboard from '@/components/organisms/dashboard/InitialDashboard'
+import { redirect } from 'next/navigation'
+
+import { auth } from '@/lib/auth'
 
 async function Page() {
-  return (
-    <div>
-      <InitialDashboard />
-    </div>
-  )
+  const session = await auth()
+  if (session?.user.role === 'admin') return redirect('/dashboard/admin')
+  if (session?.user.role === 'teacher') return redirect('/dashboard/teacher')
+  if (session?.user.role === 'student') return redirect('/dashboard/student')
 }
 
 export default Page
