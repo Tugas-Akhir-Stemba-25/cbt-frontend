@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation'
+import ContentDashboard from '@/components/organisms/dashboard/teacher/ContentDashboard'
 
-import { auth } from '@/lib/auth'
-
-import ContentDashboard from '@/components/organisms/dashboard/student/ContentDashboard'
+import LayoutTeacher from './layout'
 
 export default async function Test() {
-  const session = await auth()
-  if (session?.user.role !== 'teacher') return redirect('/dashboard')
-  return <ContentDashboard />
+  return (
+    <LayoutTeacher>
+      <ContentDashboard />
+    </LayoutTeacher>
+  )
 }

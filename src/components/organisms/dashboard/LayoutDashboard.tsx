@@ -2,13 +2,12 @@
 
 import { usePathname } from 'next/navigation'
 
-import { AvatarFallback } from '@radix-ui/react-avatar'
 import { useSession } from 'next-auth/react'
 
 import ButtonToggleTheme from '@/components/atoms/ButtonToggleTheme'
 import Breadcrumb from '@/components/atoms/breadcrumb'
+import AvatarCustom from '@/components/molecules/buttons/AvatarCustom'
 import AppSidebar from '@/components/molecules/sidebar/AppSideBar'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
 const generateBreadcrumbs = (pathname: string) => {
@@ -65,10 +64,7 @@ const InitialDashboard = ({ children }: { children: React.ReactNode }) => {
 
               <div className="flex items-center gap-2">
                 <ButtonToggleTheme />
-                <Avatar>
-                  <AvatarImage src="" />
-                  <AvatarFallback>User Profile</AvatarFallback>
-                </Avatar>
+                <AvatarCustom />
               </div>
             </header>
             <main className="px-6 pt-16">{children}</main>
