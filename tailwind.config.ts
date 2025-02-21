@@ -27,6 +27,13 @@ export default {
           border: 'hsla(var(--primary-border))',
           icon: 'hsla(var(--primary-icon))'
         },
+        success: {
+          DEFAULT: 'hsla(var(--success))'
+          // foreground: 'hsla(var(--success-foreground))',
+          // bg: 'hsla(var(--success-bg))',
+          // border: 'hsla(var(--success-border))',
+          // icon: 'hsla(var(--success-icon))'
+        },
         secondary: {
           DEFAULT: 'hsla(var(--secondary))',
           foreground: 'hsla(var(--secondary-foreground))',

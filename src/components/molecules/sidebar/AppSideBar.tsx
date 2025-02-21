@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { Book, Files, FilesIcon, Folders, LucideIcon, User, Users } from 'lucide-react'
+import { Book, Files, FilesIcon, Folders, LayoutGrid, LucideIcon, User, Users } from 'lucide-react'
 
 import {
   Sidebar,
@@ -36,8 +36,8 @@ const sidebarMenuConfig: MenuGroup[] = [
       {
         title: 'Dashboard',
         path: '/dashboard/',
-        icon: User,
-        roles: ['admin', 'guru', 'siswa']
+        icon: LayoutGrid,
+        roles: ['admin', 'teacher', 'student']
       }
     ]
   },
@@ -75,38 +75,38 @@ const sidebarMenuConfig: MenuGroup[] = [
 
   {
     label: 'Menu Guru',
-    roles: ['guru'],
+    roles: ['teacher'],
     items: [
       {
         title: 'Kelas',
-        path: '/dashboard/kelas',
+        path: 'dashboard/teacher/class',
         icon: Users,
-        roles: ['guru']
+        roles: ['teacher']
       },
       {
         title: 'Ujian',
-        path: '/dashboard/ujian',
+        path: 'dashboard/teacher/exam',
         icon: FilesIcon,
-        roles: ['guru']
+        roles: ['teacher']
       }
     ]
   },
 
   {
     label: 'Menu Siswa',
-    roles: ['siswa'],
+    roles: ['student'],
     items: [
       {
         title: 'Mata Pelajaran',
-        path: '/dashboard/mata-pelajaran',
+        path: 'dashboard/student/mata-pelajaran',
         icon: Book,
-        roles: ['siswa']
+        roles: ['student']
       },
       {
         title: 'Ujian',
         path: '/dashboard/ujian',
         icon: Files,
-        roles: ['siswa']
+        roles: ['student']
       }
     ]
   }

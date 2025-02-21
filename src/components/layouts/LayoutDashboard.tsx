@@ -1,12 +1,11 @@
-import { AvatarFallback } from '@radix-ui/react-avatar'
-
 import { auth } from '@/lib/auth'
 
 import ButtonToggleTheme from '@/components/atoms/ButtonToggleTheme'
 import Breadcrumb from '@/components/atoms/breadcrumb'
 import AppSidebar from '@/components/molecules/sidebar/AppSideBar'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+
+import AvatarCustom from '../molecules/buttons/AvatarCustom'
 
 const LayoutDashboard = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth()
@@ -28,13 +27,10 @@ const LayoutDashboard = async ({ children }: { children: React.ReactNode }) => {
 
               <div className="flex items-center gap-2">
                 <ButtonToggleTheme />
-                <Avatar className="grid place-items-center">
-                  <AvatarImage src="" />
-                  <AvatarFallback>{session?.user?.name[0] ?? 'A'}</AvatarFallback>
-                </Avatar>
+                <AvatarCustom />
               </div>
             </header>
-            <main className="px-6 pt-16">{children}</main>
+            <main className="px-5 pt-5">{children}</main>
           </div>
         </SidebarInset>
       </SidebarProvider>
