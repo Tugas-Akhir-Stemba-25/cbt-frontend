@@ -79,7 +79,7 @@ const sidebarMenuConfig: MenuGroup[] = [
     items: [
       {
         title: 'Kelas',
-        path: 'dashboard/teacher/class',
+        path: '/dashboard/teacher/class',
         icon: Users,
         roles: ['teacher']
       },
