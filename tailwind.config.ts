@@ -41,6 +41,10 @@ export default {
           border: 'hsla(var(--secondary-border))',
           icon: 'hsla(var(--secondary-icon))'
         },
+        tableColour: {
+          DEFAULT: 'hsla(var(--th-colour))',
+          selected: 'hsla(var(--td-selected))'
+        },
         muted: {
           DEFAULT: 'hsla(var(--muted))',
           foreground: 'hsla(var(--muted-foreground))',

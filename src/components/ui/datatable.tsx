@@ -12,22 +12,12 @@ import {
   ColumnDef,
   RowSelectionState
 } from '@tanstack/react-table'
-import {
-  ChevronsUpDown,
-  Download,
-  Plus,
-  ChevronLeft,
-  ChevronRight,
-  SquarePen,
-  Trash,
-  Search,
-  Ellipsis
-} from 'lucide-react'
+import { ChevronsUpDown, Download, Plus, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis } from 'lucide-react'
 
+import { SearchInput } from '@/components/atoms/input/SearchInput'
 import EditModal from '@/components/molecules/popup/EditRow'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
@@ -103,14 +93,11 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
       <div className="p-5">
         <div className="flex justify-between">
           <div className="relative w-1/3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform" size={16} color="#6B7280" />
-            <Input
-              type="text"
+            <SearchInput
               placeholder="Cari Data"
-              className="w-full rounded-md border py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-gray-300"
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
-            />
+            ></SearchInput>
           </div>
 
           <div className="flex gap-4">
@@ -126,7 +113,7 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
         </div>
       </div>
       <table className="w-full border-collapse rounded-lg">
-        <thead className="border-t bg-[#F3F4F699] dark:bg-[#11182799]">
+        <thead className="border-t bg-tableColour">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               <th className="w-10 p-3">
@@ -166,10 +153,7 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
-              className="border-t"
-              style={{
-                backgroundColor: row.getIsSelected() ? '#F3F4F6' : 'transparent'
-              }}
+              className={`border-t ${row.getIsSelected() ? 'bg-tableColour-selected' : 'bg-transparent'}`}
             >
               <td className="w-10 border-inherit p-3">
                 <Checkbox
