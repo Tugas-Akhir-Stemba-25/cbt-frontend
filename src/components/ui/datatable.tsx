@@ -27,6 +27,7 @@ import {
 import EditModal from '@/components/molecules/popup/EditRow'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
@@ -103,12 +104,12 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
         <div className="flex justify-between">
           <div className="relative w-1/3">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 transform" size={16} color="#6B7280" />
-            <input
+            <Input
               type="text"
-              placeholder="Cari data"
+              placeholder="Cari Data"
+              className="w-full rounded-md border py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-gray-300"
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              className="w-full rounded-md border py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-gray-300"
             />
           </div>
 
@@ -125,12 +126,12 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
         </div>
       </div>
       <table className="w-full border-collapse rounded-lg">
-        <thead className="border-t bg-[#F3F4F699]">
+        <thead className="border-t bg-[#F3F4F699] dark:bg-[#11182799]">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               <th className="w-10 p-3">
                 <Checkbox
-                  className="h-4 w-4 border-2 border-[#0307121A] bg-white"
+                  className="h-4 w-4 border-2 border-[#0307121A] bg-[#FFFFFF] dark:border-[#FFFFFF29] dark:bg-[#030712]"
                   checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
                   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                   aria-label="Select all"
@@ -172,7 +173,7 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
             >
               <td className="w-10 border-inherit p-3">
                 <Checkbox
-                  className="h-4 w-4 border-2 border-[#0307121A] bg-white"
+                  className="h-4 w-4 border-2 border-[#0307121A] bg-[#FFFFFF] dark:border-[#FFFFFF29] dark:bg-[#030712]"
                   checked={row.getIsSelected()}
                   onCheckedChange={(value) => row.toggleSelected(!!value)}
                   aria-label="Select row"
@@ -226,35 +227,38 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
         )}
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="flex items-center gap-2"
+          <Button
+            variant="link"
+            onClick={() => table.getCanPreviousPage() && table.previousPage()}
+            aria-disabled={!table.getCanPreviousPage()}
+            className={`flex items-center gap-2 text-[#4B5563] ${!table.getCanPreviousPage() ? 'pointer-events-none opacity-50' : ''}`}
           >
             <ChevronLeft size={20} color="#6B7280" strokeWidth={1.5} />
             Previous
-          </button>
+          </Button>
 
           {renderPageNumbers()}
           {table.getPageCount() > 3 && table.getState().pagination.pageIndex < table.getPageCount() - 3 && (
             <div>
-              <button
+              <Button
+                variant="link"
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
                 className="flex items-center gap-2 p-2"
               >
                 <Ellipsis size={20} color="#6B7280" strokeWidth={1.5} />
-              </button>
+              </Button>
             </div>
           )}
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="flex items-center gap-2"
+          <Button
+            variant="link"
+            onClick={() => table.getCanNextPage() && table.nextPage()}
+            aria-disabled={!table.getCanNextPage()}
+            className={`flex items-center gap-2 text-[#4B5563] ${!table.getCanNextPage() ? 'pointer-events-none opacity-50' : ''}`}
           >
             Next
             <ChevronRight size={20} color="#6B7280" strokeWidth={1.5} />
-          </button>
+          </Button>
         </div>
       </div>
       {isEditModalOpen && editingRow && (
