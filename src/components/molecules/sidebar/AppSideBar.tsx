@@ -35,9 +35,21 @@ const sidebarMenuConfig: MenuGroup[] = [
     items: [
       {
         title: 'Dashboard',
-        path: '/dashboard/',
+        path: '/dashboard/admin',
         icon: LayoutGrid,
-        roles: ['admin', 'teacher', 'student']
+        roles: ['admin']
+      },
+      {
+        title: 'Dashboard',
+        path: '/dashboard/teacher',
+        icon: LayoutGrid,
+        roles: ['teacher']
+      },
+      {
+        title: 'Dashboard',
+        path: '/dashboard/student',
+        icon: LayoutGrid,
+        roles: ['student']
       }
     ]
   },
@@ -48,25 +60,25 @@ const sidebarMenuConfig: MenuGroup[] = [
     items: [
       {
         title: 'Guru',
-        path: '/dashboard/guru',
+        path: '/dashboard/admin/teacher',
         icon: User,
         roles: ['admin']
       },
       {
         title: 'Siswa',
-        path: '/dashboard/siswa',
+        path: '/dashboard/admin/student',
         icon: User,
         roles: ['admin']
       },
       {
         title: 'Jurusan',
-        path: '/dashboard/jurusan',
+        path: '/dashboard/admin/major',
         icon: Folders,
         roles: ['admin']
       },
       {
         title: 'Ujian',
-        path: '/dashboard/ujian',
+        path: '/dashboard/admin/exam',
         icon: Files,
         roles: ['admin']
       }
@@ -98,13 +110,13 @@ const sidebarMenuConfig: MenuGroup[] = [
     items: [
       {
         title: 'Mata Pelajaran',
-        path: 'dashboard/student/mata-pelajaran',
+        path: 'dashboard/student/materials',
         icon: Book,
         roles: ['student']
       },
       {
         title: 'Ujian',
-        path: '/dashboard/ujian',
+        path: 'dashboard/student/materials',
         icon: Files,
         roles: ['student']
       }
@@ -114,6 +126,11 @@ const sidebarMenuConfig: MenuGroup[] = [
 
 const AppSidebar = ({ role }: { role: string }) => {
   const pathname = usePathname()
+
+  const isActive = (pathname: string, path: string) => {
+    if (pathname === path) return true
+  }
+
   return (
     <Sidebar>
       <SidebarHeader>LOGO</SidebarHeader>
@@ -133,16 +150,16 @@ const AppSidebar = ({ role }: { role: string }) => {
                       (item, itemIndex) =>
                         item.roles.includes(role) && (
                           <SidebarMenuItem key={`item-${itemIndex}`}>
-                            <SidebarMenuButton asChild isActive={pathname.includes(item.path)}>
+                            <SidebarMenuButton asChild isActive={isActive(pathname, item.path)}>
                               <Link href={item.path}>
                                 <item.icon
                                   className={` ${
-                                    pathname.includes(item.path) ? 'text-primary-icon' : 'text-foreground'
+                                    isActive(pathname, item.path) ? 'text-primary-icon' : 'text-foreground'
                                   }`}
                                 />
 
                                 <span
-                                  className={`${pathname.includes(item.path) ? 'text-primary' : 'text-foreground'}`}
+                                  className={`${isActive(pathname, item.path) ? 'text-primary' : 'text-foreground'}`}
                                 >
                                   {item.title}
                                 </span>

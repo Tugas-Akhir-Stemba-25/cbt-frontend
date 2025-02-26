@@ -30,7 +30,7 @@ const LayoutDashboard = async ({ children }: { children: React.ReactNode }) => {
                 <AvatarCustom />
               </div>
             </header>
-            <main className="px-5 pt-5">{children}</main>
+            <main className="p-5">{children}</main>
           </div>
         </SidebarInset>
       </SidebarProvider>

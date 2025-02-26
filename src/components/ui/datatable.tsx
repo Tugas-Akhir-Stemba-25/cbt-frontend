@@ -91,8 +91,8 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
   return (
     <div className="w-full rounded-lg border shadow-xl">
       <div className="p-5">
-        <div className="flex justify-between">
-          <div className="relative w-1/3">
+        <div className="flex flex-col gap-4 md:flex-row md:justify-between lg:gap-0">
+          <div className="relative w-full md:w-1/3">
             <SearchInput
               placeholder="Cari Data"
               value={globalFilter}
@@ -101,13 +101,13 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
           </div>
 
           <div className="flex gap-4">
-            <Button variant="outline">
+            <Button variant="outline" className="light:border-muted border-2 dark:border-foreground">
               Unduh
               <Download size={20} />
             </Button>
-            <Button className="bg-blue-600 font-medium text-white">
+            <Button className="bg-primary font-medium">
               Tambah Data
-              <Plus size={24} color="#ffffff" />
+              <Plus size={24} className="" />
             </Button>
           </div>
         </div>
@@ -118,14 +118,14 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
             <tr key={headerGroup.id}>
               <th className="w-10 p-3">
                 <Checkbox
-                  className="h-4 w-4 border-2 border-[#0307121A] bg-[#FFFFFF] dark:border-[#FFFFFF29] dark:bg-[#030712]"
+                  className="border-muted/1 h-4 w-4 border-2 bg-transparent"
                   checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
                   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                   aria-label="Select all"
                 />
               </th>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="p-5 font-normal text-[#4B5563]">
+                <th key={header.id} className="p-5 font-normal text-muted">
                   {header.isPlaceholder ? null : (
                     <button
                       onClick={header.column.getToggleSortingHandler()}
@@ -157,23 +157,23 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
             >
               <td className="w-10 border-inherit p-3">
                 <Checkbox
-                  className="h-4 w-4 border-2 border-[#0307121A] bg-[#FFFFFF] dark:border-[#FFFFFF29] dark:bg-[#030712]"
+                  className="border-muted/1 h-4 w-4 border-2 bg-transparent"
                   checked={row.getIsSelected()}
                   onCheckedChange={(value) => row.toggleSelected(!!value)}
                   aria-label="Select row"
                 />
               </td>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-5 font-[#030712] font-normal">
+                <td key={cell.id} className="p-5 font-normal text-foreground">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
               <td className="flex gap-3 p-5">
                 <button onClick={() => handleEdit(row.original)}>
-                  <SquarePen size={16} color="#4F46E5" strokeWidth={1.5} />
+                  <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
                 </button>
                 <button onClick={() => handleDelete(row.original)}>
-                  <Trash size={16} color="#EF1A07" strokeWidth={1.5} />
+                  <Trash size={16} className="text-destructive" strokeWidth={1.5} />
                 </button>
               </td>
               <th></th>
