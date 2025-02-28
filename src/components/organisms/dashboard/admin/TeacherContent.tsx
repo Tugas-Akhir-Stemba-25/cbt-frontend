@@ -21,16 +21,12 @@ export default function TeacherContent() {
   // Definisi kolom tabel untuk data Guru
   const columns: ColumnDef<Guru>[] = [
     {
-      accessorKey: 'id',
-      header: 'ID'
-    },
-    {
       accessorKey: 'name',
       header: 'Nama'
     },
     {
       accessorKey: 'subject',
-      header: 'Mata Pelajaran'
+      header: 'Username'
     }
   ]
 
@@ -63,7 +59,7 @@ export default function TeacherContent() {
         </div>
 
         {/* datatable */}
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={data} placeholder="Cari Guru" />
       </div>
     </>
   )

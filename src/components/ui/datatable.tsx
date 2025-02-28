@@ -19,16 +19,59 @@ import EditModal from '@/components/molecules/popup/EditRow'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table'
+
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
+  placeholder: string
 }
 
-const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTableProps<TData>) => {
+const DataTable = <TData extends Record<string, any>>({ columns, data, placeholder }: DataTableProps<TData>) => {
   const [globalFilter, setGlobalFilter] = React.useState('')
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
   const [editingRow, setEditingRow] = React.useState<TData | null>(null)
+
+  const renderRowSelectionActions = () => (
+    <Select
+      onValueChange={(value) => {
+        if (value === 'unduh') {
+          console.log('Unduh data terpilih:', table.getSelectedRowModel().rows)
+        }
+        if (value === 'hapus') {
+          console.log('Hapus data terpilih:', table.getSelectedRowModel().rows)
+        }
+      }}
+    >
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Aksi" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="unduh">Unduh data</SelectItem>
+        <SelectItem value="hapus">Hapus data</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+
+  const renderPageSizeSelect = () => (
+    <Select
+      value={`${table.getState().pagination.pageSize}`}
+      onValueChange={(value) => table.setPageSize(Number(value))}
+    >
+      <SelectTrigger className="w-[100px]">
+        <SelectValue placeholder={table.getState().pagination.pageSize} />
+      </SelectTrigger>
+      <SelectContent>
+        {[10, 20, 30, 40, 50].map((pageSize) => (
+          <SelectItem key={pageSize} value={`${pageSize}`}>
+            {pageSize}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
 
   const table = useReactTable({
     columns,
@@ -94,7 +137,7 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
         <div className="flex flex-col gap-4 md:flex-row md:justify-between lg:gap-0">
           <div className="relative w-full md:w-1/3">
             <SearchInput
-              placeholder="Cari Data"
+              placeholder={placeholder}
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
             ></SearchInput>
@@ -112,24 +155,25 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
           </div>
         </div>
       </div>
-      <table className="w-full border-collapse rounded-lg">
-        <thead className="border-t bg-tableColour">
+      <Table className="w-full border-collapse rounded-lg">
+        <TableHeader className="w- border-t bg-tableColour">
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              <th className="w-10 p-3">
+            <TableRow key={headerGroup.id}>
+              <TableHead className="w-10 p-3">
                 <Checkbox
                   className="border-muted/1 h-4 w-4 border-2 bg-transparent"
                   checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
                   onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                   aria-label="Select all"
                 />
-              </th>
+              </TableHead>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="p-5 font-normal text-muted">
+                <TableHead key={header.id} className="p-5 font-normal text-muted">
                   {header.isPlaceholder ? null : (
-                    <button
+                    <Button
                       onClick={header.column.getToggleSortingHandler()}
-                      className="flex items-center"
+                      className="font flex items-center p-0 text-center text-base"
+                      variant="ghost"
                       disabled={!header.column.getCanSort()}
                     >
                       {flexRender(header.column.columnDef.header, header.getContext())}
@@ -140,72 +184,59 @@ const DataTable = <TData extends Record<string, any>>({ columns, data }: DataTab
                           {header.column.getIsSorted() === 'desc'}
                         </>
                       )}
-                    </button>
+                    </Button>
                   )}
-                </th>
+                </TableHead>
               ))}
-              <th className="w-16 p-3"></th>
-              <th className="w-16 p-3"></th>
-            </tr>
+              <TableHead className="w-16 p-3"></TableHead>
+              <TableHead className="w-16 p-3"></TableHead>
+            </TableRow>
           ))}
-        </thead>
-        <tbody>
+        </TableHeader>
+        <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <tr
+            <TableRow
               key={row.id}
               className={`border-t ${row.getIsSelected() ? 'bg-tableColour-selected' : 'bg-transparent'}`}
             >
-              <td className="w-10 border-inherit p-3">
+              <TableCell className="w-10 border-inherit p-3">
                 <Checkbox
-                  className="border-muted/1 h-4 w-4 border-2 bg-transparent"
+                  className="border-muted/1 h-4 w-4 border-2 bg-transparent text-center"
                   checked={row.getIsSelected()}
                   onCheckedChange={(value) => row.toggleSelected(!!value)}
                   aria-label="Select row"
                 />
-              </td>
+              </TableCell>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-5 font-normal text-foreground">
+                <TableCell key={cell.id} className="p-5 font-normal text-foreground">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                </TableCell>
               ))}
-              <td className="flex gap-3 p-5">
-                <button onClick={() => handleEdit(row.original)}>
+              <TableCell className="flex gap-3 p-5">
+                <Button variant="ghost" onClick={() => handleEdit(row.original)}>
                   <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
-                </button>
-                <button onClick={() => handleDelete(row.original)}>
+                </Button>
+                <Button variant="ghost" onClick={() => handleDelete(row.original)}>
                   <Trash size={16} className="text-destructive" strokeWidth={1.5} />
-                </button>
-              </td>
-              <th></th>
-            </tr>
+                </Button>
+              </TableCell>
+              <TableHead></TableHead>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       <div className="flex items-center justify-between border-t p-5 font-medium text-[#4B5563]">
         {table.getSelectedRowModel().rows.length > 0 ? (
           <div className="flex items-center gap-2">
             <span>
-              {table.getSelectedRowModel().rows.length} of {table.getRowModel().rows.length} row selected
+              {table.getSelectedRowModel().rows.length} dari {table.getRowModel().rows.length} baris dipilih
             </span>
-            <select className="rounded border p-2">
-              <option value="unduh data">Unduh data</option>
-              <option value="hapus">Hapus data</option>
-            </select>
+            {renderRowSelectionActions()}
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <span>Show</span>
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => table.setPageSize(Number(e.target.value))}
-              className="rounded border p-2"
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  {pageSize}
-                </option>
-              ))}
-            </select>
+            <span>Tampilkan</span>
+            {renderPageSizeSelect()}
             <span>per page</span>
           </div>
         )}

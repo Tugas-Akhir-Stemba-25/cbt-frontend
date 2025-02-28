@@ -57,5 +57,6 @@
     "prettier": "3.4.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "pnpm@10.5.1+sha1.ce43d22894c09ea45dd140db118e253d0c1eeda3"
 }
