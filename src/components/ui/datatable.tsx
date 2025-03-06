@@ -19,6 +19,7 @@ import EditModal from '@/components/molecules/popup/EditRow'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 
+import DeleteDialog from '../molecules/popup/DeleteDialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table'
 
@@ -26,13 +27,21 @@ interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
   placeholder: string
+  userRole: 'admin' | 'teacher' | 'student'
+  expectedUsername?: string
 }
 
-const DataTable = <TData extends Record<string, any>>({ columns, data, placeholder }: DataTableProps<TData>) => {
+const DataTable = <TData extends Record<string, any>>({
+  columns,
+  data,
+  placeholder,
+  userRole
+}: DataTableProps<TData>) => {
   const [globalFilter, setGlobalFilter] = React.useState('')
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
   const [editingRow, setEditingRow] = React.useState<TData | null>(null)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
 
   const renderRowSelectionActions = () => (
     <Select
@@ -42,6 +51,7 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
         }
         if (value === 'hapus') {
           console.log('Hapus data terpilih:', table.getSelectedRowModel().rows)
+          setIsDeleteDialogOpen(true)
         }
       }}
     >
@@ -276,6 +286,19 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
           </Button>
         </div>
       </div>
+      <DeleteDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => {
+          setIsDeleteDialogOpen(false)
+        }}
+        onConfirm={() => {
+          const selectedRows = table.getSelectedRowModel().rows.map((row) => row.original)
+          console.log('Selected rows:', selectedRows)
+          setIsDeleteDialogOpen(false)
+        }}
+        role={userRole}
+      />
+
       {isEditModalOpen && editingRow && (
         <EditModal<TData>
           row={editingRow}
