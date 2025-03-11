@@ -19,6 +19,7 @@ import EditModal from '@/components/molecules/popup/EditRow'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 
+import AddDataModal from '../molecules/popup/AddDataModal'
 import DeleteDialog from '../molecules/popup/DeleteDialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table'
@@ -27,21 +28,21 @@ interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
   placeholder: string
-  userRole: 'admin' | 'teacher' | 'student'
   expectedUsername?: string
 }
 
-const DataTable = <TData extends Record<string, any>>({
-  columns,
-  data,
-  placeholder,
-  userRole
-}: DataTableProps<TData>) => {
+const DataTable = <TData extends Record<string, any>>({ columns, data, placeholder }: DataTableProps<TData>) => {
   const [globalFilter, setGlobalFilter] = React.useState('')
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
   const [editingRow, setEditingRow] = React.useState<TData | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
+  const [authRequired, setAuthRequired] = React.useState(false)
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false)
+  const [users, setUser] = React.useState([
+    { id: 1, name: 'John Doe', username: 'johndoe' },
+    { id: 2, name: 'Jane Smith', username: 'janesmith' }
+  ])
 
   const renderRowSelectionActions = () => (
     <Select
@@ -52,6 +53,7 @@ const DataTable = <TData extends Record<string, any>>({
         if (value === 'hapus') {
           console.log('Hapus data terpilih:', table.getSelectedRowModel().rows)
           setIsDeleteDialogOpen(true)
+          setAuthRequired(false)
         }
       }}
     >
@@ -97,6 +99,11 @@ const DataTable = <TData extends Record<string, any>>({
     onRowSelectionChange: setRowSelection
   })
 
+  const handleNewData = () => {
+    console.log('New data:', editingRow)
+    setIsCreateDialogOpen(true)
+  }
+
   const handleEdit = (row: TData) => {
     setEditingRow(row)
     setIsEditModalOpen(true)
@@ -104,6 +111,8 @@ const DataTable = <TData extends Record<string, any>>({
 
   const handleDelete = (row: TData) => {
     console.log('Deleted:', row)
+    setIsDeleteDialogOpen(true)
+    setAuthRequired(true)
   }
 
   const handleSave = (_updatedRow: TData) => {
@@ -158,7 +167,7 @@ const DataTable = <TData extends Record<string, any>>({
               Unduh
               <Download size={20} />
             </Button>
-            <Button className="bg-primary font-medium">
+            <Button className="bg-primary font-medium" onClick={() => handleNewData()}>
               Tambah Data
               <Plus size={24} className="" />
             </Button>
@@ -286,6 +295,18 @@ const DataTable = <TData extends Record<string, any>>({
           </Button>
         </div>
       </div>
+      <AddDataModal
+        isOpen={isCreateDialogOpen}
+        onClose={() => setIsCreateDialogOpen(false)}
+        onConfirm={(data) => {
+          const newUser = { id: users.length + 1, ...data }
+          setUser([...users, newUser])
+          setIsCreateDialogOpen(false)
+        }}
+        expectedName="name"
+        expectedUsername="username"
+      />
+
       <DeleteDialog
         isOpen={isDeleteDialogOpen}
         onClose={() => {
@@ -296,7 +317,9 @@ const DataTable = <TData extends Record<string, any>>({
           console.log('Selected rows:', selectedRows)
           setIsDeleteDialogOpen(false)
         }}
-        role={userRole}
+        authRequired={authRequired}
+        expectedUsn="username"
+        expectedPw="password"
       />
 
       {isEditModalOpen && editingRow && (

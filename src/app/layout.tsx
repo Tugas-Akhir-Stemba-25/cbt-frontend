@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={`${plusJakartaSans.className} bg-background text-foreground antialiased`}>
         <GlobalProvider>
           <main>{children}</main>
-          <Toaster />
+          <Toaster richColors />
         </GlobalProvider>
       </body>
     </html>

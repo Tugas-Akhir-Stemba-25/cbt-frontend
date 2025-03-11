@@ -1,6 +1,11 @@
+'use client'
+
 import * as React from 'react'
 
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 interface EditModalProps<TData> {
   row: TData
@@ -22,13 +27,15 @@ const EditModal = <TData extends Record<string, any>>({ row, headers, onClose, o
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="w-full max-w-md rounded-lg bg-white p-6">
-        <h2 className="mb-4 text-xl font-bold">Edit Data</h2>
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Data</DialogTitle>
+        </DialogHeader>
         {headers.map((header) => (
           <div key={header.id} className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">{header.column.columnDef.header}</label>
-            <input
+            <Label className="block text-sm font-medium">{header.column.columnDef.header}</Label>
+            <Input
               type="text"
               value={formData[header.id] || ''}
               onChange={(e) => handleChange(header.id, e.target.value)}
@@ -36,16 +43,21 @@ const EditModal = <TData extends Record<string, any>>({ row, headers, onClose, o
             />
           </div>
         ))}
-        <div className="flex gap-2">
-          <Button variant="subtle" onClick={onClose} className="w-full">
+        <DialogFooter className="flex gap-2">
+          <Button onClick={onClose} variant="subtle" className="flex-1 rounded-md px-4 py-2 dark:bg-tableColour">
             Batal
           </Button>
-          <Button variant="default" onClick={handleSave} disabled={true} className="w-full">
+          <Button
+            variant="default"
+            onClick={handleSave}
+            // disabled={true}
+            className="flex-1"
+          >
             Simpan
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
