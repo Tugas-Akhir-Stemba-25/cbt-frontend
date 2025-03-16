@@ -10,12 +10,22 @@ import { Label } from '@/components/ui/label'
 interface EditModalProps<TData> {
   row: TData
   headers: any[]
+  extraFields?: { id: string; label: string; type?: string }[]
   onClose: () => void
   onSave: (updatedRow: TData) => void
 }
 
-const EditModal = <TData extends Record<string, any>>({ row, headers, onClose, onSave }: EditModalProps<TData>) => {
-  const [formData, setFormData] = React.useState<TData>(row)
+const EditModal = <TData extends Record<string, any>>({
+  row,
+  headers,
+  extraFields = [],
+  onClose,
+  onSave
+}: EditModalProps<TData>) => {
+  const [formData, setFormData] = React.useState<TData & Record<string, any>>({
+    ...row,
+    ...extraFields.reduce((acc, field) => ({ ...acc, [field.id]: '' }), {})
+  })
 
   const handleChange = (key: string, value: any) => {
     setFormData({ ...formData, [key]: value })
@@ -39,6 +49,17 @@ const EditModal = <TData extends Record<string, any>>({ row, headers, onClose, o
               type="text"
               value={formData[header.id] || ''}
               onChange={(e) => handleChange(header.id, e.target.value)}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2"
+            />
+          </div>
+        ))}
+        {extraFields.map((field) => (
+          <div key={field.id} className="mb-4">
+            <Label className="block text-sm font-medium">{field.label}</Label>
+            <Input
+              type={field.type || 'text'}
+              value={formData[field.id] || ''}
+              onChange={(e) => handleChange(field.id, e.target.value)}
               className="mt-1 block w-full rounded-md border border-gray-300 p-2"
             />
           </div>
