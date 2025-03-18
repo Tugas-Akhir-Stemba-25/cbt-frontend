@@ -59,7 +59,7 @@ export default function TeacherContent() {
         </div>
 
         {/* datatable */}
-        <DataTable columns={columns} data={data} placeholder="Cari Guru" />
+        <DataTable columns={columns} data={data} role="teacher" placeholder="Cari Guru" />
       </div>
     </>
   )

@@ -19,6 +19,7 @@ import EditModal from '@/components/molecules/popup/EditRow'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 
+import FilterDropdown from '../atoms/dropdowns/FilterClass'
 import AddDataModal from '../molecules/popup/AddDataModal'
 import DeleteDialog from '../molecules/popup/DeleteDialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
@@ -29,9 +30,10 @@ interface DataTableProps<TData> {
   data: TData[]
   placeholder: string
   expectedUsername?: string
+  role: string
 }
 
-const DataTable = <TData extends Record<string, any>>({ columns, data, placeholder }: DataTableProps<TData>) => {
+const DataTable = <TData extends Record<string, any>>({ columns, data, placeholder, role }: DataTableProps<TData>) => {
   const [globalFilter, setGlobalFilter] = React.useState('')
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
@@ -151,16 +153,33 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
   }
 
   return (
-    <div className="w-full rounded-lg border shadow-xl">
+    <div className="w-full overflow-x-auto rounded-lg border shadow-xl">
       <div className="p-5">
         <div className="flex flex-col gap-4 md:flex-row md:justify-between lg:gap-0">
-          <div className="relative w-full md:w-1/3">
-            <SearchInput
-              placeholder={placeholder}
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-            ></SearchInput>
-          </div>
+          {role === 'teacher' ? (
+            <div className="flex gap-4 md:w-1/3">
+              <div className="relative w-full">
+                <SearchInput
+                  placeholder={placeholder}
+                  value={globalFilter}
+                  onChange={(e) => setGlobalFilter(e.target.value)}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="flex gap-4 md:w-1/2">
+              <div className="relative w-full">
+                <SearchInput
+                  placeholder={placeholder}
+                  value={globalFilter}
+                  onChange={(e) => setGlobalFilter(e.target.value)}
+                />
+              </div>
+              <div className="relative w-full">
+                <FilterDropdown />
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-4">
             <Button variant="outline" className="light:border-muted border-2 dark:border-foreground">
@@ -172,78 +191,82 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
               <Plus size={24} className="" />
             </Button>
           </div>
+
+          {/* end */}
         </div>
       </div>
-      <Table className="w-full border-collapse rounded-lg">
-        <TableHeader className="w- border-t bg-tableColour">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              <TableHead className="w-10 p-3">
-                <Checkbox
-                  className="border-muted/1 h-4 w-4 border-2 bg-transparent"
-                  checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-                  onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                  aria-label="Select all"
-                />
-              </TableHead>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="p-5 font-normal text-muted">
-                  {header.isPlaceholder ? null : (
-                    <Button
-                      onClick={header.column.getToggleSortingHandler()}
-                      className="font flex items-center p-0 text-center text-base"
-                      variant="ghost"
-                      disabled={!header.column.getCanSort()}
-                    >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getCanSort() && (
-                        <>
-                          <ChevronsUpDown size={16} className="ml-1 h-4 w-4" />
-                          {header.column.getIsSorted() === 'asc'}
-                          {header.column.getIsSorted() === 'desc'}
-                        </>
-                      )}
-                    </Button>
-                  )}
+      <div className="min-w-[800px] overflow-x-auto md:min-w-full">
+        <Table className="w-full border-collapse whitespace-nowrap rounded-lg">
+          <TableHeader className="w- border-t bg-tableColour">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                <TableHead className="w-10 p-3">
+                  <Checkbox
+                    className="border-muted/1 h-4 w-4 border-2 bg-transparent"
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                  />
                 </TableHead>
-              ))}
-              <TableHead className="w-16 p-3"></TableHead>
-              <TableHead className="w-16 p-3"></TableHead>
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow
-              key={row.id}
-              className={`border-t ${row.getIsSelected() ? 'bg-tableColour-selected' : 'bg-transparent'}`}
-            >
-              <TableCell className="w-10 border-inherit p-3">
-                <Checkbox
-                  className="border-muted/1 h-4 w-4 border-2 bg-transparent text-center"
-                  checked={row.getIsSelected()}
-                  onCheckedChange={(value) => row.toggleSelected(!!value)}
-                  aria-label="Select row"
-                />
-              </TableCell>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id} className="p-5 font-normal text-foreground">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="p-5 font-normal text-muted">
+                    {header.isPlaceholder ? null : (
+                      <Button
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="font flex items-center p-0 text-center text-base"
+                        variant="ghost"
+                        disabled={!header.column.getCanSort()}
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {header.column.getCanSort() && (
+                          <>
+                            <ChevronsUpDown size={16} className="ml-1 h-4 w-4" />
+                            {header.column.getIsSorted() === 'asc'}
+                            {header.column.getIsSorted() === 'desc'}
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </TableHead>
+                ))}
+                <TableHead className="w-16 p-3"></TableHead>
+                <TableHead className="w-16 p-3"></TableHead>
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                className={`border-t ${row.getIsSelected() ? 'bg-tableColour-selected' : 'bg-transparent'}`}
+              >
+                <TableCell className="w-10 border-inherit p-3">
+                  <Checkbox
+                    className="border-muted/1 h-4 w-4 border-2 bg-transparent text-center"
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                  />
                 </TableCell>
-              ))}
-              <TableCell className="flex gap-3 p-5">
-                <Button variant="ghost" onClick={() => handleEdit(row.original)}>
-                  <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
-                </Button>
-                <Button variant="ghost" onClick={() => handleDelete(row.original)}>
-                  <Trash size={16} className="text-destructive" strokeWidth={1.5} />
-                </Button>
-              </TableCell>
-              <TableHead></TableHead>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="p-5 font-normal text-foreground">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+                <TableCell className="flex gap-3 p-5">
+                  <Button variant="ghost" onClick={() => handleEdit(row.original)}>
+                    <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
+                  </Button>
+                  <Button variant="ghost" onClick={() => handleDelete(row.original)}>
+                    <Trash size={16} className="text-destructive" strokeWidth={1.5} />
+                  </Button>
+                </TableCell>
+                <TableHead></TableHead>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       <div className="flex items-center justify-between border-t p-5 font-medium text-[#4B5563]">
         {table.getSelectedRowModel().rows.length > 0 ? (
           <div className="flex items-center gap-2">
@@ -326,6 +349,7 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
         <EditModal<TData>
           row={editingRow}
           headers={table.getHeaderGroups().flatMap((group) => group.headers)}
+          extraFields={[{ id: 'password', label: 'Password', type: 'password' }]}
           onClose={() => setIsEditModalOpen(false)}
           onSave={handleSave}
         />
