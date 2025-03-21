@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { usePostTeacherData } from '@/http/teachers/createTeacher'
+
 import { PasswordInput } from '@/components/atoms/input/PasswordInput'
 import { Button } from '@/components/ui/button'
 import {
@@ -20,16 +22,44 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
+import { TeacherResponse } from '@/types/common/teacherResponse'
+
 interface AddDataModalProps {
   isOpen: boolean
   onClose: () => void
-  onConfirm: (data: { name: string; username: string; password: string }) => void
+  onConfirm: (response: TeacherResponse) => void
   expectedName: string
   expectedUsername: string
 }
 
 const AddDataModal: React.FC<AddDataModalProps> = ({ isOpen, onClose, onConfirm, expectedName, expectedUsername }) => {
-  // Schema validasi dengan Zod
+  const { mutate, isPending } = usePostTeacherData({
+    onSuccess: (newTeacher) => {
+      toast.success('Selamat', {
+        position: 'bottom-center',
+        description: `Berhasil menambahkan data guru`,
+        classNames: {
+          toast: 'bg-success text-white',
+          description: 'text-gray-200',
+          title: 'text-[#56E038]',
+          icon: 'text-[#56E038]'
+        }
+      })
+      onConfirm(newTeacher)
+      onClose()
+    },
+    onError: () => {
+      toast.error('Yahhh:(', {
+        position: 'bottom-center',
+        description: 'Gagal menambahkan data guru, coba periksa data yang Anda masukkan',
+        classNames: {
+          toast: 'bg-destructive text-white',
+          description: 'text-gray-200'
+        }
+      })
+    }
+  })
+
   const schema = z.object({
     name: z
       .string()
@@ -61,14 +91,12 @@ const AddDataModal: React.FC<AddDataModalProps> = ({ isOpen, onClose, onConfirm,
     }
   }, [isOpen, form])
 
-  const onSubmit = (data: z.infer<typeof schema>) => {
-    toast.success('Data berhasil ditambahkan', {
-      description: `${data.name} - ${data.username}`,
-      position: 'bottom-center',
-      style: { backgroundColor: '#16A34A', color: 'white' }
+  const onSubmit = (data: { name: string; username: string; password: string }) => {
+    mutate(data, {
+      onSuccess: () => console.log('Mutation success!'),
+      onError: (error) => console.error('Mutation error:', error),
+      onSettled: () => console.log('Mutation selesai')
     })
-    onConfirm(data)
-    onClose()
   }
 
   return (
@@ -122,13 +150,23 @@ const AddDataModal: React.FC<AddDataModalProps> = ({ isOpen, onClose, onConfirm,
                 </FormItem>
               )}
             />
-            <DialogFooter className="gap-4">
-              <Button onClick={onClose} variant="subtle" className="flex-1 rounded-md px-4 py-2 dark:bg-tableColour">
-                Batal
-              </Button>
-              <Button type="submit" variant="destructive" className="flex-1 rounded-md">
-                Simpan
-              </Button>
+            <DialogFooter className="flex items-center gap-4">
+              {isPending ? (
+                <Button isLoading={isPending} />
+              ) : (
+                <>
+                  <Button
+                    onClick={onClose}
+                    variant="subtle"
+                    className="flex-1 rounded-md px-4 py-2 dark:bg-tableColour"
+                  >
+                    Batal
+                  </Button>
+                  <Button type="submit" className="flex-1 rounded-md">
+                    Simpan
+                  </Button>
+                </>
+              )}
             </DialogFooter>
           </form>
         </Form>
