@@ -1,6 +1,6 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 
 import { useSession } from 'next-auth/react'
 
@@ -10,43 +10,9 @@ import AvatarCustom from '@/components/molecules/buttons/AvatarCustom'
 import AppSidebar from '@/components/molecules/sidebar/AppSideBar'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
-const generateBreadcrumbs = (pathname: string) => {
-  const segments = pathname.split('/').filter(Boolean)
-
-  const breadcrumbs = [{ label: 'Home', href: '/' }]
-  let cumulativePath = ''
-  let labelName = ''
-
-  segments.forEach((segment) => {
-    switch (segment) {
-      case 'teacher':
-        labelName = 'guru'
-        break
-      case 'student':
-        labelName = 'siswa'
-        break
-      case 'admin':
-        labelName = 'admin'
-        break
-      default:
-        labelName = 'dashboard'
-        break
-    }
-
-    cumulativePath += `/${segment}`
-    const label = labelName.charAt(0).toUpperCase() + labelName.slice(1)
-    breadcrumbs.push({ label, href: cumulativePath })
-  })
-
-  return breadcrumbs
-}
-
 const InitialDashboard = ({ children }: { children: React.ReactNode }) => {
   const session = useSession()
   const role = session?.data?.user.role
-  const pathname = usePathname()
-
-  const breadcrumbItems = generateBreadcrumbs(pathname)
 
   return (
     <div>
@@ -57,10 +23,12 @@ const InitialDashboard = ({ children }: { children: React.ReactNode }) => {
             <header className="flex h-16 shrink-0 items-center justify-between border-b px-4">
               <div className="flex items-center gap-4">
                 <SidebarTrigger />
-                <Breadcrumb className="hidden sm:block" items={breadcrumbItems} />
+                <Breadcrumb className="hidden sm:block" />
               </div>
 
-              <div className="text-md block text-center font-bold md:hidden">LOGO</div>
+              <div className="text-md block text-center font-bold md:hidden">
+                <Image src="/assets/images/logo-icon.svg" width={48} height={48} alt="logo-icon-luminaqa" />
+              </div>
 
               <div className="flex items-center gap-2">
                 <ButtonToggleTheme />

@@ -43,7 +43,6 @@ export const useGetMajorList = (
   { search, page, per_page, sort_by, sort_order }: GetMajorListParams,
   options?: Partial<UseQueryOptions<GetMajorListResponse, AxiosError>>
 ) => {
-  console.log(getMajorKey({ search, page, per_page, sort_by, sort_order }))
   return useQuery({
     queryKey: getMajorKey({ search, page, per_page, sort_by, sort_order }),
     queryFn: () => getMajorListHandler({ search, page, per_page, sort_by, sort_order }),

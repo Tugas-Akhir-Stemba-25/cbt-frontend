@@ -1,40 +1,36 @@
 'use client'
 
-import { useEffect } from 'react'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
+import { useCreateMajor } from '@/http/major/create-major'
+import { MAJOR_COUNT_QUERY_KEY } from '@/http/major/get-major-count'
 import { getMajorKey, GetMajorListParams } from '@/http/major/get-major-list'
-import { useUpdateMajor } from '@/http/major/update-major'
 
-import { editMajorSchema, EditMajorType } from '@/validators/major/edit-major-validator'
+import { createMajorSchema, CreateMajorType } from '@/validators/major/create-major-validator'
 
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-import { Major } from '@/types/major/major-list'
-
-interface EditMajorModalProps {
-  data: Major | null
+interface CreateMajorModalProps {
   openModal: boolean
   setOpen: (open: boolean) => void
   majorKey: GetMajorListParams
 }
 
-const EditMajorModal = ({ data, openModal, setOpen, majorKey }: EditMajorModalProps) => {
+const CreateMajorModal = ({ openModal, setOpen, majorKey }: CreateMajorModalProps) => {
   // Form
-  const form = useForm<EditMajorType>({
+  const form = useForm<CreateMajorType>({
     defaultValues: {
-      name: data?.name ?? '',
-      short_name: data?.short_name ?? ''
+      name: '',
+      short_name: ''
     },
-    resolver: zodResolver(editMajorSchema),
+    resolver: zodResolver(createMajorSchema),
     mode: 'onChange'
   })
 
@@ -42,7 +38,7 @@ const EditMajorModal = ({ data, openModal, setOpen, majorKey }: EditMajorModalPr
   const queryClient = useQueryClient()
 
   // Mutation
-  const { mutate, isPending } = useUpdateMajor({
+  const { mutate, isPending } = useCreateMajor({
     onSuccess: (res) => {
       setOpen(false)
       toast.success('Sukses', {
@@ -50,6 +46,9 @@ const EditMajorModal = ({ data, openModal, setOpen, majorKey }: EditMajorModalPr
       })
       queryClient.invalidateQueries({
         queryKey: getMajorKey(majorKey as GetMajorListParams)
+      })
+      queryClient.invalidateQueries({
+        queryKey: MAJOR_COUNT_QUERY_KEY
       })
       form.reset()
     },
@@ -62,7 +61,7 @@ const EditMajorModal = ({ data, openModal, setOpen, majorKey }: EditMajorModalPr
         const errors = err.response.data.meta.error
 
         for (const key in errors) {
-          form.setError(key as keyof EditMajorType, {
+          form.setError(key as keyof CreateMajorType, {
             type: 'server',
             message: errors[key][0]
           })
@@ -71,25 +70,17 @@ const EditMajorModal = ({ data, openModal, setOpen, majorKey }: EditMajorModalPr
     }
   })
 
-  const onSubmit = (form: EditMajorType) => {
+  const onSubmit = (form: CreateMajorType) => {
     mutate({
-      id: data?.id as number,
       form
     })
   }
-
-  useEffect(() => {
-    form.reset({
-      name: data?.name ?? '',
-      short_name: data?.short_name ?? ''
-    })
-  }, [data, form])
 
   return (
     <Dialog open={openModal} onOpenChange={setOpen}>
       <DialogContent aria-describedby="modal-description">
         <DialogHeader>
-          <DialogTitle>Edit Data Jurusan</DialogTitle>
+          <DialogTitle>Tambah Data Jurusan</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -148,4 +139,4 @@ const EditMajorModal = ({ data, openModal, setOpen, majorKey }: EditMajorModalPr
   )
 }
 
-export default EditMajorModal
+export default CreateMajorModal

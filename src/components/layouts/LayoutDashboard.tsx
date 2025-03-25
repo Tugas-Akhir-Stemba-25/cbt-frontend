@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 import { auth } from '@/lib/auth'
 
 import ButtonToggleTheme from '@/components/atoms/ButtonToggleTheme'
@@ -23,7 +25,9 @@ const LayoutDashboard = async ({ children }: { children: React.ReactNode }) => {
                 <Breadcrumb className="hidden sm:block" />
               </div>
 
-              <div className="text-md block text-center font-bold md:hidden">LOGO</div>
+              <div className="text-md block text-center font-bold md:hidden">
+                <Image src="/assets/images/logo-icon.svg" width={48} height={48} alt="logo-icon-luminaqa" />
+              </div>
 
               <div className="flex items-center gap-2">
                 <ButtonToggleTheme />

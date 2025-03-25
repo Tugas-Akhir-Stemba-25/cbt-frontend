@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const editMajorSchema = z.object({
+export const createMajorSchema = z.object({
   name: z
     .string({
       message: 'Nama jurusan harus berupa string'
@@ -19,4 +19,4 @@ export const editMajorSchema = z.object({
     .max(255)
 })
 
-export type EditMajorType = z.infer<typeof editMajorSchema>
+export type CreateMajorType = z.infer<typeof createMajorSchema>
