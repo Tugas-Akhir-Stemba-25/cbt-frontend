@@ -17,6 +17,8 @@ const eslintConfig = [
   {
     files: ['**/*.ts', '**/*.tsx'], // Berlaku untuk file TypeScript
     rules: {
+      '@typescript-eslint/no-empty-interface': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
