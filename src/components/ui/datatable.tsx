@@ -2,49 +2,63 @@
 
 import * as React from 'react'
 
-import {
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  useReactTable,
-  ColumnDef,
-  RowSelectionState
-} from '@tanstack/react-table'
-import { ChevronsUpDown, Download, Plus, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis } from 'lucide-react'
+import { flexRender, getCoreRowModel, useReactTable, ColumnDef, RowSelectionState } from '@tanstack/react-table'
+import { ChevronsUpDown, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis } from 'lucide-react'
 
 import { SearchInput } from '@/components/atoms/input/SearchInput'
-import EditModal from '@/components/molecules/popup/EditRow'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 
+import { Pagination } from '@/types/common/metadata'
+
 import FilterDropdown from '../atoms/dropdowns/FilterClass'
-import AddDataModal from '../molecules/popup/AddDataModal'
-import DeleteDialog from '../molecules/popup/DeleteDialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
+import { Skeleton } from './skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table'
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
   placeholder: string
-  expectedUsername?: string
-  role: string
+  showFilter?: boolean
+  action?: React.ReactNode
+  setSearch?: (value: string) => void
+  pagination?: Pagination
+  setPerPage?: (value: number) => void
+  setPage?: (value: number) => void
+  isLoading?: boolean
+  setOpenEditModal?: (value: boolean, id: number) => void
+  setOpenDeleteModal?: (value: boolean, id: number) => void
 }
 
-const DataTable = <TData extends Record<string, any>>({ columns, data, placeholder, role }: DataTableProps<TData>) => {
+const DataTable = <TData extends Record<string, any>>({
+  columns: columnsProps,
+  data: dataProps,
+  placeholder,
+  showFilter = false,
+  action,
+  setSearch,
+  pagination = { current_page: 1, per_page: 10, total_pages: 1, total: 1 },
+  setPerPage,
+  setPage,
+  isLoading: isLoad = false,
+  setOpenEditModal,
+  setOpenDeleteModal
+}: DataTableProps<TData>) => {
+  const data = React.useMemo(() => (isLoad ? Array(10).fill({}) : dataProps), [isLoad, dataProps])
+
+  const columns = React.useMemo(
+    () =>
+      isLoad
+        ? columnsProps.map((column) => ({
+            ...column,
+            cell: () => <Skeleton className="h-6 w-32" />
+          }))
+        : columnsProps,
+    [columnsProps, isLoad]
+  )
   const [globalFilter, setGlobalFilter] = React.useState('')
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
-  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
-  const [editingRow, setEditingRow] = React.useState<TData | null>(null)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
-  const [authRequired, setAuthRequired] = React.useState(false)
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false)
-  const [users, setUser] = React.useState([
-    { id: 1, name: 'John Doe', username: 'johndoe' },
-    { id: 2, name: 'Jane Smith', username: 'janesmith' }
-  ])
 
   const renderRowSelectionActions = () => (
     <Select
@@ -54,8 +68,6 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
         }
         if (value === 'hapus') {
           console.log('Hapus data terpilih:', table.getSelectedRowModel().rows)
-          setIsDeleteDialogOpen(true)
-          setAuthRequired(false)
         }
       }}
     >
@@ -71,14 +83,16 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
 
   const renderPageSizeSelect = () => (
     <Select
-      value={`${table.getState().pagination.pageSize}`}
-      onValueChange={(value) => table.setPageSize(Number(value))}
+      value={`${pagination?.per_page}`}
+      onValueChange={(value) => {
+        setPerPage?.(parseInt(value))
+      }}
     >
       <SelectTrigger className="w-[100px]">
-        <SelectValue placeholder={table.getState().pagination.pageSize} />
+        <SelectValue placeholder={pagination?.per_page} />
       </SelectTrigger>
       <SelectContent>
-        {[10, 20, 30, 40, 50].map((pageSize) => (
+        {[5, 10, 20, 30, 40, 50].map((pageSize) => (
           <SelectItem key={pageSize} value={`${pageSize}`}>
             {pageSize}
           </SelectItem>
@@ -91,39 +105,27 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     state: {
-      globalFilter,
       rowSelection
     },
     onRowSelectionChange: setRowSelection
   })
 
-  const handleNewData = () => {
-    console.log('New data:', editingRow)
-    setIsCreateDialogOpen(true)
-  }
-
   const handleEdit = (row: TData) => {
-    setEditingRow(row)
-    setIsEditModalOpen(true)
+    setOpenEditModal?.(true, row.id)
   }
 
   const handleDelete = (row: TData) => {
-    console.log('Deleted:', row)
-    setIsDeleteDialogOpen(true)
-    setAuthRequired(true)
+    setOpenDeleteModal?.(true, row.id)
   }
 
-  const handleSave = (_updatedRow: TData) => {
-    setIsEditModalOpen(false)
-  }
+  // const handleSave = (_updatedRow: TData) => {
+  //   setIsEditModalOpen(false)
+  // }
 
   const renderPageNumbers = () => {
-    const totalPages = table.getPageCount()
-    const currentPage = table.getState().pagination.pageIndex
+    const totalPages = pagination?.total_pages || 1
+    const currentPage = (pagination?.current_page || 1) - 1
     const pages = []
 
     if (totalPages <= 3) {
@@ -142,57 +144,38 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
 
     return pages.map((page) => (
       <Button
-        className="text-gray-400"
+        className="text-gray-700"
         key={page}
         variant={currentPage + 1 === page ? 'outline' : 'link'}
-        onClick={() => table.setPageIndex(page - 1)}
+        onClick={() => setPage?.(page)}
       >
         {page}
       </Button>
     ))
   }
 
+  React.useEffect(() => {
+    if (setSearch) {
+      setSearch(globalFilter)
+    }
+  }, [globalFilter, setSearch])
+
   return (
     <div className="w-full overflow-x-auto rounded-lg border shadow-xl">
       <div className="p-5">
         <div className="flex flex-col gap-4 md:flex-row md:justify-between lg:gap-0">
-          {role === 'teacher' ? (
-            <div className="flex gap-4 md:w-1/3">
-              <div className="relative w-full">
-                <SearchInput
-                  placeholder={placeholder}
-                  value={globalFilter}
-                  onChange={(e) => setGlobalFilter(e.target.value)}
-                />
-              </div>
+          <div className="flex gap-4 md:w-2/3">
+            <div className="relative w-full">
+              <SearchInput
+                placeholder={placeholder}
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter?.(e.target.value)}
+              />
             </div>
-          ) : (
-            <div className="flex gap-4 md:w-1/2">
-              <div className="relative w-full">
-                <SearchInput
-                  placeholder={placeholder}
-                  value={globalFilter}
-                  onChange={(e) => setGlobalFilter(e.target.value)}
-                />
-              </div>
-              <div className="relative w-full">
-                <FilterDropdown />
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-4">
-            <Button variant="outline" className="light:border-muted border-2 dark:border-foreground">
-              Unduh
-              <Download size={20} />
-            </Button>
-            <Button className="bg-primary font-medium" onClick={() => handleNewData()}>
-              Tambah Data
-              <Plus size={24} className="" />
-            </Button>
+            <div className="relative w-full">{showFilter && <FilterDropdown />}</div>
           </div>
 
-          {/* end */}
+          <div className="flex gap-4">{action}</div>
         </div>
       </div>
       <div className="min-w-[800px] overflow-x-auto md:min-w-full">
@@ -286,16 +269,16 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
         <div className="flex items-center gap-2">
           <Button
             variant="link"
-            onClick={() => table.getCanPreviousPage() && table.previousPage()}
-            aria-disabled={!table.getCanPreviousPage()}
-            className={`flex items-center gap-2 text-[#4B5563] ${!table.getCanPreviousPage() ? 'pointer-events-none opacity-50' : ''}`}
+            onClick={() => setPage && setPage((pagination?.current_page || 1) - 1)}
+            aria-disabled={pagination?.current_page === 1}
+            className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === 1 ? 'pointer-events-none opacity-50' : ''}`}
           >
             <ChevronLeft size={20} color="#6B7280" strokeWidth={1.5} />
-            Previous
+            Sebelumnya
           </Button>
 
           {renderPageNumbers()}
-          {table.getPageCount() > 3 && table.getState().pagination.pageIndex < table.getPageCount() - 3 && (
+          {pagination?.total_pages > 3 && pagination?.current_page < pagination?.total_pages - 1 && (
             <div>
               <Button
                 variant="link"
@@ -309,51 +292,15 @@ const DataTable = <TData extends Record<string, any>>({ columns, data, placehold
           )}
           <Button
             variant="link"
-            onClick={() => table.getCanNextPage() && table.nextPage()}
-            aria-disabled={!table.getCanNextPage()}
-            className={`flex items-center gap-2 text-[#4B5563] ${!table.getCanNextPage() ? 'pointer-events-none opacity-50' : ''}`}
+            onClick={() => setPage && setPage((pagination?.current_page || 1) + 1)}
+            aria-disabled={pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0}
+            className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0 ? 'pointer-events-none opacity-50' : ''}`}
           >
-            Next
+            Selanjutnya
             <ChevronRight size={20} color="#6B7280" strokeWidth={1.5} />
           </Button>
         </div>
       </div>
-      <AddDataModal
-        isOpen={isCreateDialogOpen}
-        onClose={() => setIsCreateDialogOpen(false)}
-        onConfirm={(data) => {
-          const newUser = { id: users.length + 1, ...data }
-          setUser([...users, newUser])
-          setIsCreateDialogOpen(false)
-        }}
-        expectedName="name"
-        expectedUsername="username"
-      />
-
-      <DeleteDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => {
-          setIsDeleteDialogOpen(false)
-        }}
-        onConfirm={() => {
-          const selectedRows = table.getSelectedRowModel().rows.map((row) => row.original)
-          console.log('Selected rows:', selectedRows)
-          setIsDeleteDialogOpen(false)
-        }}
-        authRequired={authRequired}
-        expectedUsn="username"
-        expectedPw="password"
-      />
-
-      {isEditModalOpen && editingRow && (
-        <EditModal<TData>
-          row={editingRow}
-          headers={table.getHeaderGroups().flatMap((group) => group.headers)}
-          extraFields={[{ id: 'password', label: 'Password', type: 'password' }]}
-          onClose={() => setIsEditModalOpen(false)}
-          onSave={handleSave}
-        />
-      )}
     </div>
   )
 }
