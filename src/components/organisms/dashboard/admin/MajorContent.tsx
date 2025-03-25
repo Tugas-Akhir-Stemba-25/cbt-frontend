@@ -10,6 +10,9 @@ import { useGetMajorList } from '@/http/major/get-major-list'
 
 import CardStatistic from '@/components/atoms/card/CardStatistic'
 import { majorColumns } from '@/components/constants/columns/major-columns'
+import BulkDeleteMajorModal from '@/components/molecules/popup/major/BulkDeleteMajorModal'
+import CreateMajorModal from '@/components/molecules/popup/major/CreateMajorModal'
+import DeleteMajorModal from '@/components/molecules/popup/major/DeleteMajorModal'
 import EditMajorModal from '@/components/molecules/popup/major/EditMajorModal'
 import { Button } from '@/components/ui/button'
 import DataTable from '@/components/ui/datatable'
@@ -25,9 +28,13 @@ export default function MajorContent() {
 
   // Modal State
   const [openEditModal, setOpenEditModal] = useState<boolean>(false)
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false)
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+  const [openBulkDeleteModal, setOpenBulkDeleteModal] = useState<boolean>(false)
 
   // Selected Data
   const [selectedData, setSelectedData] = useState<Major | null>(null)
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
 
   // Breadcrumbs
   const { setBreadcrumbs } = useBreadcrumbs()
@@ -46,6 +53,18 @@ export default function MajorContent() {
   const handleEditModal = (modalOpen: boolean, id?: number) => {
     setSelectedData(majors?.data.find((major) => major.id === id) ?? null)
     setOpenEditModal(modalOpen)
+  }
+
+  // Handle Delete Modal
+  const handleDeleteModal = (modalOpen: boolean, id?: number) => {
+    setSelectedData(majors?.data.find((major) => major.id === id) ?? null)
+    setOpenDeleteModal(modalOpen)
+  }
+
+  // Handle Bulk Delete Modal
+  const handleBulkDeleteModal = (modalOpen: boolean, ids?: number[]) => {
+    setSelectedIds(majors?.data.filter((major, idx) => ids?.includes(idx)).map((major) => major.id) ?? [])
+    setOpenBulkDeleteModal(modalOpen)
   }
 
   // Set breadcrumb
@@ -88,9 +107,11 @@ export default function MajorContent() {
           setPerPage={setPerPage}
           isLoading={majorsLoading}
           setOpenEditModal={handleEditModal}
+          setOpenDeleteModal={handleDeleteModal}
+          setOpenBulkDeleteModal={handleBulkDeleteModal}
           action={
             <>
-              <Button>
+              <Button onClick={() => setOpenCreateModal(true)}>
                 <PlusIcon className="h-4 w-4" />
                 Tambah Data
               </Button>
@@ -103,6 +124,35 @@ export default function MajorContent() {
         openModal={openEditModal}
         setOpen={setOpenEditModal}
         majorKey={{ page, per_page: perPage, search }}
+      />
+      <CreateMajorModal
+        openModal={openCreateModal}
+        setOpen={setOpenCreateModal}
+        majorKey={{
+          page,
+          per_page: perPage,
+          search
+        }}
+      />
+      <DeleteMajorModal
+        openModal={openDeleteModal}
+        setOpen={setOpenDeleteModal}
+        id={selectedData?.id as number}
+        majorKey={{
+          page,
+          per_page: perPage,
+          search
+        }}
+      />
+      <BulkDeleteMajorModal
+        openModal={openBulkDeleteModal}
+        setOpen={setOpenBulkDeleteModal}
+        ids={selectedIds}
+        majorKey={{
+          page,
+          per_page: perPage,
+          search
+        }}
       />
     </>
   )

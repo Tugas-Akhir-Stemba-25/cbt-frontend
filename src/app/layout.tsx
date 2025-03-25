@@ -11,7 +11,10 @@ import './globals.css'
 
 const plusJakartaSans = Plus_Jakarta_Sans()
 
-export const metadata: Metadata = defineMetadata()
+export const metadata: Metadata = defineMetadata({
+  title: 'LuminaQA - CBT System',
+  description: 'LuminaQA adalah sistem Computer Based Test (CBT) yang memudahkan pengelolaan ujian berbasis komputer.'
+})
 
 export default function RootLayout({
   children
@@ -20,6 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="shortcut icon" href="/assets/images/logo-icon.svg" type="image/svg" />
+      </head>
       <body className={`${plusJakartaSans.className} bg-background text-foreground antialiased`}>
         <GlobalProvider>
           <main>{children}</main>
