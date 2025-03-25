@@ -26,7 +26,7 @@ export default function RootLayout({
       <head>
         <link rel="shortcut icon" href="/assets/images/logo-icon.svg" type="image/svg" />
       </head>
-      <body className={`${plusJakartaSans.className} w-screen bg-background text-foreground antialiased`}>
+      <body className={`${plusJakartaSans.className} bg-background text-foreground antialiased`}>
         <GlobalProvider>
           <main>{children}</main>
           <Toaster richColors />

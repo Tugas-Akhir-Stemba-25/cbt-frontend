@@ -55,7 +55,7 @@ const DataTable = <TData extends Record<string, any>>({
       isLoad
         ? columnsProps.map((column) => ({
             ...column,
-            cell: () => <Skeleton className="h-6 w-32" />
+            cell: () => <Skeleton className="h-6 w-3/4" />
           }))
         : columnsProps,
     [columnsProps, isLoad]
@@ -169,10 +169,10 @@ const DataTable = <TData extends Record<string, any>>({
   }, [globalFilter, setSearch])
 
   return (
-    <div className="w-full max-w-full overflow-x-auto rounded-lg border shadow-xl">
+    <div className="w-full overflow-x-auto rounded-lg border shadow-xl">
       <div className="p-5">
         <div className="flex flex-col gap-4 md:flex-row md:justify-between lg:gap-0">
-          <div className="flex gap-4 md:w-2/3">
+          <div className="flex w-full flex-col gap-4 md:w-1/2 md:flex-row">
             <div className="relative w-full">
               <SearchInput
                 placeholder={placeholder}
@@ -180,7 +180,11 @@ const DataTable = <TData extends Record<string, any>>({
                 onChange={(e) => setGlobalFilter?.(e.target.value)}
               />
             </div>
-            <div className="relative w-full">{showFilter && <FilterDropdown />}</div>
+            {showFilter && (
+              <div className="relative w-full">
+                <FilterDropdown />
+              </div>
+            )}
           </div>
 
           <div className="flex gap-4">{action}</div>
@@ -188,7 +192,7 @@ const DataTable = <TData extends Record<string, any>>({
       </div>
       <div className="overflow-x-auto md:min-w-full">
         <Table className="w-full border-collapse whitespace-nowrap rounded-lg">
-          <TableHeader className="w- border-t bg-tableColour">
+          <TableHeader className="w-full border-t bg-tableColour">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 <TableHead className="w-10 p-3">
@@ -258,7 +262,7 @@ const DataTable = <TData extends Record<string, any>>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between border-t p-5 font-medium text-[#4B5563]">
+      <div className="flex flex-col-reverse items-center justify-between gap-3 border-t p-5 text-sm font-medium text-[#4B5563] md:flex-row">
         {table.getSelectedRowModel().rows.length > 0 ? (
           <div className="flex items-center gap-4">
             <span>
@@ -268,13 +272,13 @@ const DataTable = <TData extends Record<string, any>>({
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <span>Tampilkan</span>
+            <span>Show</span>
             {renderPageSizeSelect()}
             <span>per page</span>
           </div>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center gap-2 md:flex-row">
           <Button
             variant="link"
             onClick={() => setPage && setPage((pagination?.current_page || 1) - 1)}
@@ -282,29 +286,44 @@ const DataTable = <TData extends Record<string, any>>({
             className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === 1 ? 'pointer-events-none opacity-50' : ''}`}
           >
             <ChevronLeft size={20} color="#6B7280" strokeWidth={1.5} />
-            Sebelumnya
+            Previous
           </Button>
 
-          {renderPageNumbers()}
-          {pagination?.total_pages > 3 && pagination?.current_page < pagination?.total_pages - 1 && (
-            <div>
-              <Button
-                variant="link"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="flex items-center gap-2 p-2"
-              >
-                <Ellipsis size={20} color="#6B7280" strokeWidth={1.5} />
-              </Button>
-            </div>
-          )}
+          <div className="flex w-full gap-2">
+            {pagination?.total_pages > 3 && pagination?.current_page > 2 && (
+              <div>
+                <Button
+                  variant="ghost"
+                  onClick={() => setPage && setPage(1)}
+                  disabled={pagination?.current_page === 1}
+                  className="flex items-center gap-2 p-2"
+                >
+                  <Ellipsis size={20} color="#6B7280" strokeWidth={1.5} />
+                </Button>
+              </div>
+            )}
+            {renderPageNumbers()}
+            {pagination?.total_pages > 3 && pagination?.current_page < pagination?.total_pages - 1 && (
+              <div>
+                <Button
+                  variant="ghost"
+                  onClick={() => setPage && setPage(pagination?.total_pages)}
+                  disabled={pagination?.current_page === pagination?.total_pages}
+                  className="flex items-center gap-2 p-2"
+                >
+                  <Ellipsis size={20} color="#6B7280" strokeWidth={1.5} />
+                </Button>
+              </div>
+            )}
+          </div>
+
           <Button
             variant="link"
             onClick={() => setPage && setPage((pagination?.current_page || 1) + 1)}
             aria-disabled={pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0}
             className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0 ? 'pointer-events-none opacity-50' : ''}`}
           >
-            Selanjutnya
+            Next
             <ChevronRight size={20} color="#6B7280" strokeWidth={1.5} />
           </Button>
         </div>

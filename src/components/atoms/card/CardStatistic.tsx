@@ -12,7 +12,7 @@ interface CardStatisticProps {
 
 const CardStatistic = ({ title, value = 0, icon: Icon, variant, isLoading = true }: CardStatisticProps) => {
   return (
-    <div className="border-muted/1 flex w-1/4 justify-between rounded-xl border-2 border-solid p-5">
+    <div className="border-muted/1 flex w-full justify-between rounded-xl border-2 border-solid p-5 md:w-1/2 lg:w-1/4">
       <div className="flex flex-col gap-2">
         <p className="text-sm">{title}</p>
         <span
