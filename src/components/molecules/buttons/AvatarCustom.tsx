@@ -1,11 +1,10 @@
 'use client'
 
-import { DropdownMenu, DropdownMenuContent } from '@radix-ui/react-dropdown-menu'
 import { LogOutIcon } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 const AvatarCustom = () => {
   const session = useSession()
@@ -22,9 +21,12 @@ const AvatarCustom = () => {
           <AvatarFallback>{session.data?.user.name[0] ?? 'A'}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem onClick={handleLogout}>
-          <LogOutIcon />
+      <DropdownMenuContent side="left">
+        <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive">
+          {/* <Button variant={'destructive'} size={'sm'}> */}
+          <LogOutIcon size={16} />
+          Logout
+          {/* </Button> */}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

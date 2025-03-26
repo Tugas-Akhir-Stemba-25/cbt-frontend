@@ -2,23 +2,23 @@
 
 import { PropsWithChildren } from 'react'
 
-import { QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SessionProvider } from 'next-auth/react'
-
-import { queryClient } from '@/lib/reactQuery'
 
 import { BreadcrumbProvider } from './BreadCrumbProvider'
 import { ThemeProvider } from './ThemeProvider'
 
+const queryClient = new QueryClient()
+
 const GlobalProvider = ({ children }: PropsWithChildren) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
-        <SessionProvider>
+    <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
+      <SessionProvider>
+        <QueryClientProvider client={queryClient}>
           <BreadcrumbProvider>{children}</BreadcrumbProvider>
-        </SessionProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+        </QueryClientProvider>
+      </SessionProvider>
+    </ThemeProvider>
   )
 }
 

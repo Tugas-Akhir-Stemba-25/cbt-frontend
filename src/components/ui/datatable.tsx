@@ -2,100 +2,107 @@
 
 import * as React from 'react'
 
-import {
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  useReactTable,
-  ColumnDef,
-  RowSelectionState
-} from '@tanstack/react-table'
-import { ChevronsUpDown, Download, Plus, ChevronLeft, ChevronRight, SquarePen, Trash, Loader } from 'lucide-react'
+import { flexRender, getCoreRowModel, useReactTable, ColumnDef, RowSelectionState } from '@tanstack/react-table'
+import { ChevronsUpDown, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis, Loader } from 'lucide-react'
 
 import { SearchInput } from '@/components/atoms/input/SearchInput'
-import EditModal from '@/components/molecules/popup/EditRow'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 
+import { Pagination } from '@/types/common/metadata'
+
 import FilterDropdown from '../atoms/dropdowns/FilterClass'
-import AddDataModal from '../molecules/popup/AddDataModal'
-import DeleteDialog from '../molecules/popup/DeleteDialog'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './dropdown-menu'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
+import { Skeleton } from './skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table'
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
   placeholder: string
-  expectedUsername?: string
-  role: string
+  showFilter?: boolean
+  action?: React.ReactNode
+  setSearch?: (value: string) => void
+  pagination?: Pagination
+  setPerPage?: (value: number) => void
+  setPage?: (value: number) => void
   isLoading?: boolean
-  currentPage: number
-  totalPages: number
-  pageSize: number
-  onPageChange: (page: number) => void
-  onPageSizeChange: (pageSize: number) => void
-  onSearchChange: (search: string) => void
+  setOpenEditModal?: (value: boolean, id: number) => void
+  setOpenDeleteModal?: (value: boolean, id: number) => void
+  setOpenBulkDeleteModal?: (value: boolean, ids: number[]) => void
 }
 
 const DataTable = <TData extends Record<string, any>>({
-  columns,
-  data,
+  columns: columnsProps,
+  data: dataProps,
   placeholder,
-  role,
-  isLoading = false,
-  onSearchChange,
-  onPageChange,
-  currentPage,
-  totalPages,
-  pageSize,
-  onPageSizeChange
+  showFilter = false,
+  action,
+  setSearch,
+  pagination = { current_page: 1, per_page: 10, total_pages: 1, total: 1 },
+  setPerPage,
+  setPage,
+  isLoading: isLoad = false,
+  setOpenEditModal,
+  setOpenDeleteModal,
+  setOpenBulkDeleteModal
 }: DataTableProps<TData>) => {
+  const data = React.useMemo(() => (isLoad ? Array(10).fill({}) : dataProps), [isLoad, dataProps])
+
+  const columns = React.useMemo(
+    () =>
+      isLoad
+        ? columnsProps.map((column) => ({
+            ...column,
+            cell: () => <Skeleton className="h-6 w-3/4" />
+          }))
+        : columnsProps,
+    [columnsProps, isLoad]
+  )
   const [globalFilter, setGlobalFilter] = React.useState('')
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
-  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
-  const [editingRow, setEditingRow] = React.useState<TData | null>(null)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
-  const [authRequired, setAuthRequired] = React.useState(false)
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false)
-  const [users, setUser] = React.useState([
-    { id: 1, name: 'John Doe', username: 'johndoe' },
-    { id: 2, name: 'Jane Smith', username: 'janesmith' }
-  ])
+
+  const handleBulkDelete = () => {
+    const ids = Object.keys(rowSelection).map((id) => parseInt(id))
+
+    setOpenBulkDeleteModal?.(true, ids)
+  }
 
   const renderRowSelectionActions = () => (
-    <Select
-      onValueChange={(value) => {
-        if (value === 'unduh') {
-          console.log('Unduh data terpilih:', table.getSelectedRowModel().rows)
-        }
-        if (value === 'hapus') {
-          console.log('Hapus data terpilih:', table.getSelectedRowModel().rows)
-          setIsDeleteDialogOpen(true)
-          setAuthRequired(false)
-        }
-      }}
-    >
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Aksi" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="unduh">Unduh data</SelectItem>
-        <SelectItem value="hapus">Hapus data</SelectItem>
-      </SelectContent>
-    </Select>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Aksi</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuItem>
+          <Button
+            variant={'destructive'}
+            onClick={handleBulkDelete}
+            className="flex w-full items-center justify-center gap-2"
+          >
+            <Trash size={16} />
+            <span>Hapus Terpilih</span>
+          </Button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 
   const renderPageSizeSelect = () => (
-    <Select value={`${pageSize}`} onValueChange={(value) => onPageSizeChange(Number(value))}>
+    <Select
+      value={`${pagination?.per_page}`}
+      onValueChange={(value) => {
+        setPerPage?.(parseInt(value))
+      }}
+    >
       <SelectTrigger className="w-[100px]">
-        <SelectValue placeholder={`${pageSize}`} />
+        <SelectValue placeholder={pagination?.per_page} />
       </SelectTrigger>
       <SelectContent>
-        {[10, 20, 30, 40, 50].map((size) => (
-          <SelectItem key={size} value={`${size}`}>
-            {size}
+        {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+          <SelectItem key={pageSize} value={`${pageSize}`}>
+            {pageSize}
           </SelectItem>
         ))}
       </SelectContent>
@@ -106,39 +113,31 @@ const DataTable = <TData extends Record<string, any>>({
     columns,
     data,
     manualPagination: true,
-    pageCount: totalPages,
+    pageCount: pagination?.total_pages,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     state: {
-      globalFilter,
       rowSelection
     },
     onRowSelectionChange: setRowSelection
   })
 
-  const handleNewData = () => {
-    console.log('New data:', editingRow)
-    setIsCreateDialogOpen(true)
-  }
-
   const handleEdit = (row: TData) => {
-    setEditingRow(row)
-    setIsEditModalOpen(true)
+    setOpenEditModal?.(true, row.id)
   }
 
   const handleDelete = (row: TData) => {
-    console.log('Deleted:', row)
-    setIsDeleteDialogOpen(true)
-    setAuthRequired(true)
+    setOpenDeleteModal?.(true, row.id)
   }
 
-  const handleSave = (_updatedRow: TData) => {
-    setIsEditModalOpen(false)
-  }
+  // const handleSave = (_updatedRow: TData) => {
+  //   setIsEditModalOpen(false)
+  // }
 
-  const getPageNumbers = (): number[] => {
-    let pages: number[] = []
+  const renderPageNumbers = () => {
+    const totalPages = pagination?.total_pages || 1
+    const currentPage = (pagination?.current_page || 1) - 1
+    let pages = []
+
     if (totalPages <= 3) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i)
@@ -152,56 +151,50 @@ const DataTable = <TData extends Record<string, any>>({
         pages = [currentPage - 1, currentPage, currentPage + 1]
       }
     }
-    return pages
+
+    return pages.map((page) => (
+      <Button
+        className="text-gray-700"
+        key={page}
+        variant={currentPage + 1 === page ? 'outline' : 'link'}
+        onClick={() => setPage?.(page)}
+      >
+        {page}
+      </Button>
+    ))
   }
+
+  React.useEffect(() => {
+    if (setSearch) {
+      setSearch(globalFilter)
+    }
+  }, [globalFilter, setSearch])
 
   return (
     <div className="w-full overflow-x-auto rounded-lg border shadow-xl">
       <div className="p-5">
         <div className="flex flex-col gap-4 md:flex-row md:justify-between lg:gap-0">
-          {role === 'teacher' ? (
-            <div className="flex gap-4 md:w-1/3">
-              <div className="relative w-full">
-                <SearchInput
-                  placeholder={placeholder}
-                  value={globalFilter}
-                  onChange={(e) => {
-                    setGlobalFilter(e.target.value)
-                    onSearchChange(e.target.value)
-                  }}
-                />
-              </div>
+          <div className="flex w-full flex-col gap-4 md:w-1/2 md:flex-row">
+            <div className="relative w-full">
+              <SearchInput
+                placeholder={placeholder}
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter?.(e.target.value)}
+              />
             </div>
-          ) : (
-            <div className="flex gap-4 md:w-1/2">
-              <div className="relative w-full">
-                <SearchInput
-                  placeholder={placeholder}
-                  value={globalFilter}
-                  onChange={(e) => setGlobalFilter(e.target.value)}
-                />
-              </div>
+            {showFilter && (
               <div className="relative w-full">
                 <FilterDropdown />
               </div>
-            </div>
-          )}
-
-          <div className="flex gap-4">
-            <Button variant="outline" className="light:border-muted border-2 dark:border-foreground">
-              Unduh
-              <Download size={20} />
-            </Button>
-            <Button className="bg-primary font-medium" onClick={() => handleNewData()}>
-              Tambah Data
-              <Plus size={24} />
-            </Button>
+            )}
           </div>
+
+          <div className="flex gap-4">{action}</div>
         </div>
       </div>
-      <div className="min-w-[800px] overflow-x-auto md:min-w-full">
+      <div className="overflow-x-auto md:min-w-full">
         <Table className="w-full border-collapse whitespace-nowrap rounded-lg">
-          <TableHeader className="w- border-t bg-tableColour">
+          <TableHeader className="w-full border-t bg-tableColour">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 <TableHead className="w-10 p-3">
@@ -239,7 +232,7 @@ const DataTable = <TData extends Record<string, any>>({
             ))}
           </TableHeader>
           <TableBody>
-            {isLoading ? (
+            {isLoad ? (
               <TableRow>
                 <TableCell colSpan={columns.length + 2} className="p-5 text-center">
                   <Loader className="mr-2 inline-block animate-spin" size={20} />
@@ -280,9 +273,9 @@ const DataTable = <TData extends Record<string, any>>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between border-t p-5 font-medium text-[#4B5563]">
+      <div className="flex flex-col-reverse items-center justify-between gap-3 border-t p-5 text-sm font-medium text-[#4B5563] md:flex-row">
         {table.getSelectedRowModel().rows.length > 0 ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <span>
               {table.getSelectedRowModel().rows.length} dari {table.getRowModel().rows.length} baris dipilih
             </span>
@@ -290,71 +283,60 @@ const DataTable = <TData extends Record<string, any>>({
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <span>Tampilkan</span>
+            <span>Show</span>
             {renderPageSizeSelect()}
             <span>per page</span>
           </div>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center gap-2 md:flex-row">
           <Button
             variant="link"
-            onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-            disabled={currentPage === 1}
+            onClick={() => setPage && setPage((pagination?.current_page || 1) - 1)}
+            aria-disabled={pagination?.current_page === 1}
+            className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === 1 ? 'pointer-events-none opacity-50' : ''}`}
           >
             <ChevronLeft size={20} /> Previous
           </Button>
 
-          {getPageNumbers().map((page) => (
-            <Button key={page} variant={currentPage === page ? 'outline' : 'link'} onClick={() => onPageChange(page)}>
-              {page}
-            </Button>
-          ))}
+          <div className="flex w-full gap-2">
+            {pagination?.total_pages > 3 && pagination?.current_page > 2 && (
+              <div>
+                <Button
+                  variant="ghost"
+                  onClick={() => setPage && setPage(1)}
+                  disabled={pagination?.current_page === 1}
+                  className="flex items-center gap-2 p-2"
+                >
+                  <Ellipsis size={20} color="#6B7280" strokeWidth={1.5} />
+                </Button>
+              </div>
+            )}
+            {renderPageNumbers()}
+            {pagination?.total_pages > 3 && pagination?.current_page < pagination?.total_pages - 1 && (
+              <div>
+                <Button
+                  variant="ghost"
+                  onClick={() => setPage && setPage(pagination?.total_pages)}
+                  disabled={pagination?.current_page === pagination?.total_pages}
+                  className="flex items-center gap-2 p-2"
+                >
+                  <Ellipsis size={20} color="#6B7280" strokeWidth={1.5} />
+                </Button>
+              </div>
+            )}
+          </div>
+
           <Button
             variant="link"
-            onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            onClick={() => setPage && setPage((pagination?.current_page || 1) + 1)}
+            aria-disabled={pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0}
+            className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0 ? 'pointer-events-none opacity-50' : ''}`}
           >
             Next <ChevronRight size={20} />
           </Button>
         </div>
       </div>
-      <AddDataModal
-        isOpen={isCreateDialogOpen}
-        onClose={() => setIsCreateDialogOpen(false)}
-        onConfirm={(data) => {
-          const newUser = { id: users.length + 1, ...data }
-          setUser([...users, newUser])
-          setIsCreateDialogOpen(false)
-        }}
-        expectedName="name"
-        expectedUsername="username"
-      />
-
-      <DeleteDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => {
-          setIsDeleteDialogOpen(false)
-        }}
-        onConfirm={() => {
-          const selectedRows = table.getSelectedRowModel().rows.map((row) => row.original)
-          console.log('Selected rows:', selectedRows)
-          setIsDeleteDialogOpen(false)
-        }}
-        authRequired={authRequired}
-        expectedUsn="username"
-        expectedPw="password"
-      />
-
-      {isEditModalOpen && editingRow && (
-        <EditModal<TData>
-          row={editingRow}
-          headers={table.getHeaderGroups().flatMap((group) => group.headers)}
-          extraFields={[{ id: 'password', label: 'Password', type: 'password' }]}
-          onClose={() => setIsEditModalOpen(false)}
-          onSave={handleSave}
-        />
-      )}
     </div>
   )
 }

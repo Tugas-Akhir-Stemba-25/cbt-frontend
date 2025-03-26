@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -133,7 +134,10 @@ const AppSidebar = ({ role }: { role: string }) => {
 
   return (
     <Sidebar>
-      <SidebarHeader>LOGO</SidebarHeader>
+      <SidebarHeader className="flex items-center justify-center text-center">
+        <Image src="/assets/images/logo-icon.svg" width={48} height={48} alt="logo-icon-luminaqa" />
+        <p className="font-semibold text-primary">LuminaQA</p>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
           {sidebarMenuConfig.map((group, index) => {
