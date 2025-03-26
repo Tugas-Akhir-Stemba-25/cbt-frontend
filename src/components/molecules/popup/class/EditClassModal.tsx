@@ -125,7 +125,7 @@ const EditClassModal = ({ openModal, setOpen, classKey, data }: EditClassModalPr
               name="grad_year"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nama Singkat</FormLabel>
+                  <FormLabel>Tahun Lulus</FormLabel>
                   <FormControl>
                     <Input type="text" {...field} />
                   </FormControl>

@@ -113,7 +113,7 @@ const CreateClassModal = ({ openModal, setOpen, classKey }: CreateClassModalProp
               name="grad_year"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nama Singkat</FormLabel>
+                  <FormLabel>Tahun Lulus</FormLabel>
                   <FormControl>
                     <Input type="text" {...field} />
                   </FormControl>
