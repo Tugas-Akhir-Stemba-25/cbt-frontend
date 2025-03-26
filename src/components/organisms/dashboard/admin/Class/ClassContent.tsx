@@ -97,7 +97,7 @@ const ClassContent = () => {
         <DataTable
           columns={classColumns}
           data={classes?.data ?? []}
-          placeholder="Cari Jurusan"
+          placeholder="Cari Kelas"
           filter={
             <>
               <MajorCombobox />
