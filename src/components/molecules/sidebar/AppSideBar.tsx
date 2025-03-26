@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { Book, Files, FilesIcon, Folders, LayoutGrid, LucideIcon, User, Users } from 'lucide-react'
+import { Book, Files, FilesIcon, Folders, LayoutGrid, LucideIcon, School, User, Users } from 'lucide-react'
 
 import {
   Sidebar,
@@ -75,6 +75,12 @@ const sidebarMenuConfig: MenuGroup[] = [
         title: 'Jurusan',
         path: '/dashboard/admin/major',
         icon: Folders,
+        roles: ['admin']
+      },
+      {
+        title: 'Kelas',
+        path: '/dashboard/admin/class',
+        icon: School,
         roles: ['admin']
       },
       {

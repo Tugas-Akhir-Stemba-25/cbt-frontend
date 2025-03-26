@@ -9,7 +9,6 @@ import { useGetMajorCount } from '@/http/major/get-major-count'
 import { useGetMajorList } from '@/http/major/get-major-list'
 
 import CardStatistic from '@/components/atoms/card/CardStatistic'
-import { majorColumns } from '@/components/constants/columns/major-columns'
 import BulkDeleteMajorModal from '@/components/molecules/popup/major/BulkDeleteMajorModal'
 import CreateMajorModal from '@/components/molecules/popup/major/CreateMajorModal'
 import DeleteMajorModal from '@/components/molecules/popup/major/DeleteMajorModal'
@@ -17,6 +16,7 @@ import EditMajorModal from '@/components/molecules/popup/major/EditMajorModal'
 import { Button } from '@/components/ui/button'
 import DataTable from '@/components/ui/datatable'
 
+import { majorColumns } from '@/constants/columns/major-columns'
 import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
 import { Major } from '@/types/major/major-list'
 
