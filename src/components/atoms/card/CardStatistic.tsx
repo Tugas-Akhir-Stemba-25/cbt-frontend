@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 interface CardStatisticProps {
   title: string
-  value?: number
+  value?: number | string
   icon: any
   variant?: 'secondary' | 'destructive' | 'blue' | 'success' | 'primary'
   isLoading?: boolean

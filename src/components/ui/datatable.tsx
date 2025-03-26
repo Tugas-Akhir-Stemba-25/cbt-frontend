@@ -11,7 +11,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 
 import { Pagination } from '@/types/common/metadata'
 
-import FilterDropdown from '../atoms/dropdowns/FilterClass'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './dropdown-menu'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 import { Skeleton } from './skeleton'
@@ -21,7 +20,7 @@ interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
   placeholder: string
-  showFilter?: boolean
+  filter?: React.ReactNode
   action?: React.ReactNode
   setSearch?: (value: string) => void
   pagination?: Pagination
@@ -37,7 +36,7 @@ const DataTable = <TData extends Record<string, any>>({
   columns: columnsProps,
   data: dataProps,
   placeholder,
-  showFilter = false,
+  filter,
   action,
   setSearch,
   pagination = { current_page: 1, per_page: 10, total_pages: 1, total: 1 },
@@ -180,11 +179,7 @@ const DataTable = <TData extends Record<string, any>>({
                 onChange={(e) => setGlobalFilter?.(e.target.value)}
               />
             </div>
-            {showFilter && (
-              <div className="relative w-full">
-                <FilterDropdown />
-              </div>
-            )}
+            {filter && <div className="relative w-full">{filter}</div>}
           </div>
 
           <div className="flex gap-4">{action}</div>
