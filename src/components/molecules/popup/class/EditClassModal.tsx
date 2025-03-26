@@ -97,7 +97,7 @@ const EditClassModal = ({ openModal, setOpen, classKey, data }: EditClassModalPr
     <Dialog open={openModal} onOpenChange={setOpen}>
       <DialogContent aria-describedby="modal-description">
         <DialogHeader>
-          <DialogTitle>Tambah Data Jurusan</DialogTitle>
+          <DialogTitle>Ubah Data Kelas</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form

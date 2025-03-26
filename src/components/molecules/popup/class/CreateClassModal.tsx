@@ -85,7 +85,7 @@ const CreateClassModal = ({ openModal, setOpen, classKey }: CreateClassModalProp
     <Dialog open={openModal} onOpenChange={setOpen}>
       <DialogContent aria-describedby="modal-description">
         <DialogHeader>
-          <DialogTitle>Tambah Data Jurusan</DialogTitle>
+          <DialogTitle>Tambah Data Kelas</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form

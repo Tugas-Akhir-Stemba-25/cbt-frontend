@@ -18,8 +18,8 @@ const LayoutDashboard = async ({ children }: { children: React.ReactNode }) => {
     <SidebarProvider>
       <AppSidebar role={role || 'siswa'} />
       {/* <SidebarInset> */}
-      <div className="w-full">
-        <header className="flex h-16 shrink-0 items-center justify-between border-b px-4">
+      <div className="relative w-full">
+        <header className="sticky left-0 right-0 top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b bg-background px-4">
           <div className="flex items-center gap-4">
             <SidebarTrigger />
             <Breadcrumb className="hidden sm:block" />
