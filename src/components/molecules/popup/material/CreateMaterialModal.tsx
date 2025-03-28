@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -25,12 +26,30 @@ interface CreateMaterialModalProps {
 }
 
 const CreateMaterialModal = ({ openModal, setOpen, materialKey }: CreateMaterialModalProps) => {
+  // User Session
+  const session = useSession()
+
+  // materialSchema
+  const materialSchema = createMaterialSchema.refine(
+    (data) => {
+      if (session.data?.user.role === 'admin' && !data.user_id) {
+        return false
+      }
+
+      return true
+    },
+    {
+      message: 'Guru Pengampu harus diisi',
+      path: ['user_id']
+    }
+  )
+
   // Form
   const form = useForm<CreateMaterialType>({
     defaultValues: {
       name: ''
     },
-    resolver: zodResolver(createMaterialSchema),
+    resolver: zodResolver(materialSchema),
     mode: 'onChange'
   })
 
@@ -54,7 +73,7 @@ const CreateMaterialModal = ({ openModal, setOpen, materialKey }: CreateMaterial
     },
     onError: (err) => {
       toast.error('Error', {
-        description: err.response?.data.meta.message
+        description: err.response?.data.meta.message || err.response?.data.meta.error
       })
 
       if (err.response?.status === 422) {
@@ -109,19 +128,22 @@ const CreateMaterialModal = ({ openModal, setOpen, materialKey }: CreateMaterial
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="user_id"
-              render={() => (
-                <FormItem className="relative flex w-full flex-col gap-2">
-                  <FormLabel>Guru Pengampu</FormLabel>
-                  <FormControl>
-                    <TeacherCombobox selectData={handleSelectTeacher} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
+            {session.data?.user.role === 'admin' && (
+              <FormField
+                control={form.control}
+                name="user_id"
+                render={() => (
+                  <FormItem className="relative flex w-full flex-col gap-2">
+                    <FormLabel>Guru Pengampu</FormLabel>
+                    <FormControl>
+                      <TeacherCombobox selectData={handleSelectTeacher} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <DialogFooter className="flex gap-2">
               <DialogClose asChild>

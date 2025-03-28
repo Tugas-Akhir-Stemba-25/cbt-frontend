@@ -109,6 +109,12 @@ const sidebarMenuConfig: MenuGroup[] = [
         roles: ['teacher']
       },
       {
+        title: 'Mata Pelajaran',
+        path: '/dashboard/teacher/material',
+        icon: BookOpen,
+        roles: ['teacher']
+      },
+      {
         title: 'Ujian',
         path: 'dashboard/teacher/exam',
         icon: FilesIcon,

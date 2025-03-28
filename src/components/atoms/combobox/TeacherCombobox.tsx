@@ -33,7 +33,6 @@ const TeacherCombobox = ({ selectData, initialValue }: TeacherComboboxProps) => 
   )
 
   React.useEffect(() => {
-    console.log(initialValue)
     if (initialValue) {
       setValue(initialValue)
     }
@@ -61,7 +60,7 @@ const TeacherCombobox = ({ selectData, initialValue }: TeacherComboboxProps) => 
                     const val = currentValue.split('#')[0]
                     setValue(val === value ? '' : val)
                     if (selectData) {
-                      selectData(val)
+                      selectData(val === value ? '' : val)
                     }
                     setOpen(false)
                   }}

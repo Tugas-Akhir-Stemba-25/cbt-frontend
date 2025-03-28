@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -12,7 +13,6 @@ import { getMaterialCountKey } from '@/http/materials/get-material-count'
 import { getMaterialKey, GetMaterialListParams } from '@/http/materials/get-material-list'
 import { useUpdateMaterial } from '@/http/materials/update-material'
 
-import { CreateMaterialType } from '@/validators/material/create-material-validator'
 import { editMaterialSchema, EditMaterialType } from '@/validators/material/edit-material-validator'
 
 import TeacherCombobox from '@/components/atoms/combobox/TeacherCombobox'
@@ -31,6 +31,9 @@ interface EditMaterialModalProps {
 }
 
 const EditMaterialModal = ({ openModal, setOpen, materialKey, data }: EditMaterialModalProps) => {
+  // User Session
+  const session = useSession()
+
   // Form
   const form = useForm<EditMaterialType>({
     defaultValues: {
@@ -60,7 +63,7 @@ const EditMaterialModal = ({ openModal, setOpen, materialKey, data }: EditMateri
     },
     onError: (err) => {
       toast.error('Error', {
-        description: err.response?.data.meta.message
+        description: err.response?.data.meta.message || err.response?.data.meta.error
       })
 
       if (err.response?.status === 422) {
@@ -76,7 +79,7 @@ const EditMaterialModal = ({ openModal, setOpen, materialKey, data }: EditMateri
     }
   })
 
-  const onSubmit = (form: CreateMaterialType) => {
+  const onSubmit = (form: EditMaterialType) => {
     mutate({
       form,
       id: data?.id as number
@@ -122,22 +125,24 @@ const EditMaterialModal = ({ openModal, setOpen, materialKey, data }: EditMateri
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="user_id"
-              render={() => (
-                <FormItem className="relative flex w-full flex-col gap-2">
-                  <FormLabel>Guru Pengampu</FormLabel>
-                  <FormControl>
-                    <TeacherCombobox
-                      initialValue={String(data?.teaching_teacher.id)}
-                      selectData={handleSelectTeacher}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {session.data?.user.role === 'admin' && (
+              <FormField
+                control={form.control}
+                name="user_id"
+                render={() => (
+                  <FormItem className="relative flex w-full flex-col gap-2">
+                    <FormLabel>Guru Pengampu</FormLabel>
+                    <FormControl>
+                      <TeacherCombobox
+                        initialValue={String(data?.teaching_teacher.id)}
+                        selectData={handleSelectTeacher}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <DialogFooter className="flex gap-2">
               <DialogClose asChild>

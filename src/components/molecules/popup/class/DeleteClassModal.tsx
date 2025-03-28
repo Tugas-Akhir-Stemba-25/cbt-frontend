@@ -43,7 +43,7 @@ const DeleteClassModal = ({ openModal, setOpen, id, classKey }: DeleteClassModal
     },
     onError: (err) => {
       toast.error('Error', {
-        description: err.response?.data.meta.message
+        description: err.response?.data.meta.message || err.response?.data.meta.error
       })
     }
   })
