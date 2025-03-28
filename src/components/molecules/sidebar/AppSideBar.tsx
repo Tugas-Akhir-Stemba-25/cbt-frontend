@@ -151,7 +151,7 @@ const AppSidebar = ({ role }: { role: string }) => {
   }
 
   return (
-    <Sidebar>
+    <Sidebar className="z-40">
       <SidebarHeader className="flex items-center justify-center text-center">
         <Image src="/assets/images/logo-icon.svg" width={48} height={48} alt="logo-icon-luminaqa" />
         <p className="font-semibold text-primary">LuminaQA</p>
