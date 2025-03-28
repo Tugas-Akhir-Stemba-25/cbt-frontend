@@ -2,9 +2,9 @@ import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { useBulkDeleteMajor } from '@/http/major/bulk-delete-major'
-import { MAJOR_COUNT_QUERY_KEY } from '@/http/major/get-major-count'
-import { getMajorKey, GetMajorListParams } from '@/http/major/get-major-list'
+import { useBulkDeleteMaterial } from '@/http/materials/bulk-delete-material'
+import { getMaterialCountKey } from '@/http/materials/get-material-count'
+import { getMaterialKey, GetMaterialListParams } from '@/http/materials/get-material-list'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -16,29 +16,29 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 
-interface BulkDeleteMajorModalProps {
+interface BulkDeleteMaterialModalProps {
   openModal: boolean
   setOpen: (open: boolean) => void
   ids: number[]
-  majorKey: GetMajorListParams
+  materialKey: GetMaterialListParams
 }
 
-const BulkDeleteMajorModal = ({ openModal, setOpen, ids, majorKey }: BulkDeleteMajorModalProps) => {
+const BulkDeleteMaterialModal = ({ openModal, setOpen, ids, materialKey }: BulkDeleteMaterialModalProps) => {
   // Query Client
   const queryClient = useQueryClient()
 
   // Mutation
-  const { mutate, isPending } = useBulkDeleteMajor({
+  const { mutate, isPending } = useBulkDeleteMaterial({
     onSuccess: (res) => {
       setOpen(false)
       toast.success('Sukses', {
         description: res.meta.message
       })
       queryClient.invalidateQueries({
-        queryKey: getMajorKey(majorKey as GetMajorListParams)
+        queryKey: getMaterialKey(materialKey as GetMaterialListParams)
       })
       queryClient.invalidateQueries({
-        queryKey: MAJOR_COUNT_QUERY_KEY
+        queryKey: getMaterialCountKey({ class_id: materialKey.class_id as number })
       })
     },
     onError: (err) => {
@@ -87,4 +87,4 @@ const BulkDeleteMajorModal = ({ openModal, setOpen, ids, majorKey }: BulkDeleteM
   )
 }
 
-export default BulkDeleteMajorModal
+export default BulkDeleteMaterialModal

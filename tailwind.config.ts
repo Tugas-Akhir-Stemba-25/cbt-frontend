@@ -44,7 +44,6 @@ export default {
         tableColour: {
           DEFAULT: 'hsla(var(--th-colour))',
           selected: 'hsla(var(--td-selected))'
-
         },
         muted: {
           DEFAULT: 'hsla(var(--muted))',

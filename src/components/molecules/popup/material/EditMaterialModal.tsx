@@ -1,36 +1,45 @@
 'use client'
 
+import { useEffect } from 'react'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { useCreateMajor } from '@/http/major/create-major'
-import { MAJOR_COUNT_QUERY_KEY } from '@/http/major/get-major-count'
-import { getMajorKey, GetMajorListParams } from '@/http/major/get-major-list'
+import { getMaterialCountKey } from '@/http/materials/get-material-count'
+import { getMaterialKey, GetMaterialListParams } from '@/http/materials/get-material-list'
+import { useUpdateMaterial } from '@/http/materials/update-material'
 
-import { createMajorSchema, CreateMajorType } from '@/validators/major/create-major-validator'
+import { editMaterialSchema, EditMaterialType } from '@/validators/material/edit-material-validator'
 
+import TeacherCombobox from '@/components/atoms/combobox/TeacherCombobox'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-interface CreateMajorModalProps {
+import { Material } from '@/types/material/material-list'
+
+interface EditMaterialModalProps {
   openModal: boolean
   setOpen: (open: boolean) => void
-  majorKey: GetMajorListParams
+  materialKey: GetMaterialListParams
+  data: Material | null
 }
 
-const CreateMajorModal = ({ openModal, setOpen, majorKey }: CreateMajorModalProps) => {
+const EditMaterialModal = ({ openModal, setOpen, materialKey, data }: EditMaterialModalProps) => {
+  // User Session
+  const session = useSession()
+
   // Form
-  const form = useForm<CreateMajorType>({
+  const form = useForm<EditMaterialType>({
     defaultValues: {
-      name: '',
-      short_name: ''
+      name: ''
     },
-    resolver: zodResolver(createMajorSchema),
+    resolver: zodResolver(editMaterialSchema),
     mode: 'onChange'
   })
 
@@ -38,17 +47,17 @@ const CreateMajorModal = ({ openModal, setOpen, majorKey }: CreateMajorModalProp
   const queryClient = useQueryClient()
 
   // Mutation
-  const { mutate, isPending } = useCreateMajor({
+  const { mutate, isPending } = useUpdateMaterial({
     onSuccess: (res) => {
       setOpen(false)
       toast.success('Sukses', {
         description: res.meta.message
       })
       queryClient.invalidateQueries({
-        queryKey: getMajorKey(majorKey as GetMajorListParams)
+        queryKey: getMaterialKey(materialKey as GetMaterialListParams)
       })
       queryClient.invalidateQueries({
-        queryKey: MAJOR_COUNT_QUERY_KEY
+        queryKey: getMaterialCountKey({ class_id: materialKey.class_id as number })
       })
       form.reset()
     },
@@ -61,7 +70,7 @@ const CreateMajorModal = ({ openModal, setOpen, majorKey }: CreateMajorModalProp
         const errors = err.response.data.meta.error
 
         for (const key in errors) {
-          form.setError(key as keyof CreateMajorType, {
+          form.setError(key as keyof EditMaterialType, {
             type: 'server',
             message: errors[key][0]
           })
@@ -70,24 +79,37 @@ const CreateMajorModal = ({ openModal, setOpen, majorKey }: CreateMajorModalProp
     }
   })
 
-  const onSubmit = (form: CreateMajorType) => {
+  const onSubmit = (form: EditMaterialType) => {
     mutate({
-      form
+      form,
+      id: data?.id as number
     })
   }
+
+  const handleSelectTeacher = (data: string) => {
+    form.setValue('user_id', Number(data))
+    form.trigger('user_id')
+  }
+
+  useEffect(() => {
+    form.reset({
+      name: data?.name ?? '',
+      user_id: Number(data?.teaching_teacher.id) ?? ''
+    })
+  }, [data, form])
 
   return (
     <Dialog open={openModal} onOpenChange={setOpen}>
       <DialogContent aria-describedby="modal-description">
         <DialogHeader>
-          <DialogTitle>Tambah Data Jurusan</DialogTitle>
+          <DialogTitle>Ubah Data Mata Pelajaran</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
             className="space-y-6"
             onSubmit={(e) => {
               e.preventDefault()
-              form.handleSubmit(onSubmit)()
+              form.handleSubmit(onSubmit, (e) => console.error(e))()
             }}
           >
             <FormField
@@ -103,19 +125,25 @@ const CreateMajorModal = ({ openModal, setOpen, majorKey }: CreateMajorModalProp
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="short_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nama Singkat</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {session.data?.user.role === 'admin' && (
+              <FormField
+                control={form.control}
+                name="user_id"
+                render={() => (
+                  <FormItem className="relative flex w-full flex-col gap-2">
+                    <FormLabel>Guru Pengampu</FormLabel>
+                    <FormControl>
+                      <TeacherCombobox
+                        initialValue={String(data?.teaching_teacher.id)}
+                        selectData={handleSelectTeacher}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <DialogFooter className="flex gap-2">
               <DialogClose asChild>
                 <Button variant="subtle" className="flex-1 rounded-md px-4 py-2 dark:bg-tableColour">
@@ -139,4 +167,4 @@ const CreateMajorModal = ({ openModal, setOpen, majorKey }: CreateMajorModalProp
   )
 }
 
-export default CreateMajorModal
+export default EditMaterialModal

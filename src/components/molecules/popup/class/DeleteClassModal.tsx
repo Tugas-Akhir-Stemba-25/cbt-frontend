@@ -3,8 +3,8 @@ import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { useDeleteClass } from '@/http/class/delete-class'
+import { getClassCountKey } from '@/http/class/get-class-count'
 import { getClassKey, GetClassListParams } from '@/http/class/get-class-list'
-import { MAJOR_COUNT_QUERY_KEY } from '@/http/major/get-major-count'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -38,12 +38,12 @@ const DeleteClassModal = ({ openModal, setOpen, id, classKey }: DeleteClassModal
         queryKey: getClassKey(classKey as GetClassListParams)
       })
       queryClient.invalidateQueries({
-        queryKey: MAJOR_COUNT_QUERY_KEY
+        queryKey: getClassCountKey({ major_id: classKey.major_id as number })
       })
     },
     onError: (err) => {
       toast.error('Error', {
-        description: err.response?.data.meta.message
+        description: err.response?.data.meta.message || err.response?.data.meta.error
       })
     }
   })
