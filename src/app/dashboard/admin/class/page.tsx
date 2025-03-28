@@ -1,4 +1,4 @@
-import ClassContent from '@/components/organisms/dashboard/admin/class/ClassContent'
+import ClassContent from '@/components/organisms/dashboard/admin/Class/ClassContent'
 
 const page = () => {
   return <ClassContent />
