@@ -2,9 +2,9 @@ import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { useDeleteClass } from '@/http/class/delete-class'
-import { getClassCountKey } from '@/http/class/get-class-count'
-import { getClassKey, GetClassListParams } from '@/http/class/get-class-list'
+import { useBulkDeleteMaterial } from '@/http/materials/bulk-delete-material'
+import { getMaterialCountKey } from '@/http/materials/get-material-count'
+import { getMaterialKey, GetMaterialListParams } from '@/http/materials/get-material-list'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -16,29 +16,29 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 
-interface DeleteClassModalProps {
+interface BulkDeleteMaterialModalProps {
   openModal: boolean
   setOpen: (open: boolean) => void
-  id: number
-  classKey: GetClassListParams
+  ids: number[]
+  materialKey: GetMaterialListParams
 }
 
-const DeleteClassModal = ({ openModal, setOpen, id, classKey }: DeleteClassModalProps) => {
+const BulkDeleteMaterialModal = ({ openModal, setOpen, ids, materialKey }: BulkDeleteMaterialModalProps) => {
   // Query Client
   const queryClient = useQueryClient()
 
   // Mutation
-  const { mutate, isPending } = useDeleteClass({
+  const { mutate, isPending } = useBulkDeleteMaterial({
     onSuccess: (res) => {
       setOpen(false)
       toast.success('Sukses', {
         description: res.meta.message
       })
       queryClient.invalidateQueries({
-        queryKey: getClassKey(classKey as GetClassListParams)
+        queryKey: getMaterialKey(materialKey as GetMaterialListParams)
       })
       queryClient.invalidateQueries({
-        queryKey: getClassCountKey({ major_id: classKey.major_id as number })
+        queryKey: getMaterialCountKey({ class_id: materialKey.class_id as number })
       })
     },
     onError: (err) => {
@@ -50,7 +50,7 @@ const DeleteClassModal = ({ openModal, setOpen, id, classKey }: DeleteClassModal
 
   // Handle Submit
   const handleSubmit = () => {
-    mutate({ id })
+    mutate({ ids })
   }
 
   return (
@@ -59,7 +59,8 @@ const DeleteClassModal = ({ openModal, setOpen, id, classKey }: DeleteClassModal
         <DialogHeader>
           <DialogTitle className="text-lg font-bold text-destructive">Konfirmasi Hapus Data</DialogTitle>
           <DialogDescription className="text-fooreground">
-            Dengan melakukan tindakan ini, data yang sudah dihapus tidak dapat dipulihkan kembali.
+            Anda yakin ingin menghapus {ids.length} data sekaligus?. Dengan melakukan tindakan ini, data yang sudah
+            dihapus tidak dapat dipulihkan kembali.
           </DialogDescription>
         </DialogHeader>
 
@@ -86,4 +87,4 @@ const DeleteClassModal = ({ openModal, setOpen, id, classKey }: DeleteClassModal
   )
 }
 
-export default DeleteClassModal
+export default BulkDeleteMaterialModal

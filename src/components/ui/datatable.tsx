@@ -273,7 +273,7 @@ const DataTable = <TData extends Record<string, any>>({
           </div>
         )}
 
-        <div className="flex flex-col items-center gap-2 md:flex-row">
+        <div className="flex flex-col items-center gap-2 sm:flex-row">
           <Button
             variant="link"
             onClick={() => setPage && setPage((pagination?.current_page || 1) - 1)}
@@ -284,7 +284,7 @@ const DataTable = <TData extends Record<string, any>>({
             Previous
           </Button>
 
-          <div className="flex w-full gap-2">
+          <div className="flex w-full justify-center gap-2">
             {pagination?.total_pages > 3 && pagination?.current_page > 2 && (
               <div>
                 <Button
