@@ -1,7 +1,11 @@
+'use client'
+
 import React from 'react'
 
+import ExamCreate from '@/components/organisms/dashboard/admin/exam/ExamCreate'
+
 const CreateExam = () => {
-  return <div>CreateExam</div>
+  return <ExamCreate />
 }
 
 export default CreateExam

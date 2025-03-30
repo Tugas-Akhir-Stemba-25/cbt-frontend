@@ -28,7 +28,11 @@ const processLabel = (materials: MaterialOption[], value: string, length: number
   return label.length > length ? `${label.slice(0, length)}...` : label
 }
 
-const MaterialCombobox = () => {
+interface MaterialComboboxProps {
+  length?: number
+}
+
+const MaterialCombobox = ({ length }: MaterialComboboxProps) => {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState('')
 
@@ -55,13 +59,15 @@ const MaterialCombobox = () => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="relative w-[200px] justify-between overflow-hidden text-ellipsis whitespace-nowrap"
+          className="relative w-full justify-between overflow-hidden text-ellipsis whitespace-nowrap"
         >
-          {value ? processLabel(materials?.data as MaterialOption[], value, 20) : 'Pilih Mata Pelajaran...'}
+          {value
+            ? processLabel(materials?.data as MaterialOption[], value, length ? length : 20)
+            : 'Pilih Mata Pelajaran...'}
           <ChevronsUpDown className="absolute right-2 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[90vw] p-0 sm:w-[450px]">
         <Command>
           <CommandInput placeholder="Cari Mata Pelajaran..." className="h-9" />
           <CommandList>
@@ -77,7 +83,7 @@ const MaterialCombobox = () => {
                     setOpen(false)
                   }}
                 >
-                  {processLabel(materials?.data as MaterialOption[], String(material.id), -1)}
+                  {processLabel(materials?.data as MaterialOption[], String(material.id), length ? length : -1)}
                   <Check className={cn('ml-auto', value === String(material.id) ? 'opacity-100' : 'opacity-0')} />
                 </CommandItem>
               ))}

@@ -127,7 +127,7 @@ const ExamContent = () => {
           setOpenBulkDeleteModal={handleBulkDeleteModal}
           action={
             <>
-              <Button asChild disabled={!selectedMaterial}>
+              <Button asChild>
                 <Link href={`/dashboard/admin/exam/create`}>
                   <PlusIcon className="h-4 w-4" />
                   Tambah Data
