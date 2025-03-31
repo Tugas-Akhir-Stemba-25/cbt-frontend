@@ -2,32 +2,26 @@ import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 
 import { api } from '@/lib/axios'
-import { queryClient } from '@/lib/reactQuery'
 
-import { TeacherResponse } from '@/types/common/teacherResponse'
-import { TEACHERS } from '@/types/query_key/teacher'
+import { CreateTeacherType } from '@/validators/teacher/create-teacher-validator'
+
+import { CreateTeacherResponse } from '@/types/common/teacherResponse'
 
 interface TeacherPayload {
-  name: string
-  username: string
-  password: string
+  form: CreateTeacherType
 }
 
-export const postTeacherData = async (data: TeacherPayload): Promise<TeacherResponse> => {
-  const response = await api.post('/teachers', data)
-  return response.data
+export const postTeacherData = async ({ form }: TeacherPayload): Promise<CreateTeacherResponse> => {
+  const { data } = await api.post<CreateTeacherResponse>('/teachers', form)
+
+  return data
 }
 
-export const usePostTeacherData = (options?: UseMutationOptions<TeacherResponse, AxiosError, TeacherPayload>) => {
-  return useMutation<TeacherResponse, AxiosError, TeacherPayload>({
+export const usePostTeacherData = (
+  options?: UseMutationOptions<CreateTeacherResponse, AxiosError<any>, TeacherPayload>
+) => {
+  return useMutation({
     mutationFn: postTeacherData,
-    onSuccess: (data) => {
-      console.log('Success submit:', data)
-      queryClient.invalidateQueries({
-        queryKey: TEACHERS.list(),
-        exact: false
-      })
-    },
     ...options
   })
 }

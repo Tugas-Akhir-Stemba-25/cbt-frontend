@@ -29,7 +29,7 @@ interface DataTableProps<TData> {
   setPage?: (value: number) => void
   isLoading?: boolean
   setOpenEditModal?: (value: boolean, id: number) => void
-  setOpenDeleteModal?: (value: boolean, id: number) => void
+  setOpenDeleteModal?: (value: boolean, id: number, expectedUsn?: string) => void
   setOpenBulkDeleteModal?: (value: boolean, ids: number[]) => void
 }
 
@@ -126,7 +126,7 @@ const DataTable = <TData extends Record<string, any>>({
   }
 
   const handleDelete = (row: TData) => {
-    setOpenDeleteModal?.(true, row.id)
+    setOpenDeleteModal?.(true, row.id, row.username)
   }
 
   // const handleSave = (_updatedRow: TData) => {
