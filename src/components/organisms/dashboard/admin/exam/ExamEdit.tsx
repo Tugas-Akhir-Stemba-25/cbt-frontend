@@ -3,15 +3,16 @@
 import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ArrowLeft } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { useCreateTest } from '@/http/test/create-test'
+import { getTestDetailKey, useGetTestDetail } from '@/http/test/get-test-detail'
+import { useUpdateTest } from '@/http/test/update-test'
 
 import useMaterialStore from '@/stores/useMaterialStore'
 
@@ -21,17 +22,21 @@ import { testSettingSchema, TestSettingType } from '@/validators/test/test-setti
 import { TabsContent } from '@/components/ui/tabs'
 
 import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
-import { CreateTestForm } from '@/types/test/test'
+import { UpdateTestForm } from '@/types/test/test'
 
 import ExamCreateTabs from './ExamCreateTabs'
 import ExamDetailForm from './ExamDetailForm'
 import ExamSettingForm from './ExamSettingForm'
 
-const ExamCreate = () => {
-  // Router
-  const router = useRouter()
+interface ExamEditProps {
+  id: number
+}
 
-  const { selectedMaterial } = useMaterialStore()
+const ExamEdit = ({ id }: ExamEditProps) => {
+  // Query Client
+  const queryClient = useQueryClient()
+
+  const { setSelectedMaterial } = useMaterialStore()
 
   // Breadcrumbs
   const { setBreadcrumbs } = useBreadcrumbs()
@@ -66,21 +71,24 @@ const ExamCreate = () => {
   })
 
   // Mutation Create
-  const { mutate: createTest, isPending: createTestPending } = useCreateTest({
+  const { mutate: updateTest, isPending: updateTestPending } = useUpdateTest({
     onSuccess: (data) => {
-      formDetail.reset()
-      formSetting.reset()
-      setTab('detail')
       toast.success('Sukses', {
         description: data.meta.message
       })
-      router.push(`/dashboard/admin/exam/${data.data.id}/edit`)
+      queryClient.invalidateQueries({
+        queryKey: getTestDetailKey({ testId: id })
+      })
     },
     onError: () => {
       toast.error('Gagal', {
-        description: 'Gagal membuat data ujian'
+        description: 'Gagal memperbarui data ujian'
       })
     }
+  })
+
+  const { data: test, isLoading: testLoading } = useGetTestDetail({
+    testId: id
   })
 
   useEffect(() => {
@@ -94,34 +102,64 @@ const ExamCreate = () => {
         href: '/dashboard/admin/exam'
       },
       {
-        label: 'Buat Ujian',
-        href: '/dashboard/admin/exam/create'
+        label: 'Edit Ujian',
+        href: `/dashboard/admin/exam/${id}/edit`
       }
     ])
-  }, [setBreadcrumbs])
+  }, [setBreadcrumbs, id])
+
+  useEffect(() => {
+    if (test && !testLoading) {
+      formDetail.reset({
+        name: test?.data.name,
+        date: format(new Date(test?.data.start_time as string), 'yyyy-MM-dd'),
+        start_time: format(new Date(test?.data.start_time as string), 'HH:mm:ss'),
+        end_time: format(new Date(test?.data.end_time as string), 'HH:mm:ss'),
+        duration: test?.data.duration,
+        material: test?.data.material.id
+      })
+      formSetting.reset({
+        is_randomize_answer: test.data.is_randomize_answer,
+        is_randomize_question: test.data.is_randomize_question,
+        is_show_answer: test.data.is_show_answer,
+        is_show_grade: test.data.is_show_grade
+      })
+      setSelectedMaterial(test?.data.material.id as number)
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [test, testLoading])
 
   // Submit Handler
   const onSubmit = async () => {
-    const detail = formDetail.getValues()
     const setting = formSetting.getValues()
-    const payload: CreateTestForm = {
-      name: detail.name,
+    const payload: UpdateTestForm = {
       is_show_grade: setting.is_show_grade,
       is_show_answer: setting.is_show_answer,
       is_randomize_question: setting.is_randomize_question,
-      is_randomize_answer: setting.is_randomize_answer,
-      start_time: new Date(`${detail.date} ${detail.start_time}`).toISOString(),
-      end_time: new Date(`${detail.date} ${detail.end_time}`).toISOString()
+      is_randomize_answer: setting.is_randomize_answer
     }
 
-    createTest({
+    updateTest({
       form: payload,
-      material_id: selectedMaterial as number
+      test_id: id
     })
   }
 
   const handleSubmitDetail = () => {
-    setTab('settings')
+    const detail = formDetail.getValues()
+
+    const payload: UpdateTestForm = {
+      name: detail.name,
+      start_time: new Date(`${detail.date} ${detail.start_time}`).toISOString(),
+      end_time: new Date(`${detail.date} ${detail.end_time}`).toISOString(),
+      material_id: detail.material
+    }
+
+    updateTest({
+      form: payload,
+      test_id: id
+    })
   }
 
   return (
@@ -133,21 +171,33 @@ const ExamCreate = () => {
         </Link>
       </div>
       <div className="flex flex-col gap-8">
-        <h3 className="text-[18px] font-semibold">Buat Ujian</h3>
+        <h3 className="text-[18px] font-semibold">Edit Ujian</h3>
         <ExamCreateTabs
           activeTab={tab}
           setTab={setTab}
           trigger={[
             { label: 'Detail Ujian', value: 'detail' },
-            { label: 'Pengaturan Ujian', value: 'settings', disabled: !formDetail.formState.isValid }
+            { label: 'Pengaturan Ujian', value: 'settings' },
+            { label: 'Dokumen Soal', value: 'questions' }
           ]}
           content={
             <>
               <TabsContent value="detail">
-                <ExamDetailForm form={formDetail} onSubmit={handleSubmitDetail} />
+                <ExamDetailForm
+                  isEdit={true}
+                  form={formDetail}
+                  onSubmit={handleSubmitDetail}
+                  fetchLoading={testLoading}
+                  submitLoading={updateTestPending}
+                />
               </TabsContent>
               <TabsContent value="settings">
-                <ExamSettingForm form={formSetting} onSubmit={onSubmit} submitLoading={createTestPending} />
+                <ExamSettingForm
+                  form={formSetting}
+                  onSubmit={onSubmit}
+                  submitLoading={updateTestPending}
+                  isEdit={true}
+                />
               </TabsContent>
             </>
           }
@@ -157,4 +207,4 @@ const ExamCreate = () => {
   )
 }
 
-export default ExamCreate
+export default ExamEdit

@@ -9,9 +9,15 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 interface ExamSettingFormProps {
   form: UseFormReturn<TestSettingType>
   onSubmit: () => void
-  isLoading?: boolean
+  submitLoading?: boolean
+  isEdit?: boolean
 }
-const ExamSettingForm = ({ form, onSubmit: submitForm, isLoading }: ExamSettingFormProps) => {
+const ExamSettingForm = ({ form, onSubmit: submitForm, submitLoading, isEdit }: ExamSettingFormProps) => {
+  const isShowGradeWatch = form.watch('is_show_grade')
+  const isShowAnswerWatch = form.watch('is_show_answer')
+  const isRandomizeQuestionWatch = form.watch('is_randomize_question')
+  const isRandomizeAnswerWatch = form.watch('is_randomize_answer')
+
   const onSubmit = () => {
     submitForm()
   }
@@ -39,7 +45,7 @@ const ExamSettingForm = ({ form, onSubmit: submitForm, isLoading }: ExamSettingF
                 <div className="flex w-full flex-col gap-2">
                   <FormControl>
                     <DefaultSelect
-                      defaultValue={String(form.getValues('is_randomize_question'))}
+                      defaultValue={String(isRandomizeQuestionWatch)}
                       data={[
                         { value: 'false', label: 'Jangan Acak' },
                         { value: 'true', label: 'Acak Soal' }
@@ -66,7 +72,7 @@ const ExamSettingForm = ({ form, onSubmit: submitForm, isLoading }: ExamSettingF
                 <div className="flex w-full flex-col gap-2">
                   <FormControl>
                     <DefaultSelect
-                      defaultValue={String(form.getValues('is_randomize_answer'))}
+                      defaultValue={String(isRandomizeAnswerWatch)}
                       data={[
                         { value: 'false', label: 'Jangan Acak' },
                         { value: 'true', label: 'Acak Jawaban' }
@@ -95,7 +101,7 @@ const ExamSettingForm = ({ form, onSubmit: submitForm, isLoading }: ExamSettingF
                 <div className="flex w-full flex-col gap-2">
                   <FormControl>
                     <DefaultSelect
-                      defaultValue={String(form.getValues('is_show_grade'))}
+                      defaultValue={String(isShowGradeWatch)}
                       data={[
                         { value: 'false', label: 'Jangan Tampilkan' },
                         { value: 'true', label: 'Tampilkan' }
@@ -120,7 +126,7 @@ const ExamSettingForm = ({ form, onSubmit: submitForm, isLoading }: ExamSettingF
                 <div className="flex w-full flex-col gap-2">
                   <FormControl>
                     <DefaultSelect
-                      defaultValue={String(form.getValues('is_show_answer'))}
+                      defaultValue={String(isShowAnswerWatch)}
                       data={[
                         { value: 'false', label: 'Jangan Tampilkan' },
                         { value: 'true', label: 'Tampilkan Jawaban Benar' }
@@ -138,8 +144,8 @@ const ExamSettingForm = ({ form, onSubmit: submitForm, isLoading }: ExamSettingF
           />
 
           <div className="flex justify-end">
-            <Button type="submit" disabled={!form.formState.isValid} isLoading={isLoading}>
-              Buat Ujian
+            <Button type="submit" disabled={!form.formState.isValid} isLoading={submitLoading}>
+              {isEdit ? 'Simpan' : 'Buat Ujian'}
             </Button>
           </div>
         </form>

@@ -17,38 +17,107 @@ import { Input } from '@/components/ui/input'
 
 interface ExamDetailFormProps {
   form: UseFormReturn<TestDetailType>
-  setTab: (tab: string) => void
+  isEdit?: boolean
+  onSubmit: () => void
+  fetchLoading?: boolean
+  submitLoading?: boolean
 }
 
-const ExamDetailForm = ({ form, setTab }: ExamDetailFormProps) => {
+const ExamDetailForm = ({ form, onSubmit, isEdit, fetchLoading, submitLoading }: ExamDetailFormProps) => {
+  const { selectedMaterial } = useMaterialStore()
+
+  // 🔹 State untuk menyimpan data lokal
   const [startTime, setStartTime] = useState<string | null>(null)
   const [duration, setDuration] = useState<number | null>(null)
   const [date, setDate] = useState<Date | null>(null)
   const [endTime, setEndTime] = useState<string | null>(null)
 
-  const { selectedMaterial } = useMaterialStore()
+  // 🔹 Watch untuk mendeteksi perubahan nilai di form
+  const watchStartTime = form.watch('start_time')
+  const watchEndTime = form.watch('end_time')
+  const watchDate = form.watch('date')
+  const watchDuration = form.watch('duration')
 
-  const onSubmit = () => {
+  useEffect(() => {
+    if (watchStartTime) {
+      setStartTime(format(parse(watchStartTime, 'HH:mm:ss', new Date()).toString(), 'HH:mm'))
+    }
+
+    if (watchEndTime) {
+      setEndTime(format(parse(watchEndTime, 'HH:mm:ss', new Date()).toString(), 'HH:mm'))
+    }
+
+    if (watchDate) {
+      setDate(new Date(watchDate))
+    }
+
+    if (watchDuration) {
+      setDuration(watchDuration)
+    }
+
+    if (isEdit && !fetchLoading) {
+      form.trigger()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchStartTime, watchEndTime, watchDate, watchDuration, isEdit])
+
+  useEffect(() => {
     if (selectedMaterial) {
-      console.log(form.getValues())
+      form.setValue('material', selectedMaterial as number)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMaterial])
+
+  const handleChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value && date) {
+      const dateOnly = format(date, 'yyyy-MM-dd')
+      const startDate = parse(`${dateOnly} ${value}:00`, 'yyyy-MM-dd HH:mm:ss', new Date())
+      const endDate = addMinutes(startDate, duration || 1)
+
+      const formattedEndTime = format(endDate, 'HH:mm')
+
+      setStartTime(value)
+      setEndTime(formattedEndTime)
+      setDuration(duration || 1)
+
+      form.setValue('start_time', `${value}:00`)
+      form.setValue('end_time', `${formattedEndTime}:00`)
+      form.setValue('duration', duration as number)
+    }
+  }
+
+  const handleChangeEndTime = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value && date) {
+      const dateOnly = format(date, 'yyyy-MM-dd')
+      const startDate = parse(`${dateOnly} ${startTime}:00`, 'yyyy-MM-dd HH:mm:ss', new Date())
+      const endDate = parse(`${dateOnly} ${value}:00`, 'yyyy-MM-dd HH:mm:ss', new Date())
+
+      const calculatedDuration = differenceInMinutes(endDate, startDate)
+
+      setEndTime(value)
+      setDuration(calculatedDuration)
+
+      form.setValue('end_time', `${value}:00`)
+      form.setValue('duration', calculatedDuration)
     }
   }
 
   const handleChangeDuration = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    if (value) {
-      const parsedValue = parseInt(value, 10)
-      if (!isNaN(parsedValue) && parsedValue > 0 && date) {
-        const dateOnly = format(date, 'yyyy-MM-dd')
+    const value = parseInt(e.target.value, 10)
+    if (!isNaN(value) && value > 0 && date) {
+      const dateOnly = format(date, 'yyyy-MM-dd')
+      const startDate = parse(`${dateOnly} ${startTime}:00`, 'yyyy-MM-dd HH:mm:ss', new Date())
+      const endDate = addMinutes(startDate, value)
 
-        const startDate = parse(`${dateOnly} ${startTime}:00`, 'yyyy-MM-dd HH:mm:ss', new Date())
+      const formattedEndTime = format(endDate, 'HH:mm')
 
-        const endDate = addMinutes(startDate, parsedValue)
+      setDuration(value)
+      setEndTime(formattedEndTime)
 
-        const endTime = format(endDate, 'HH:mm')
-        setEndTime(endTime)
-        setDuration(parsedValue)
-      }
+      form.setValue('duration', value)
+      form.setValue('end_time', `${formattedEndTime}:00`)
     }
   }
 
@@ -58,94 +127,6 @@ const ExamDetailForm = ({ form, setTab }: ExamDetailFormProps) => {
     }
   }
 
-  const handleChangeEndTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    if (value && date) {
-      const dateOnly = format(date, 'yyyy-MM-dd')
-
-      const startDate = parse(`${dateOnly} ${startTime}:00`, 'yyyy-MM-dd HH:mm:ss', new Date())
-
-      const endDate = parse(`${dateOnly} ${value}:00`, 'yyyy-MM-dd HH:mm:ss', new Date())
-
-      const duration = differenceInMinutes(endDate, startDate)
-
-      setDuration(duration)
-      setEndTime(value)
-    }
-  }
-
-  const handleChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    if (value && date) {
-      const dateOnly = format(date, 'yyyy-MM-dd')
-
-      const startDate = parse(`${dateOnly} ${value}:00`, 'yyyy-MM-dd HH:mm:ss', new Date())
-
-      const endDate = addMinutes(startDate, duration || 1)
-
-      const endTime = format(endDate, 'HH:mm')
-
-      setDuration(duration || 1)
-      setEndTime(endTime)
-      setStartTime(value)
-    }
-  }
-
-  useEffect(() => {
-    if (startTime) {
-      form.setValue('start_time', `${startTime}:00`)
-      form.trigger('start_time')
-    }
-
-    if (duration) {
-      form.setValue('duration', duration as number)
-      form.trigger('duration')
-    }
-
-    if (date) {
-      form.setValue('date', format(date, 'yyyy-MM-dd'))
-
-      form.trigger('date')
-    }
-
-    if (selectedMaterial) {
-      form.setValue('material', selectedMaterial as number)
-      form.trigger('material')
-    }
-
-    if (endTime) {
-      form.setValue('end_time', `${endTime}:00`)
-      form.trigger('end_time')
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [endTime, date, startTime, duration, selectedMaterial])
-
-  useEffect(() => {
-    if (form.getValues('start_time')) {
-      const parsedStartTime = parse(form.getValues('start_time'), 'HH:mm:ss', new Date())
-      const formattedStartTime = format(parsedStartTime, 'HH:mm')
-
-      setStartTime(formattedStartTime)
-    }
-
-    if (form.getValues('end_time')) {
-      const parsedEndTime = parse(form.getValues('end_time'), 'HH:mm:ss', new Date())
-      const formattedEndTime = format(parsedEndTime, 'HH:mm')
-
-      setEndTime(formattedEndTime)
-    }
-
-    if (form.getValues('date')) {
-      setDate(new Date(form.getValues('date')))
-    }
-
-    if (form.getValues('duration')) {
-      setDuration(form.getValues('duration'))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   return (
     <div className="h-full w-full flex-col rounded-xl border border-[rgba(3,7,18,0.10)] p-5">
       <Form {...form}>
@@ -153,10 +134,7 @@ const ExamDetailForm = ({ form, setTab }: ExamDetailFormProps) => {
           className="flex w-full flex-col gap-5"
           onSubmit={(e) => {
             e.preventDefault()
-            form.handleSubmit(onSubmit, (e) => {
-              console.log(e)
-              console.log(form.getValues())
-            })()
+            form.handleSubmit(onSubmit, (e) => console.log(e))()
           }}
         >
           <h3 className="text-lg font-semibold">1. Deskripsi Ujian</h3>
@@ -198,12 +176,7 @@ const ExamDetailForm = ({ form, setTab }: ExamDetailFormProps) => {
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel>Tanggal</FormLabel>
                   <FormControl>
-                    <DatePicker
-                      initialValue={date ?? new Date()}
-                      onChange={(e) => {
-                        handleChangeDate(e)
-                      }}
-                    />
+                    <DatePicker initialValue={date ?? new Date()} onChange={handleChangeDate} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -216,14 +189,7 @@ const ExamDetailForm = ({ form, setTab }: ExamDetailFormProps) => {
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel>Durasi</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      value={duration ?? 0}
-                      disabled={!startTime}
-                      onChange={(e) => {
-                        handleChangeDuration(e)
-                      }}
-                    />
+                    <Input type="number" value={duration ?? 0} onChange={handleChangeDuration} disabled={!startTime} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -236,15 +202,7 @@ const ExamDetailForm = ({ form, setTab }: ExamDetailFormProps) => {
                 <FormItem>
                   <FormLabel>Waktu Mulai</FormLabel>
                   <FormControl>
-                    <Input
-                      type="time"
-                      id="time"
-                      value={startTime ?? ''}
-                      aria-label="Pilih waktu"
-                      onChange={(e) => {
-                        handleChangeStartTime(e)
-                      }}
-                    />
+                    <Input type="time" value={startTime ?? ''} onChange={handleChangeStartTime} />
                   </FormControl>
                   <FormDescription>*Menunjukkan waktu ujian dapat dikerjakan peserta</FormDescription>
                   <FormMessage />
@@ -258,15 +216,7 @@ const ExamDetailForm = ({ form, setTab }: ExamDetailFormProps) => {
                 <FormItem>
                   <FormLabel>Waktu Selesai</FormLabel>
                   <FormControl>
-                    <Input
-                      type="time"
-                      id="time"
-                      aria-label="Pilih waktu"
-                      value={endTime ?? ''}
-                      onChange={(e) => {
-                        handleChangeEndTime(e)
-                      }}
-                    />
+                    <Input type="time" value={endTime ?? ''} onChange={handleChangeEndTime} />
                   </FormControl>
                   <FormDescription>*Menunjukkan waktu ujian ditutup</FormDescription>
                   <FormMessage />
@@ -275,8 +225,8 @@ const ExamDetailForm = ({ form, setTab }: ExamDetailFormProps) => {
             />
           </div>
           <div className="flex justify-end">
-            <Button type="submit" disabled={!form.formState.isValid} onClick={() => setTab('settings')}>
-              Selanjutnya
+            <Button type="submit" disabled={!form.formState.isValid} isLoading={submitLoading}>
+              {isEdit ? 'Simpan' : 'Selanjutnya'}
             </Button>
           </div>
         </form>
