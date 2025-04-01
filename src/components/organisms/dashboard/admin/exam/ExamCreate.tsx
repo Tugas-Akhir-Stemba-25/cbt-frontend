@@ -23,9 +23,9 @@ import { TabsContent } from '@/components/ui/tabs'
 import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
 import { CreateTestForm } from '@/types/test/test'
 
-import ExamCreateTabs from './ExamCreateTabs'
 import ExamDetailForm from './ExamDetailForm'
 import ExamSettingForm from './ExamSettingForm'
+import ExamCreateTabs from './ExamTabs'
 
 const ExamCreate = () => {
   // Router

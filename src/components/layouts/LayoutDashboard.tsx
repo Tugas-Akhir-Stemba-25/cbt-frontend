@@ -22,7 +22,7 @@ const LayoutDashboard = async ({ children }: { children: React.ReactNode }) => {
         <header className="sticky left-0 right-0 top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b bg-background px-4">
           <div className="flex items-center gap-4">
             <SidebarTrigger />
-            <Breadcrumb className="hidden sm:block" />
+            <Breadcrumb className="hidden md:block" />
           </div>
 
           <div className="text-md block text-center font-bold md:hidden">
@@ -34,7 +34,11 @@ const LayoutDashboard = async ({ children }: { children: React.ReactNode }) => {
             <AvatarCustom />
           </div>
         </header>
-        <main className="w-full p-5">{children}</main>
+        <main className="w-full p-5">
+          <Breadcrumb className="block md:hidden" />
+
+          {children}
+        </main>
       </div>
       {/* </SidebarInset> */}
     </SidebarProvider>

@@ -3,7 +3,7 @@
 import * as React from 'react'
 
 import { flexRender, getCoreRowModel, useReactTable, ColumnDef, RowSelectionState } from '@tanstack/react-table'
-import { ChevronsUpDown, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis } from 'lucide-react'
+import { ChevronsUpDown, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis, Eye } from 'lucide-react'
 
 import { SearchInput } from '@/components/atoms/input/SearchInput'
 import { Button } from '@/components/ui/button'
@@ -27,6 +27,8 @@ interface DataTableProps<TData> {
   setPerPage?: (value: number) => void
   setPage?: (value: number) => void
   isLoading?: boolean
+  showDetail?: boolean
+  setOpenDetailModal?: (value: boolean, id: number) => void
   setOpenEditModal?: (value: boolean, id: number) => void
   setOpenDeleteModal?: (value: boolean, id: number) => void
   setOpenBulkDeleteModal?: (value: boolean, ids: number[]) => void
@@ -43,9 +45,11 @@ const DataTable = <TData extends Record<string, any>>({
   setPerPage,
   setPage,
   isLoading: isLoad = false,
+  showDetail,
   setOpenEditModal,
   setOpenDeleteModal,
-  setOpenBulkDeleteModal
+  setOpenBulkDeleteModal,
+  setOpenDetailModal
 }: DataTableProps<TData>) => {
   const data = React.useMemo(() => (isLoad ? Array(10).fill({}) : dataProps), [isLoad, dataProps])
 
@@ -120,6 +124,10 @@ const DataTable = <TData extends Record<string, any>>({
 
   const handleEdit = (row: TData) => {
     setOpenEditModal?.(true, row.id)
+  }
+
+  const handleDetail = (row: TData) => {
+    setOpenDetailModal?.(true, row.id)
   }
 
   const handleDelete = (row: TData) => {
@@ -244,6 +252,11 @@ const DataTable = <TData extends Record<string, any>>({
                   </TableCell>
                 ))}
                 <TableCell className="flex gap-3 p-5">
+                  {showDetail && (
+                    <Button variant="ghost" onClick={() => handleDetail(row.original)}>
+                      <Eye size={16} className="text-primary" strokeWidth={1.5} />
+                    </Button>
+                  )}
                   <Button variant="ghost" onClick={() => handleEdit(row.original)}>
                     <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
                   </Button>

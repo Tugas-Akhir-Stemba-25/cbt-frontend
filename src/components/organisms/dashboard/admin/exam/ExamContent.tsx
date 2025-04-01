@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { PlusIcon, School } from 'lucide-react'
 import { useDebounceValue } from 'usehooks-ts'
@@ -24,6 +25,8 @@ import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
 import { Test } from '@/types/test/test-list'
 
 const ExamContent = () => {
+  const router = useRouter()
+
   // Zustand Store
   const { selectedMaterial } = useMaterialStore()
 
@@ -80,6 +83,10 @@ const ExamContent = () => {
     setOpenBulkDeleteModal(modalOpen)
   }
 
+  const handleDetail = (_modelOpen: boolean, id?: number) => {
+    router.push(`/dashboard/admin/exam/${id}`)
+  }
+
   useEffect(() => {
     setBreadcrumbs([
       {
@@ -112,6 +119,8 @@ const ExamContent = () => {
           columns={testColumns}
           data={exams?.data ?? []}
           placeholder="Cari Ujian"
+          showDetail={true}
+          setOpenDetailModal={handleDetail}
           filter={
             <>
               <MaterialCombobox />

@@ -14,7 +14,30 @@ export interface UpdateTestForm extends CreateTestForm {
   material_id?: number
 }
 
+interface Material extends MaterialOption {
+  teaching_teacher: string
+}
+
 export interface TestDetail extends CreateTestForm {
-  material: MaterialOption
+  material: Material
   duration: number
+  status: 0 | 1 | 2
+}
+
+export interface TestStatistic {
+  participants: {
+    name: string
+    grad_year: number
+    total: number
+  }
+  grade: {
+    min: number
+    max: number
+    average: number
+  }
+  time: {
+    min: number
+    max: number
+    average: number
+  }
 }
