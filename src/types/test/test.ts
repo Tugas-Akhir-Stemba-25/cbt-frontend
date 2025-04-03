@@ -22,6 +22,7 @@ export interface TestDetail extends CreateTestForm {
   material: Material
   duration: number
   status: 0 | 1 | 2
+  total_question: number
 }
 
 export interface TestStatistic {

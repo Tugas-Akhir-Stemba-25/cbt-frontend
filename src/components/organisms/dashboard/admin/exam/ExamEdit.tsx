@@ -10,8 +10,10 @@ import { format } from 'date-fns'
 import { ArrowLeft } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { useDebounceValue } from 'usehooks-ts'
 
 import { getTestDetailKey, useGetTestDetail } from '@/http/test/get-test-detail'
+import { useGetQuestionList } from '@/http/test/question/get-question-list'
 import { useUpdateTest } from '@/http/test/update-test'
 
 import useMaterialStore from '@/stores/useMaterialStore'
@@ -19,8 +21,11 @@ import useMaterialStore from '@/stores/useMaterialStore'
 import { testDetailSchema, TestDetailType } from '@/validators/test/test-detail-validator'
 import { testSettingSchema, TestSettingType } from '@/validators/test/test-setting-validator'
 
+import { Button } from '@/components/ui/button'
+import DataTable from '@/components/ui/datatable'
 import { TabsContent } from '@/components/ui/tabs'
 
+import { questionColumns } from '@/constants/columns/question-columns'
 import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
 import { UpdateTestForm } from '@/types/test/test'
 
@@ -43,6 +48,10 @@ const ExamEdit = ({ id }: ExamEditProps) => {
 
   // Tab Value
   const [tab, setTab] = useState<string>('detail')
+
+  // Table State
+  const [page, setPage] = useDebounceValue<number>(1, 250)
+  const [perPage, setPerPage] = useDebounceValue<number>(10, 250)
 
   // Form
   const formDetail = useForm<TestDetailType>({
@@ -89,6 +98,12 @@ const ExamEdit = ({ id }: ExamEditProps) => {
 
   const { data: test, isLoading: testLoading } = useGetTestDetail({
     testId: id
+  })
+
+  const { data: question, isLoading: questionLoading } = useGetQuestionList({
+    testId: id,
+    page,
+    per_page: perPage
   })
 
   useEffect(() => {
@@ -197,6 +212,29 @@ const ExamEdit = ({ id }: ExamEditProps) => {
                   onSubmit={onSubmit}
                   submitLoading={updateTestPending}
                   isEdit={true}
+                />
+              </TabsContent>
+              <TabsContent value="questions">
+                <DataTable
+                  columns={questionColumns}
+                  withSearch={false}
+                  data={question?.data ?? []}
+                  isLoading={questionLoading}
+                  placeholder="Cari Soal"
+                  showDetail={false}
+                  setSearch={() => {}}
+                  pagination={question?.meta.pagination}
+                  setPage={setPage}
+                  setPerPage={setPerPage}
+                  action={
+                    <>
+                      <Button asChild>
+                        <Link href={`/dashboard/admin/exam/${id}/question/create`} className="btn-primary">
+                          Tambah Soal
+                        </Link>
+                      </Button>
+                    </>
+                  }
                 />
               </TabsContent>
             </>

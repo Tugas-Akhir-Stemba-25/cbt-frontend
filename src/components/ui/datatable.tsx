@@ -30,6 +30,7 @@ interface DataTableProps<TData> {
   showDetail?: boolean
   withActions?: boolean
   withSelect?: boolean
+  withSearch?: boolean
   setOpenDetailModal?: (value: boolean, id: number) => void
   setOpenEditModal?: (value: boolean, id: number) => void
   setOpenDeleteModal?: (value: boolean, id: number) => void
@@ -53,7 +54,8 @@ const DataTable = <TData extends Record<string, any>>({
   setOpenBulkDeleteModal,
   setOpenDetailModal,
   withActions = true,
-  withSelect = true
+  withSelect = true,
+  withSearch = true
 }: DataTableProps<TData>) => {
   const data = React.useMemo(() => (isLoad ? Array(10).fill({}) : dataProps), [isLoad, dataProps])
 
@@ -185,11 +187,13 @@ const DataTable = <TData extends Record<string, any>>({
         <div className="flex flex-col gap-4 md:flex-row md:justify-between lg:gap-0">
           <div className="flex w-full flex-col gap-4 md:w-1/2 md:flex-row">
             <div className="relative w-full">
-              <SearchInput
-                placeholder={placeholder}
-                value={globalFilter}
-                onChange={(e) => setGlobalFilter?.(e.target.value)}
-              />
+              {withSearch && (
+                <SearchInput
+                  placeholder={placeholder}
+                  value={globalFilter}
+                  onChange={(e) => setGlobalFilter?.(e.target.value)}
+                />
+              )}
             </div>
             {filter && <div className="relative w-full">{filter}</div>}
           </div>

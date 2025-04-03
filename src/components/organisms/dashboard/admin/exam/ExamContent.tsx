@@ -69,8 +69,8 @@ const ExamContent = () => {
     }
   )
 
-  const handleEditModal = (modalOpen: boolean, id?: number) => {
-    setSelectedData(exams?.data.find((classData) => classData.id === id) ?? null)
+  const handleEditModal = (_modalOpen: boolean, id?: number) => {
+    router.push(`/dashboard/admin/exam/${id}/edit`)
   }
 
   const handleDeleteModal = (modalOpen: boolean, id?: number) => {
