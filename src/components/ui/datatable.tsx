@@ -33,7 +33,7 @@ interface DataTableProps<TData> {
   withSearch?: boolean
   setOpenDetailModal?: (value: boolean, id: number) => void
   setOpenEditModal?: (value: boolean, id: number) => void
-  setOpenDeleteModal?: (value: boolean, id: number) => void
+  setOpenDeleteModal?: (value: boolean, id: number, expectedUsn?: string) => void
   setOpenBulkDeleteModal?: (value: boolean, ids: number[]) => void
 }
 
@@ -121,6 +121,8 @@ const DataTable = <TData extends Record<string, any>>({
   const table = useReactTable({
     columns,
     data,
+    manualPagination: true,
+    pageCount: pagination?.total_pages,
     getCoreRowModel: getCoreRowModel(),
     state: {
       rowSelection
@@ -137,7 +139,7 @@ const DataTable = <TData extends Record<string, any>>({
   }
 
   const handleDelete = (row: TData) => {
-    setOpenDeleteModal?.(true, row.id)
+    setOpenDeleteModal?.(true, row.id, row.username)
   }
 
   // const handleSave = (_updatedRow: TData) => {
@@ -147,19 +149,19 @@ const DataTable = <TData extends Record<string, any>>({
   const renderPageNumbers = () => {
     const totalPages = pagination?.total_pages || 1
     const currentPage = (pagination?.current_page || 1) - 1
-    const pages = []
+    let pages = []
 
     if (totalPages <= 3) {
-      for (let i = 0; i < totalPages; i++) {
-        pages.push(i + 1)
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
       }
     } else {
-      if (currentPage <= 1) {
-        pages.push(1, 2, 3)
-      } else if (currentPage >= totalPages - 2) {
-        pages.push(totalPages - 2, totalPages - 1, totalPages)
+      if (currentPage <= 2) {
+        pages = [1, 2, 3]
+      } else if (currentPage >= totalPages - 1) {
+        pages = [totalPages - 2, totalPages - 1, totalPages]
       } else {
-        pages.push(currentPage, currentPage + 1, currentPage + 2)
+        pages = [currentPage - 1, currentPage, currentPage + 1]
       }
     }
 
@@ -223,7 +225,7 @@ const DataTable = <TData extends Record<string, any>>({
                     {header.isPlaceholder ? null : (
                       <Button
                         onClick={header.column.getToggleSortingHandler()}
-                        className="font flex items-center p-0 text-center text-base"
+                        className="flex items-center p-0 text-center text-base"
                         variant="ghost"
                         disabled={!header.column.getCanSort()}
                       >
@@ -231,8 +233,8 @@ const DataTable = <TData extends Record<string, any>>({
                         {header.column.getCanSort() && (
                           <>
                             <ChevronsUpDown size={16} className="ml-1 h-4 w-4" />
-                            {header.column.getIsSorted() === 'asc'}
-                            {header.column.getIsSorted() === 'desc'}
+                            {header.column.getIsSorted() === 'asc' && ' 🔼'}
+                            {header.column.getIsSorted() === 'desc' && ' 🔽'}
                           </>
                         )}
                       </Button>
@@ -309,8 +311,7 @@ const DataTable = <TData extends Record<string, any>>({
             aria-disabled={pagination?.current_page === 1}
             className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === 1 ? 'pointer-events-none opacity-50' : ''}`}
           >
-            <ChevronLeft size={20} color="#6B7280" strokeWidth={1.5} />
-            Previous
+            <ChevronLeft size={20} /> Previous
           </Button>
 
           <div className="flex w-full justify-center gap-2">
@@ -347,8 +348,7 @@ const DataTable = <TData extends Record<string, any>>({
             aria-disabled={pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0}
             className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0 ? 'pointer-events-none opacity-50' : ''}`}
           >
-            Next
-            <ChevronRight size={20} color="#6B7280" strokeWidth={1.5} />
+            Next <ChevronRight size={20} />
           </Button>
         </div>
       </div>
