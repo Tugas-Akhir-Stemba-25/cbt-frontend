@@ -28,6 +28,8 @@ interface DataTableProps<TData> {
   setPage?: (value: number) => void
   isLoading?: boolean
   showDetail?: boolean
+  withActions?: boolean
+  withSelect?: boolean
   setOpenDetailModal?: (value: boolean, id: number) => void
   setOpenEditModal?: (value: boolean, id: number) => void
   setOpenDeleteModal?: (value: boolean, id: number) => void
@@ -49,7 +51,9 @@ const DataTable = <TData extends Record<string, any>>({
   setOpenEditModal,
   setOpenDeleteModal,
   setOpenBulkDeleteModal,
-  setOpenDetailModal
+  setOpenDetailModal,
+  withActions = true,
+  withSelect = true
 }: DataTableProps<TData>) => {
   const data = React.useMemo(() => (isLoad ? Array(10).fill({}) : dataProps), [isLoad, dataProps])
 
@@ -198,14 +202,18 @@ const DataTable = <TData extends Record<string, any>>({
           <TableHeader className="w-full border-t bg-tableColour">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                <TableHead className="w-10 p-3">
-                  <Checkbox
-                    className="border-muted/1 h-4 w-4 border-2 bg-transparent"
-                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
-                  />
-                </TableHead>
+                {withSelect && (
+                  <TableHead className="w-10 p-3">
+                    <Checkbox
+                      className="border-muted/1 h-4 w-4 border-2 bg-transparent"
+                      checked={
+                        table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
+                      }
+                      onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                      aria-label="Select all"
+                    />
+                  </TableHead>
+                )}
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id} className="p-5 font-normal text-muted">
                     {header.isPlaceholder ? null : (
@@ -227,7 +235,7 @@ const DataTable = <TData extends Record<string, any>>({
                     )}
                   </TableHead>
                 ))}
-                <TableHead className="w-16 p-3"></TableHead>
+                {withActions && <TableHead className="w-16 p-3"></TableHead>}
                 <TableHead className="w-16 p-3"></TableHead>
               </TableRow>
             ))}
@@ -238,32 +246,36 @@ const DataTable = <TData extends Record<string, any>>({
                 key={row.id}
                 className={`border-t ${row.getIsSelected() ? 'bg-tableColour-selected' : 'bg-transparent'}`}
               >
-                <TableCell className="w-10 border-inherit p-3">
-                  <Checkbox
-                    className="border-muted/1 h-4 w-4 border-2 bg-transparent text-center"
-                    checked={row.getIsSelected()}
-                    onCheckedChange={(value) => row.toggleSelected(!!value)}
-                    aria-label="Select row"
-                  />
-                </TableCell>
+                {withSelect && (
+                  <TableCell className="w-10 border-inherit p-3">
+                    <Checkbox
+                      className="border-muted/1 h-4 w-4 border-2 bg-transparent text-center"
+                      checked={row.getIsSelected()}
+                      onCheckedChange={(value) => row.toggleSelected(!!value)}
+                      aria-label="Select row"
+                    />
+                  </TableCell>
+                )}
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="p-5 font-normal text-foreground">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
-                <TableCell className="flex gap-3 p-5">
-                  {showDetail && (
-                    <Button variant="ghost" onClick={() => handleDetail(row.original)}>
-                      <Eye size={16} className="text-primary" strokeWidth={1.5} />
+                {withActions && (
+                  <TableCell className="flex gap-3 p-5">
+                    {showDetail && (
+                      <Button variant="ghost" onClick={() => handleDetail(row.original)}>
+                        <Eye size={16} className="text-primary" strokeWidth={1.5} />
+                      </Button>
+                    )}
+                    <Button variant="ghost" onClick={() => handleEdit(row.original)}>
+                      <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
                     </Button>
-                  )}
-                  <Button variant="ghost" onClick={() => handleEdit(row.original)}>
-                    <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
-                  </Button>
-                  <Button variant="ghost" onClick={() => handleDelete(row.original)}>
-                    <Trash size={16} className="text-destructive" strokeWidth={1.5} />
-                  </Button>
-                </TableCell>
+                    <Button variant="ghost" onClick={() => handleDelete(row.original)}>
+                      <Trash size={16} className="text-destructive" strokeWidth={1.5} />
+                    </Button>
+                  </TableCell>
+                )}
                 <TableHead></TableHead>
               </TableRow>
             ))}

@@ -41,3 +41,16 @@ export interface TestStatistic {
     average: number
   }
 }
+
+export interface TestResult {
+  id: number
+  user: {
+    id: number
+    name: string
+  }
+  hash: string
+  grade: number
+  work_time: number
+  correct_answer: number
+  wrong_answer: number
+}
