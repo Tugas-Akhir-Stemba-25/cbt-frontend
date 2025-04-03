@@ -3,7 +3,7 @@
 import * as React from 'react'
 
 import { flexRender, getCoreRowModel, useReactTable, ColumnDef, RowSelectionState } from '@tanstack/react-table'
-import { ChevronsUpDown, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis, Loader } from 'lucide-react'
+import { ChevronsUpDown, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis, Eye } from 'lucide-react'
 
 import { SearchInput } from '@/components/atoms/input/SearchInput'
 import { Button } from '@/components/ui/button'
@@ -27,6 +27,11 @@ interface DataTableProps<TData> {
   setPerPage?: (value: number) => void
   setPage?: (value: number) => void
   isLoading?: boolean
+  showDetail?: boolean
+  withActions?: boolean
+  withSelect?: boolean
+  withSearch?: boolean
+  setOpenDetailModal?: (value: boolean, id: number) => void
   setOpenEditModal?: (value: boolean, id: number) => void
   setOpenDeleteModal?: (value: boolean, id: number, expectedUsn?: string) => void
   setOpenBulkDeleteModal?: (value: boolean, ids: number[]) => void
@@ -43,9 +48,14 @@ const DataTable = <TData extends Record<string, any>>({
   setPerPage,
   setPage,
   isLoading: isLoad = false,
+  showDetail,
   setOpenEditModal,
   setOpenDeleteModal,
-  setOpenBulkDeleteModal
+  setOpenBulkDeleteModal,
+  setOpenDetailModal,
+  withActions = true,
+  withSelect = true,
+  withSearch = true
 }: DataTableProps<TData>) => {
   const data = React.useMemo(() => (isLoad ? Array(10).fill({}) : dataProps), [isLoad, dataProps])
 
@@ -124,6 +134,10 @@ const DataTable = <TData extends Record<string, any>>({
     setOpenEditModal?.(true, row.id)
   }
 
+  const handleDetail = (row: TData) => {
+    setOpenDetailModal?.(true, row.id)
+  }
+
   const handleDelete = (row: TData) => {
     setOpenDeleteModal?.(true, row.id, row.username)
   }
@@ -175,11 +189,13 @@ const DataTable = <TData extends Record<string, any>>({
         <div className="flex flex-col gap-4 md:flex-row md:justify-between lg:gap-0">
           <div className="flex w-full flex-col gap-4 md:w-1/2 md:flex-row">
             <div className="relative w-full">
-              <SearchInput
-                placeholder={placeholder}
-                value={globalFilter}
-                onChange={(e) => setGlobalFilter?.(e.target.value)}
-              />
+              {withSearch && (
+                <SearchInput
+                  placeholder={placeholder}
+                  value={globalFilter}
+                  onChange={(e) => setGlobalFilter?.(e.target.value)}
+                />
+              )}
             </div>
             {filter && <div className="relative w-full">{filter}</div>}
           </div>
@@ -192,14 +208,18 @@ const DataTable = <TData extends Record<string, any>>({
           <TableHeader className="w-full border-t bg-tableColour">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                <TableHead className="w-10 p-3">
-                  <Checkbox
-                    className="border-muted/1 h-4 w-4 border-2 bg-transparent"
-                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
-                  />
-                </TableHead>
+                {withSelect && (
+                  <TableHead className="w-10 p-3">
+                    <Checkbox
+                      className="border-muted/1 h-4 w-4 border-2 bg-transparent"
+                      checked={
+                        table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
+                      }
+                      onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                      aria-label="Select all"
+                    />
+                  </TableHead>
+                )}
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id} className="p-5 font-normal text-muted">
                     {header.isPlaceholder ? null : (
@@ -221,25 +241,18 @@ const DataTable = <TData extends Record<string, any>>({
                     )}
                   </TableHead>
                 ))}
-                <TableHead className="w-16 p-3" />
-                <TableHead className="w-16 p-3" />
+                {withActions && <TableHead className="w-16 p-3"></TableHead>}
+                <TableHead className="w-16 p-3"></TableHead>
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {isLoad ? (
-              <TableRow>
-                <TableCell colSpan={columns.length + 2} className="p-5 text-center">
-                  <Loader className="mr-2 inline-block animate-spin" size={20} />
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className={`border-t ${row.getIsSelected() ? 'bg-tableColour-selected' : 'bg-transparent'}`}
-                >
+            {table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                className={`border-t ${row.getIsSelected() ? 'bg-tableColour-selected' : 'bg-transparent'}`}
+              >
+                {withSelect && (
                   <TableCell className="w-10 border-inherit p-3">
                     <Checkbox
                       className="border-muted/1 h-4 w-4 border-2 bg-transparent text-center"
@@ -248,12 +261,19 @@ const DataTable = <TData extends Record<string, any>>({
                       aria-label="Select row"
                     />
                   </TableCell>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="p-5 font-normal text-foreground">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+                )}
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="p-5 font-normal text-foreground">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+                {withActions && (
                   <TableCell className="flex gap-3 p-5">
+                    {showDetail && (
+                      <Button variant="ghost" onClick={() => handleDetail(row.original)}>
+                        <Eye size={16} className="text-primary" strokeWidth={1.5} />
+                      </Button>
+                    )}
                     <Button variant="ghost" onClick={() => handleEdit(row.original)}>
                       <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
                     </Button>
@@ -261,10 +281,10 @@ const DataTable = <TData extends Record<string, any>>({
                       <Trash size={16} className="text-destructive" strokeWidth={1.5} />
                     </Button>
                   </TableCell>
-                  <TableHead />
-                </TableRow>
-              ))
-            )}
+                )}
+                <TableHead></TableHead>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
