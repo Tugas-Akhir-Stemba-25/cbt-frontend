@@ -66,7 +66,7 @@ export default function TeacherContent() {
       { label: 'Master Data', href: '/dashboard/admin' },
       { label: 'Guru', href: '/dashboard/admin/guru' }
     ])
-  }, [])
+  }, [setBreadcrumbs])
 
   return (
     <>

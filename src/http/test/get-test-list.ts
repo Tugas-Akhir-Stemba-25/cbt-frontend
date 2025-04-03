@@ -8,7 +8,7 @@ import { extractSortedObject } from '@/utils/object'
 import { MetadataWithPagination } from '@/types/common/metadata'
 import { Test } from '@/types/test/test-list'
 
-interface GetTestListParams {
+export interface GetTestListParams {
   search?: string
   page?: number
   per_page?: number

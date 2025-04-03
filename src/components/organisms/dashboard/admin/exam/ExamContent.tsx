@@ -15,8 +15,8 @@ import useMaterialStore from '@/stores/useMaterialStore'
 
 import CardStatistic from '@/components/atoms/card/CardStatistic'
 import MaterialCombobox from '@/components/atoms/combobox/MaterialCombobox'
-import BulkDeleteClassModal from '@/components/molecules/popup/class/BulkDeleteClassModal'
-import DeleteClassModal from '@/components/molecules/popup/class/DeleteClassModal'
+import BulkDeleteTestModal from '@/components/molecules/popup/test/BulkDeleteTestModal'
+import DeleteTestModal from '@/components/molecules/popup/test/DeleteTestModal'
 import { Button } from '@/components/ui/button'
 import DataTable from '@/components/ui/datatable'
 
@@ -146,23 +146,23 @@ const ExamContent = () => {
           }
         />
       </div>
-      <DeleteClassModal
+      <DeleteTestModal
         openModal={openDeleteModal}
         setOpen={setOpenDeleteModal}
         id={selectedData?.id as number}
-        classKey={{
-          major_id: selectedMaterial as number,
+        testKey={{
+          material_id: selectedMaterial as number,
           page,
           per_page: perPage,
           search
         }}
       />
-      <BulkDeleteClassModal
+      <BulkDeleteTestModal
         openModal={openBulkDeleteModal}
         setOpen={setOpenBulkDeleteModal}
         ids={selectedIds}
-        classKey={{
-          major_id: selectedMaterial as number,
+        testKey={{
+          material_id: selectedMaterial as number,
           page,
           per_page: perPage,
           search

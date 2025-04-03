@@ -22,12 +22,14 @@ import useMaterialStore from '@/stores/useMaterialStore'
 import { testDetailSchema, TestDetailType } from '@/validators/test/test-detail-validator'
 import { testSettingSchema, TestSettingType } from '@/validators/test/test-setting-validator'
 
+import DeleteQuestionModal from '@/components/molecules/popup/question/DeleteQuestionModal'
 import { Button } from '@/components/ui/button'
 import DataTable from '@/components/ui/datatable'
 import { TabsContent } from '@/components/ui/tabs'
 
 import { questionColumns } from '@/constants/columns/question-columns'
 import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
+import { QuestionList } from '@/types/question/question'
 import { UpdateTestForm } from '@/types/test/test'
 
 import ExamDetailForm from './ExamDetailForm'
@@ -45,6 +47,13 @@ const ExamEdit = ({ id }: ExamEditProps) => {
   // Router
   const router = useRouter()
 
+  // Modal State
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+
+  // Selected Data
+  const [selectedData, setSelectedData] = useState<QuestionList | null>(null)
+
+  // Zustand Store
   const { setSelectedMaterial } = useMaterialStore()
 
   // Breadcrumbs
@@ -185,72 +194,90 @@ const ExamEdit = ({ id }: ExamEditProps) => {
     router.push(`/dashboard/admin/exam/${id}/question/${questionId}/edit`)
   }
 
+  const handleDeleteModal = (modalOpen: boolean, id?: number) => {
+    setOpenDeleteModal(modalOpen)
+    setSelectedData(question?.data.find((question) => question.id === id) ?? null)
+  }
+
   return (
-    <div className="flex flex-col gap-5 p-5">
-      <div>
-        <Link href="/dashboard/admin/exam" className="flex items-center gap-2 text-sm text-[#4B5563]">
-          <ArrowLeft className="h-4 w-4 text-[#4B5563]" />
-          Back
-        </Link>
+    <>
+      <div className="flex flex-col gap-5 p-5">
+        <div>
+          <Link href="/dashboard/admin/exam" className="flex items-center gap-2 text-sm text-[#4B5563]">
+            <ArrowLeft className="h-4 w-4 text-[#4B5563]" />
+            Back
+          </Link>
+        </div>
+        <div className="flex flex-col gap-8">
+          <h3 className="text-[18px] font-semibold">Edit Ujian</h3>
+          <ExamCreateTabs
+            activeTab={tab}
+            setTab={setTab}
+            trigger={[
+              { label: 'Detail Ujian', value: 'detail' },
+              { label: 'Pengaturan Ujian', value: 'settings' },
+              { label: 'Dokumen Soal', value: 'questions' }
+            ]}
+            content={
+              <>
+                <TabsContent value="detail">
+                  <ExamDetailForm
+                    isEdit={true}
+                    form={formDetail}
+                    onSubmit={handleSubmitDetail}
+                    fetchLoading={testLoading}
+                    submitLoading={updateTestPending}
+                  />
+                </TabsContent>
+                <TabsContent value="settings">
+                  <ExamSettingForm
+                    form={formSetting}
+                    onSubmit={onSubmit}
+                    submitLoading={updateTestPending}
+                    isEdit={true}
+                  />
+                </TabsContent>
+                <TabsContent value="questions">
+                  <DataTable
+                    columns={questionColumns}
+                    withSearch={false}
+                    data={question?.data ?? []}
+                    isLoading={questionLoading}
+                    placeholder="Cari Soal"
+                    showDetail={false}
+                    setSearch={() => {}}
+                    pagination={question?.meta.pagination}
+                    setPage={setPage}
+                    setOpenEditModal={handleEdit}
+                    setPerPage={setPerPage}
+                    setOpenDeleteModal={handleDeleteModal}
+                    action={
+                      <>
+                        <Button asChild>
+                          <Link href={`/dashboard/admin/exam/${id}/question/create`} className="btn-primary">
+                            Tambah Soal
+                          </Link>
+                        </Button>
+                      </>
+                    }
+                  />
+                </TabsContent>
+              </>
+            }
+          />
+        </div>
       </div>
-      <div className="flex flex-col gap-8">
-        <h3 className="text-[18px] font-semibold">Edit Ujian</h3>
-        <ExamCreateTabs
-          activeTab={tab}
-          setTab={setTab}
-          trigger={[
-            { label: 'Detail Ujian', value: 'detail' },
-            { label: 'Pengaturan Ujian', value: 'settings' },
-            { label: 'Dokumen Soal', value: 'questions' }
-          ]}
-          content={
-            <>
-              <TabsContent value="detail">
-                <ExamDetailForm
-                  isEdit={true}
-                  form={formDetail}
-                  onSubmit={handleSubmitDetail}
-                  fetchLoading={testLoading}
-                  submitLoading={updateTestPending}
-                />
-              </TabsContent>
-              <TabsContent value="settings">
-                <ExamSettingForm
-                  form={formSetting}
-                  onSubmit={onSubmit}
-                  submitLoading={updateTestPending}
-                  isEdit={true}
-                />
-              </TabsContent>
-              <TabsContent value="questions">
-                <DataTable
-                  columns={questionColumns}
-                  withSearch={false}
-                  data={question?.data ?? []}
-                  isLoading={questionLoading}
-                  placeholder="Cari Soal"
-                  showDetail={false}
-                  setSearch={() => {}}
-                  pagination={question?.meta.pagination}
-                  setPage={setPage}
-                  setOpenEditModal={handleEdit}
-                  setPerPage={setPerPage}
-                  action={
-                    <>
-                      <Button asChild>
-                        <Link href={`/dashboard/admin/exam/${id}/question/create`} className="btn-primary">
-                          Tambah Soal
-                        </Link>
-                      </Button>
-                    </>
-                  }
-                />
-              </TabsContent>
-            </>
-          }
-        />
-      </div>
-    </div>
+      <DeleteQuestionModal
+        questionKey={{
+          testId: id,
+          page,
+          per_page: perPage
+        }}
+        openModal={openDeleteModal}
+        setOpen={setOpenDeleteModal}
+        id={selectedData?.id as number}
+      />
+    </>
   )
 }
 
