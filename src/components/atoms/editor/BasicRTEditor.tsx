@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from 'react'
 
-import ReactQuill from 'react-quill-new'
+import dynamic from 'next/dynamic'
+
 import 'react-quill-new/dist/quill.snow.css'
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 
 interface BasicRTEditorProps {
   onChange?: (content: string) => void
@@ -11,21 +14,17 @@ interface BasicRTEditorProps {
 }
 
 const BasicRTEditor = ({ value, onChange }: BasicRTEditorProps) => {
-  const myColors = ['purple', '#785412', '#452632', '#856325', '#963254', '#254563', 'white']
-
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
       ['bold', 'italic', 'underline', 'strike', 'blockquote'],
       [{ align: ['right', 'center', 'justify'] }],
       [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link'],
-      [{ color: myColors }],
-      [{ background: myColors }]
+      ['link']
     ]
   }
 
-  const formats = ['header', 'bold', 'italic', 'underline', 'strike', 'blockquote', 'list', 'link', 'color', 'align']
+  const formats = ['header', 'bold', 'italic', 'underline', 'strike', 'blockquote', 'list', 'link', 'align']
 
   const [code, setCode] = useState<string>('')
 

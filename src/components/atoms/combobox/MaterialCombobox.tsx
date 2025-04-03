@@ -15,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { MaterialOption } from '@/types/material/material-option'
 
 const processLabel = (materials: MaterialOption[], value: string, length: number = 20) => {
-  const material = materials.find((material) => material.id === Number(value))
+  const material = materials?.find((material) => material.id === Number(value))
   if (!material) return ''
 
   // Format label to be more readable

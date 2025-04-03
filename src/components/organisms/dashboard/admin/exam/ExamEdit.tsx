@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
@@ -40,6 +41,9 @@ interface ExamEditProps {
 const ExamEdit = ({ id }: ExamEditProps) => {
   // Query Client
   const queryClient = useQueryClient()
+
+  // Router
+  const router = useRouter()
 
   const { setSelectedMaterial } = useMaterialStore()
 
@@ -177,6 +181,10 @@ const ExamEdit = ({ id }: ExamEditProps) => {
     })
   }
 
+  const handleEdit = (_open: boolean, questionId: number) => {
+    router.push(`/dashboard/admin/exam/${id}/question/${questionId}/edit`)
+  }
+
   return (
     <div className="flex flex-col gap-5 p-5">
       <div>
@@ -225,6 +233,7 @@ const ExamEdit = ({ id }: ExamEditProps) => {
                   setSearch={() => {}}
                   pagination={question?.meta.pagination}
                   setPage={setPage}
+                  setOpenEditModal={handleEdit}
                   setPerPage={setPerPage}
                   action={
                     <>

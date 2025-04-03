@@ -1,6 +1,6 @@
 import { useImperativeHandle, useRef, useState } from 'react'
 
-import { Plus } from 'lucide-react'
+import { Plus, Trash } from 'lucide-react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { CreateQuestionType } from '@/validators/test/question/create-question-validator'
@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { triggerClassName } from '../ExamTabs'
 
-interface QuestionEditorProps {
+interface QuestionEditorCreateProps {
   form: UseFormReturn<CreateQuestionType>
   isEdit?: boolean
   onSubmit: () => void
@@ -25,7 +25,14 @@ interface QuestionEditorProps {
   }>
 }
 
-const QuestionEditor = ({ form, onSubmit, isEdit, fetchLoading, submitLoading, ref }: QuestionEditorProps) => {
+const QuestionEditorCreate = ({
+  form,
+  onSubmit,
+  isEdit,
+  fetchLoading,
+  submitLoading,
+  ref
+}: QuestionEditorCreateProps) => {
   const [answers, setAnswer] = useState<string[]>([''])
   const questionWatch = form.watch('question')
 
@@ -129,6 +136,19 @@ const QuestionEditor = ({ form, onSubmit, isEdit, fetchLoading, submitLoading, r
                                   form.setValue('answers', newAnswers)
                                 }}
                               />
+                              <Button
+                                variant="destructive"
+                                type="button"
+                                onClick={() => {
+                                  const newAnswers = [...answers]
+                                  newAnswers.splice(index, 1)
+                                  setAnswer(newAnswers)
+                                  form.setValue('answers', newAnswers)
+                                }}
+                                disabled={fetchLoading || submitLoading}
+                              >
+                                <Trash className="h-4 w-4" />
+                              </Button>
                             </div>
                           ))}
                         </div>
@@ -183,4 +203,4 @@ const QuestionEditor = ({ form, onSubmit, isEdit, fetchLoading, submitLoading, r
   )
 }
 
-export default QuestionEditor
+export default QuestionEditorCreate

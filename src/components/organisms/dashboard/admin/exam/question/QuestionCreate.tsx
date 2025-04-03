@@ -5,18 +5,19 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { useGetTestDetail } from '@/http/test/get-test-detail'
+import { getTestDetailKey, useGetTestDetail } from '@/http/test/get-test-detail'
 import { useCreateQuestion } from '@/http/test/question/create-question'
 
 import { createQuestionSchema, CreateQuestionType } from '@/validators/test/question/create-question-validator'
 
 import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
 
-import QuestionEditor from './QuestionEditor'
+import QuestionEditorCreate from './QuestionEditorCreate'
 
 interface QuestionCreateProps {
   testId: number
@@ -24,6 +25,7 @@ interface QuestionCreateProps {
 
 const QuestionCreate = ({ testId }: QuestionCreateProps) => {
   const { setBreadcrumbs } = useBreadcrumbs()
+  const queryClient = useQueryClient()
 
   const ref = useRef<{
     reset: () => void
@@ -38,6 +40,9 @@ const QuestionCreate = ({ testId }: QuestionCreateProps) => {
       form.reset()
       toast.success('Sukses', {
         description: res.meta.message
+      })
+      queryClient.invalidateQueries({
+        queryKey: getTestDetailKey({ testId })
       })
       ref.current?.reset()
     },
@@ -67,12 +72,9 @@ const QuestionCreate = ({ testId }: QuestionCreateProps) => {
       },
       {
         label: 'Ujian',
-        href: '/dashboard/admin/exam'
-      },
-      {
-        label: detailTest?.data.name ?? 'Detail Ujian',
         href: `/dashboard/admin/exam/${testId}`
       },
+
       {
         label: 'Buat Soal',
         href: `/dashboard/admin/exam/${testId}/question/create`
@@ -120,7 +122,7 @@ const QuestionCreate = ({ testId }: QuestionCreateProps) => {
           <span>#{(detailTest?.data.total_question ?? 0) + 1}</span>
         </h6>
       </div>
-      <QuestionEditor ref={ref} onSubmit={onSubmit} submitLoading={createQuestionPending} form={form} />
+      <QuestionEditorCreate ref={ref} onSubmit={onSubmit} submitLoading={createQuestionPending} form={form} />
     </div>
   )
 }

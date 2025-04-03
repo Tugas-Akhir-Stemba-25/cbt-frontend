@@ -4,11 +4,12 @@ import { useEffect } from 'react'
 
 import Link from 'next/link'
 
-import { ArrowLeft, Calendar, User } from 'lucide-react'
+import { ArrowLeft, Calendar, Pencil, User } from 'lucide-react'
 
 import { useGetTestDetail } from '@/http/test/get-test-detail'
 
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
@@ -77,7 +78,14 @@ const ExamDetail = ({ id }: ExamDetailProps) => {
       </div>
       <Tabs className="flex w-full flex-col gap-6" defaultValue="overview">
         <div className="flex flex-col gap-8">
-          <h3 className="text-base font-semibold md:text-lg">Detail Ujian</h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-semibold md:text-lg">Detail Ujian</h3>
+            <Button variant={'ghost'}>
+              <Link href={`/dashboard/admin/exam/${id}/edit`}>
+                <Pencil className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
           <div className="flex h-full w-full flex-col gap-8 rounded-xl border border-[rgba(3,7,18,0.10)] p-5">
             <div className="flex flex-col gap-2">
               <div className="flex justify-end">
