@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
 
 import ExamOverview from './ExamOverview'
+import ExamQuestion from './ExamQuestion'
 import ExamResult from './ExamResult'
 import { triggerClassName } from './ExamTabs'
 
@@ -130,6 +131,9 @@ const ExamDetail = ({ id }: ExamDetailProps) => {
         <div className="flex w-full rounded-xl border border-[rgba(3,7,18,0.10)] p-5">
           <TabsContent value="overview" className="mt-0 w-full p-0">
             <ExamOverview id={id} />
+          </TabsContent>
+          <TabsContent value="question" className="mt-0 w-full p-0">
+            <ExamQuestion id={id} />
           </TabsContent>
           <TabsContent value="result" className="mt-0 w-full p-0">
             <ExamResult id={id} />
