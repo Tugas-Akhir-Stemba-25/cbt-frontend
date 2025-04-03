@@ -3,7 +3,7 @@
 import * as React from 'react'
 
 import { flexRender, getCoreRowModel, useReactTable, ColumnDef, RowSelectionState } from '@tanstack/react-table'
-import { ChevronsUpDown, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis } from 'lucide-react'
+import { ChevronsUpDown, ChevronLeft, ChevronRight, SquarePen, Trash, Ellipsis, Loader } from 'lucide-react'
 
 import { SearchInput } from '@/components/atoms/input/SearchInput'
 import { Button } from '@/components/ui/button'
@@ -28,7 +28,7 @@ interface DataTableProps<TData> {
   setPage?: (value: number) => void
   isLoading?: boolean
   setOpenEditModal?: (value: boolean, id: number) => void
-  setOpenDeleteModal?: (value: boolean, id: number) => void
+  setOpenDeleteModal?: (value: boolean, id: number, expectedUsn?: string) => void
   setOpenBulkDeleteModal?: (value: boolean, ids: number[]) => void
 }
 
@@ -111,6 +111,8 @@ const DataTable = <TData extends Record<string, any>>({
   const table = useReactTable({
     columns,
     data,
+    manualPagination: true,
+    pageCount: pagination?.total_pages,
     getCoreRowModel: getCoreRowModel(),
     state: {
       rowSelection
@@ -123,7 +125,7 @@ const DataTable = <TData extends Record<string, any>>({
   }
 
   const handleDelete = (row: TData) => {
-    setOpenDeleteModal?.(true, row.id)
+    setOpenDeleteModal?.(true, row.id, row.username)
   }
 
   // const handleSave = (_updatedRow: TData) => {
@@ -133,19 +135,19 @@ const DataTable = <TData extends Record<string, any>>({
   const renderPageNumbers = () => {
     const totalPages = pagination?.total_pages || 1
     const currentPage = (pagination?.current_page || 1) - 1
-    const pages = []
+    let pages = []
 
     if (totalPages <= 3) {
-      for (let i = 0; i < totalPages; i++) {
-        pages.push(i + 1)
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
       }
     } else {
-      if (currentPage <= 1) {
-        pages.push(1, 2, 3)
-      } else if (currentPage >= totalPages - 2) {
-        pages.push(totalPages - 2, totalPages - 1, totalPages)
+      if (currentPage <= 2) {
+        pages = [1, 2, 3]
+      } else if (currentPage >= totalPages - 1) {
+        pages = [totalPages - 2, totalPages - 1, totalPages]
       } else {
-        pages.push(currentPage, currentPage + 1, currentPage + 2)
+        pages = [currentPage - 1, currentPage, currentPage + 1]
       }
     }
 
@@ -203,7 +205,7 @@ const DataTable = <TData extends Record<string, any>>({
                     {header.isPlaceholder ? null : (
                       <Button
                         onClick={header.column.getToggleSortingHandler()}
-                        className="font flex items-center p-0 text-center text-base"
+                        className="flex items-center p-0 text-center text-base"
                         variant="ghost"
                         disabled={!header.column.getCanSort()}
                       >
@@ -211,49 +213,58 @@ const DataTable = <TData extends Record<string, any>>({
                         {header.column.getCanSort() && (
                           <>
                             <ChevronsUpDown size={16} className="ml-1 h-4 w-4" />
-                            {header.column.getIsSorted() === 'asc'}
-                            {header.column.getIsSorted() === 'desc'}
+                            {header.column.getIsSorted() === 'asc' && ' 🔼'}
+                            {header.column.getIsSorted() === 'desc' && ' 🔽'}
                           </>
                         )}
                       </Button>
                     )}
                   </TableHead>
                 ))}
-                <TableHead className="w-16 p-3"></TableHead>
-                <TableHead className="w-16 p-3"></TableHead>
+                <TableHead className="w-16 p-3" />
+                <TableHead className="w-16 p-3" />
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className={`border-t ${row.getIsSelected() ? 'bg-tableColour-selected' : 'bg-transparent'}`}
-              >
-                <TableCell className="w-10 border-inherit p-3">
-                  <Checkbox
-                    className="border-muted/1 h-4 w-4 border-2 bg-transparent text-center"
-                    checked={row.getIsSelected()}
-                    onCheckedChange={(value) => row.toggleSelected(!!value)}
-                    aria-label="Select row"
-                  />
+            {isLoad ? (
+              <TableRow>
+                <TableCell colSpan={columns.length + 2} className="p-5 text-center">
+                  <Loader className="mr-2 inline-block animate-spin" size={20} />
+                  Loading...
                 </TableCell>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="p-5 font-normal text-foreground">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-                <TableCell className="flex gap-3 p-5">
-                  <Button variant="ghost" onClick={() => handleEdit(row.original)}>
-                    <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
-                  </Button>
-                  <Button variant="ghost" onClick={() => handleDelete(row.original)}>
-                    <Trash size={16} className="text-destructive" strokeWidth={1.5} />
-                  </Button>
-                </TableCell>
-                <TableHead></TableHead>
               </TableRow>
-            ))}
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className={`border-t ${row.getIsSelected() ? 'bg-tableColour-selected' : 'bg-transparent'}`}
+                >
+                  <TableCell className="w-10 border-inherit p-3">
+                    <Checkbox
+                      className="border-muted/1 h-4 w-4 border-2 bg-transparent text-center"
+                      checked={row.getIsSelected()}
+                      onCheckedChange={(value) => row.toggleSelected(!!value)}
+                      aria-label="Select row"
+                    />
+                  </TableCell>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="p-5 font-normal text-foreground">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                  <TableCell className="flex gap-3 p-5">
+                    <Button variant="ghost" onClick={() => handleEdit(row.original)}>
+                      <SquarePen size={16} className="text-primary" strokeWidth={1.5} />
+                    </Button>
+                    <Button variant="ghost" onClick={() => handleDelete(row.original)}>
+                      <Trash size={16} className="text-destructive" strokeWidth={1.5} />
+                    </Button>
+                  </TableCell>
+                  <TableHead />
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
@@ -280,8 +291,7 @@ const DataTable = <TData extends Record<string, any>>({
             aria-disabled={pagination?.current_page === 1}
             className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === 1 ? 'pointer-events-none opacity-50' : ''}`}
           >
-            <ChevronLeft size={20} color="#6B7280" strokeWidth={1.5} />
-            Previous
+            <ChevronLeft size={20} /> Previous
           </Button>
 
           <div className="flex w-full justify-center gap-2">
@@ -318,8 +328,7 @@ const DataTable = <TData extends Record<string, any>>({
             aria-disabled={pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0}
             className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0 ? 'pointer-events-none opacity-50' : ''}`}
           >
-            Next
-            <ChevronRight size={20} color="#6B7280" strokeWidth={1.5} />
+            Next <ChevronRight size={20} />
           </Button>
         </div>
       </div>
