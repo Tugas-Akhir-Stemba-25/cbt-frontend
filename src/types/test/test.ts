@@ -70,12 +70,20 @@ export interface TestItem {
   id: number
   name: string
   start_time: string // ISO timestamp in UTC
+  finish_time: string // ISO timestamp
   duration: number // in minutes
   status: number // maybe 1 = upcoming, 2 = ongoing, 3 = finished?
-  finish_time: string // ISO timestamp
   material: {
     id: number
     name: string
     teaching_teacher: string
   }
+}
+
+export interface TestDetailStudent extends TestItem {
+  history: {
+    hash: string
+    status: number
+  }
+  question_count: number
 }
