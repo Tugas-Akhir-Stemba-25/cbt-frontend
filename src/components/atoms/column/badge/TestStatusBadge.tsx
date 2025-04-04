@@ -2,9 +2,6 @@ import React from 'react'
 
 import { Badge } from '@/components/ui/badge'
 
-import { TestItem } from '@/types/test/test'
-import { Test } from '@/types/test/test-list'
-
 const statusMap: Record<
   number,
   {
@@ -26,8 +23,13 @@ const statusMap: Record<
   }
 }
 
-const TestStatusColumn: React.FC<{ row: { original: Test | TestItem }; className?: string }> = ({ row, className }) => {
-  const data = statusMap[row.original.status]
+interface TestStatusBadgeProps {
+  status: number
+  className?: string
+}
+
+const TestStatusBadge = ({ status, className }: TestStatusBadgeProps) => {
+  const data = statusMap[status]
 
   return (
     <Badge variant={data.variant} className={className}>
@@ -36,4 +38,4 @@ const TestStatusColumn: React.FC<{ row: { original: Test | TestItem }; className
   )
 }
 
-export default TestStatusColumn
+export default TestStatusBadge

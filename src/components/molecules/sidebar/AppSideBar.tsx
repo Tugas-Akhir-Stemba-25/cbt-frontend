@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { Book, BookOpen, Files, FilesIcon, Folders, LayoutGrid, LucideIcon, School, User, Users } from 'lucide-react'
+import { BookOpen, Files, FilesIcon, Folders, LayoutGrid, LucideIcon, School, User, Users } from 'lucide-react'
 
 import {
   Sidebar,
@@ -127,15 +127,15 @@ const sidebarMenuConfig: MenuGroup[] = [
     label: 'Menu Siswa',
     roles: ['student'],
     items: [
-      {
-        title: 'Mata Pelajaran',
-        path: 'dashboard/student/materials',
-        icon: Book,
-        roles: ['student']
-      },
+      // {
+      //   title: 'Mata Pelajaran',
+      //   path: 'dashboard/student/materials',
+      //   icon: Book,
+      //   roles: ['student']
+      // },
       {
         title: 'Ujian',
-        path: 'dashboard/student/materials',
+        path: '/dashboard/student/exam',
         icon: Files,
         roles: ['student']
       }
