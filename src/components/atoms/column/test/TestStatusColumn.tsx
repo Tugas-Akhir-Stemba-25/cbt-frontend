@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Badge } from '@/components/ui/badge'
 
+import { TestItem } from '@/types/test/test'
 import { Test } from '@/types/test/test-list'
 
 const statusMap: Record<
@@ -25,10 +26,14 @@ const statusMap: Record<
   }
 }
 
-const TestStatusColumn: React.FC<{ row: { original: Test } }> = ({ row }) => {
+const TestStatusColumn: React.FC<{ row: { original: Test | TestItem }; className?: string }> = ({ row, className }) => {
   const data = statusMap[row.original.status]
 
-  return <Badge variant={data.variant}>{data.text}</Badge>
+  return (
+    <Badge variant={data.variant} className={className}>
+      {data.text}
+    </Badge>
+  )
 }
 
 export default TestStatusColumn

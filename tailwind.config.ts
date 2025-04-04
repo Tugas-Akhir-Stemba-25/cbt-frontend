@@ -25,10 +25,12 @@ export default {
           foreground: 'hsla(var(--primary-foreground))',
           bg: 'hsla(var(--primary-bg))',
           border: 'hsla(var(--primary-border))',
-          icon: 'hsla(var(--primary-icon))'
+          icon: 'hsla(var(--primary-icon))',
+          surface: 'hsla(var(--primary-surface))'
         },
         success: {
-          DEFAULT: 'hsla(var(--success))'
+          DEFAULT: 'hsla(var(--success))',
+          surface: 'hsla(var(--success-surface))'
           // foreground: 'hsla(var(--success-foreground))',
           // bg: 'hsla(var(--success-bg))',
           // border: 'hsla(var(--success-border))',
@@ -39,7 +41,8 @@ export default {
           foreground: 'hsla(var(--secondary-foreground))',
           bg: 'hsla(var(--secondary-bg))',
           border: 'hsla(var(--secondary-border))',
-          icon: 'hsla(var(--secondary-icon))'
+          icon: 'hsla(var(--secondary-icon))',
+          surface: 'hsla(var(--secondary-surface))'
         },
         tableColour: {
           DEFAULT: 'hsla(var(--th-colour))',
@@ -59,7 +62,8 @@ export default {
           foreground: 'hsla(var(--destructive-foreground))',
           bg: 'hsla(var(--destructive-bg))',
           border: 'hsla(var(--destructive-border))',
-          icon: 'hsla(var(--destructive-icon))'
+          icon: 'hsla(var(--destructive-icon))',
+          surface: 'hsla(var(--destructive-surface))'
         },
         disabled: {
           DEFAULT: 'hsla(var(--disabled))',
@@ -93,5 +97,5 @@ export default {
       }
     }
   },
-  plugins: [require('tailwindcss-animate')]
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/container-queries')]
 } satisfies Config

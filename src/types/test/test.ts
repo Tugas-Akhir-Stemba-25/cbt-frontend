@@ -55,3 +55,27 @@ export interface TestResult {
   correct_answer: number
   wrong_answer: number
 }
+
+export interface StudentTestStatistic {
+  count_by_status: {
+    not_started: number | null
+    ongoing: number | null
+    finished: number | null
+  }
+  total_tests: number | null
+  average_grade: number | null
+}
+
+export interface TestItem {
+  id: number
+  name: string
+  start_time: string // ISO timestamp in UTC
+  duration: number // in minutes
+  status: number // maybe 1 = upcoming, 2 = ongoing, 3 = finished?
+  finish_time: string // ISO timestamp
+  material: {
+    id: number
+    name: string
+    teaching_teacher: string
+  }
+}
