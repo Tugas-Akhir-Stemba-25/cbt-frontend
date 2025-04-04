@@ -23,7 +23,7 @@ const ExamSettingForm = ({ form, onSubmit: submitForm, submitLoading, isEdit }: 
   }
 
   return (
-    <div className="h-full w-full flex-col rounded-xl border border-[rgba(3,7,18,0.10)] p-5">
+    <div className="h-full w-full flex-col rounded-xl border border-neutral-800/10 p-5 dark:border-neutral-50/15">
       <Form {...form}>
         <form
           className="flex w-full flex-col gap-5"

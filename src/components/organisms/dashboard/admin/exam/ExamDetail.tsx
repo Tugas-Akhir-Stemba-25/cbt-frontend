@@ -87,7 +87,7 @@ const ExamDetail = ({ id }: ExamDetailProps) => {
               </Link>
             </Button>
           </div>
-          <div className="flex h-full w-full flex-col gap-8 rounded-xl border border-[rgba(3,7,18,0.10)] p-5">
+          <div className="flex h-full w-full flex-col gap-8 rounded-xl border border-neutral-800/10 p-5 dark:border-neutral-50/15">
             <div className="flex flex-col gap-2">
               <div className="flex justify-end">
                 {detailTest?.data.status && (
@@ -128,7 +128,7 @@ const ExamDetail = ({ id }: ExamDetailProps) => {
             </TabsList>
           </div>
         </div>
-        <div className="flex w-full rounded-xl border border-[rgba(3,7,18,0.10)] p-5">
+        <div className="flex w-full rounded-xl border border-neutral-800/10 p-5 dark:border-neutral-50/15">
           <TabsContent value="overview" className="mt-0 w-full p-0">
             <ExamOverview id={id} />
           </TabsContent>

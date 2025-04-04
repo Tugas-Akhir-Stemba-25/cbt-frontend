@@ -60,7 +60,7 @@ const ExamDetail = ({ id: testId }: ExamDetailProps) => {
         {isLoading ? (
           <ExamDetailSkeleton />
         ) : (
-          <div className="flex h-full w-full flex-col gap-4 rounded-xl border border-[rgba(3,7,18,0.10)] p-5">
+          <div className="flex h-full w-full flex-col gap-4 rounded-xl border border-neutral-800/10 p-5 dark:border-neutral-50/15">
             <div className="space-y-2">
               <div className="flex justify-between">
                 <h1 className="text-xl font-semibold md:text-2xl">{testDetail?.data.name}</h1>
@@ -118,7 +118,7 @@ const ExamDetail = ({ id: testId }: ExamDetailProps) => {
 
 export const ExamDetailSkeleton = () => {
   return (
-    <div className="flex h-full w-full flex-col gap-4 rounded-xl border border-[rgba(3,7,18,0.10)] p-5">
+    <div className="flex h-full w-full flex-col gap-4 rounded-xl border border-neutral-800/10 p-5 dark:border-neutral-50/15">
       <div className="space-y-2">
         <Skeleton className="h-8 w-1/3 md:h-8" /> {/* Judul */}
         <Skeleton className="h-6 w-1/4" /> {/* Nama materi */}

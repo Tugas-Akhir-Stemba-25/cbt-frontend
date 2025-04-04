@@ -2,6 +2,8 @@ import { Fragment, useEffect, useState } from 'react'
 
 import Image from 'next/image'
 
+import { FileX2 } from 'lucide-react'
+
 import { useGetTestQuestionIds } from '@/http/test/get-test-question-ids'
 import { useGetQuestionDetail } from '@/http/test/question/get-question-detail'
 
@@ -62,8 +64,13 @@ const ExamQuestion = ({ id }: ExamQuestionProps) => {
       </div>
       {questionDetailLoading ? (
         <ExamQuestionContentSkeleton />
+      ) : questionIds?.data.question_ids.length === 0 ? (
+        <div className="flex h-full w-full flex-col items-center gap-4 rounded-2xl border border-neutral-800/10 px-5 py-12 dark:border-neutral-50/15">
+          <FileX2 className="h-16 w-16 text-primary" />
+          <h5 className="text-lg font-semibold text-muted">Tidak ada data pertanyaan</h5>
+        </div>
       ) : (
-        <div className="flex h-full w-full flex-col gap-4 rounded-2xl border border-[rgba(3,7,18,0.10)] px-5 py-3">
+        <div className="flex h-full w-full flex-col gap-4 rounded-2xl border border-neutral-800/10 px-5 py-3 dark:border-neutral-50/15">
           <h5 className="text-base font-semibold md:text-lg">Soal {selectedNumber}</h5>
           {questionDetail?.data.image && (
             <div className="flex w-full justify-center">
@@ -110,7 +117,7 @@ const ExamQuestion = ({ id }: ExamQuestionProps) => {
 
 const ExamQuestionContentSkeleton = () => {
   return (
-    <div className="flex h-full w-full flex-col gap-4 rounded-2xl border border-[rgba(3,7,18,0.10)] px-5 py-3">
+    <div className="flex h-full w-full flex-col gap-4 rounded-2xl border border-neutral-800/10 px-5 py-3 dark:border-neutral-50/15">
       <h5 className="text-base font-semibold md:text-lg">Soal</h5>
       <div className="flex w-full justify-center">
         <Skeleton className="h-72 w-full lg:w-1/3" />
