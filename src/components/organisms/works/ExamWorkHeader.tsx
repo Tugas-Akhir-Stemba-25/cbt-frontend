@@ -25,7 +25,7 @@ const ExamWorkHeader = ({}: ExamWorkHeaderProps) => {
 
   const { hash } = useWorkHashStore()
 
-  const { data, isLoading } = useGetWorkDetail(
+  const { data, isLoading, isFetched } = useGetWorkDetail(
     {
       hash: hash as string
     },
@@ -62,7 +62,7 @@ const ExamWorkHeader = ({}: ExamWorkHeaderProps) => {
         </p>
       </div>
       <div>
-        {isLoading ? (
+        {isLoading || (!data?.data && !isFetched) ? (
           <Skeleton className="h-6 w-24" />
         ) : (
           <p className="flex items-center font-semibold">

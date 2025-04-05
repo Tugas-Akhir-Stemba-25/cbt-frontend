@@ -23,7 +23,8 @@ const ExamBottomNavigation = () => {
       hash: hash as string
     },
     {
-      enabled: !!hash
+      enabled: !!hash,
+      refetchOnWindowFocus: false
     }
   )
 
@@ -55,6 +56,7 @@ const ExamBottomNavigation = () => {
   }
 
   const handleFlagQuestion = () => {
+    if (!activeQuestion) return
     flagQuestion({
       hash: hash as string,
       form: {

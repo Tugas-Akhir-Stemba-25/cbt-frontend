@@ -12,6 +12,7 @@ import useWorkHashStore from '@/stores/useWorkHashStore'
 
 import QuestionNavigationButton from '@/components/atoms/button/QuestionNavigationButton'
 import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { SheetClose } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -72,11 +73,13 @@ const ExamWorkSidebar = ({}: ExamWorkSidebarProps) => {
       <Separator className="h-0.5 w-full md:hidden" />
       <div className="col-span-1 row-start-3 flex h-full flex-1 flex-col gap-6 rounded-xl bg-background md:p-5">
         <h3 className="font-semibold">Nomor Soal</h3>
-        <div className="grid h-full grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-4 lg:grid-cols-5">
-          {workAnswer?.data.map((item, index) => (
-            <QuestionNavigationButton key={item.id} data={item} idx={index + 1} />
-          ))}
-        </div>
+        <ScrollArea className="h-[450px] pr-4">
+          <div className="grid h-full grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-4 lg:grid-cols-5">
+            {workAnswer?.data.map((item, index) => (
+              <QuestionNavigationButton key={item.id} data={item} idx={index + 1} />
+            ))}
+          </div>
+        </ScrollArea>
         <div className="space-y-3 text-sm">
           <div className="flex items-center gap-2">
             <div className="h-5 w-5 rounded-lg border border-primary-surface bg-primary" />
