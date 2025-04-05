@@ -61,7 +61,7 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
                 }}
               />
               <div className="flex flex-col">
-                <RadioGroup value={answer?.test_answer_id.toString()}>
+                <RadioGroup value={answer?.test_answer_id ? answer?.test_answer_id.toString() : ''}>
                   {question?.answers.map((ans) => <AnswerButton answer={answer} key={ans.id} data={ans} />)}
                 </RadioGroup>
               </div>

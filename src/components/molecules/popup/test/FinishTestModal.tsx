@@ -81,8 +81,13 @@ const FinishTestModal = ({ isOpen, onOpenChange, isTimeout = false }: FinishTest
             )}
           </div>
         </AlertDialogHeader>
-        <AlertDialogFooter className="w-full">
-          <Button onClick={handleFinishTest} isLoading={isPending} className="w-full">
+        <AlertDialogFooter className="flex w-full flex-col gap-3 md:flex-row">
+          {!isTimeout && (
+            <Button variant="outline" onClick={() => onOpenChange(false)} className="">
+              Batalkan
+            </Button>
+          )}
+          <Button onClick={handleFinishTest} isLoading={isPending} className="">
             Submit
           </Button>
         </AlertDialogFooter>
