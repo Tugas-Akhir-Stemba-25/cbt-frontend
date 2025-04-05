@@ -14,9 +14,11 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 
-interface ExamWorkSideProps {}
+interface ExamWorkSideProps {
+  setOpenFinishTestModal: (isTimeout: boolean) => void
+}
 
-const ExamWorkSide = ({}: ExamWorkSideProps) => {
+const ExamWorkSide = ({ setOpenFinishTestModal }: ExamWorkSideProps) => {
   const { setActiveQuestion, activeQuestion } = useActiveQuestionStore()
 
   const { hash } = useWorkHashStore()
@@ -97,7 +99,9 @@ const ExamWorkSide = ({}: ExamWorkSideProps) => {
             <p>Ragu-ragu</p>
           </div>
         </div>
-        <Button variant={'destructive'}>Akhiri Ujian</Button>
+        <Button variant={'destructive'} onClick={() => setOpenFinishTestModal(false)}>
+          Akhiri Ujian
+        </Button>
       </div>
     </div>
   )

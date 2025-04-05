@@ -13,8 +13,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 import { WorkAnswer, WorkQuestion } from '@/types/work/work'
 
-import ExamBottomNavigation from './ExamBottomNavigation'
-
 interface ExamWorkQuestionProps {}
 
 const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
@@ -80,7 +78,6 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
           </ScrollArea>
         </div>
       )}
-      <ExamBottomNavigation />
     </>
   )
 }

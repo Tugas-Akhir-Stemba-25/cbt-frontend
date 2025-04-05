@@ -18,9 +18,11 @@ import useWorkHashStore from '@/stores/useWorkHashStore'
 
 import { Skeleton } from '@/components/ui/skeleton'
 
-interface ExamWorkHeaderProps {}
+interface ExamWorkHeaderProps {
+  setOpenFinishTestModal: (isTimeout: boolean) => void
+}
 
-const ExamWorkHeader = ({}: ExamWorkHeaderProps) => {
+const ExamWorkHeader = ({ setOpenFinishTestModal }: ExamWorkHeaderProps) => {
   const { remainingSeconds, setRemainingSeconds, decrement } = useTimerStore()
 
   const { hash } = useWorkHashStore()
@@ -48,6 +50,13 @@ const ExamWorkHeader = ({}: ExamWorkHeaderProps) => {
     return () => clearInterval(interval)
   }, [decrement])
 
+  useEffect(() => {
+    if (remainingSeconds && remainingSeconds <= 0 && !isLoading && isFetched) {
+      console.log(remainingSeconds)
+      setOpenFinishTestModal(true)
+    }
+  }, [remainingSeconds, isLoading, isFetched, setOpenFinishTestModal])
+
   return (
     <div className="col-span-1 flex w-full items-center justify-between rounded-xl bg-background p-5 md:col-span-3">
       <div className="flex items-center gap-2">
@@ -69,7 +78,7 @@ const ExamWorkHeader = ({}: ExamWorkHeaderProps) => {
             <Clock className="mr-2 inline h-4 w-4 text-primary" />
             <span
               className={cn({
-                'animate-blink text-red-600': remainingSeconds <= 60
+                'animate-blink text-red-600': remainingSeconds && remainingSeconds <= 60
               })}
             >
               {formatSeconds(remainingSeconds || 0, true)}

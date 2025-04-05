@@ -12,7 +12,11 @@ import useWorkHashStore from '@/stores/useWorkHashStore'
 
 import { Button } from '@/components/ui/button'
 
-const ExamBottomNavigation = () => {
+interface ExamBottomNavigationProps {
+  setOpenFinishTestModal: (isTimeout: boolean) => void
+}
+
+const ExamBottomNavigation = ({ setOpenFinishTestModal }: ExamBottomNavigationProps) => {
   const { hash } = useWorkHashStore()
   const { activeQuestion, setActiveQuestion } = useActiveQuestionStore()
 
@@ -99,7 +103,7 @@ const ExamBottomNavigation = () => {
           <ArrowRight />
         </Button>
       </div>
-      <Button className="inline-block md:hidden" variant={'destructive'}>
+      <Button onClick={() => setOpenFinishTestModal(false)} className="inline-block md:hidden" variant={'destructive'}>
         Akhiri Ujian
       </Button>
     </div>
