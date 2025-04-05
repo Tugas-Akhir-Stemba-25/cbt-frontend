@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { useGetWorkAnswer } from '@/http/work/get-work-answer'
 import { useGetWorkQuestion } from '@/http/work/get-work-question'
 
 import useActiveQuestionStore from '@/stores/useActiveQuestionStore'
+import { useWorkAnswerStore } from '@/stores/useWorkAnswerStore'
 import useWorkHashStore from '@/stores/useWorkHashStore'
 
 import AnswerButton from '@/components/atoms/button/AnswerButton'
@@ -12,8 +12,6 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import { WorkAnswer, WorkQuestion } from '@/types/work/work'
-
-import ExamBottomNavigation from './ExamBottomNavigation'
 
 interface ExamWorkQuestionProps {}
 
@@ -38,22 +36,14 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
     }
   )
 
-  const { data: workAnswer } = useGetWorkAnswer(
-    {
-      hash: hash as string
-    },
-    {
-      enabled: !!hash,
-      refetchOnWindowFocus: false
-    }
-  )
+  const { workAnswers } = useWorkAnswerStore()
 
   useEffect(() => {
     if (activeQuestion && workQuestion?.data) {
-      setAnswer(workAnswer?.data.find((wa) => wa.test_question_id === activeQuestion?.id) ?? null)
+      setAnswer(workAnswers?.find((wa) => wa.test_question_id === activeQuestion?.id) ?? null)
       setQuestion(workQuestion?.data.find((q) => q.id === activeQuestion.id) ?? null)
     }
-  }, [activeQuestion, workQuestion, workAnswer])
+  }, [activeQuestion, workQuestion, workAnswers])
 
   return (
     <>
@@ -80,7 +70,6 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
           </ScrollArea>
         </div>
       )}
-      <ExamBottomNavigation />
     </>
   )
 }
