@@ -3,12 +3,15 @@
 import { useEffect } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { format } from 'date-fns'
 import { id } from 'date-fns/locale'
 import { ArrowLeft, Calendar, Clock, Files, User } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { useGetStudentTestDetail } from '@/http/test/get-student-test-detail'
+import { useStartTest } from '@/http/test/start-test'
 
 import { formatSeconds } from '@/utils/time'
 
@@ -23,6 +26,8 @@ interface ExamDetailProps {
 }
 
 const ExamDetail = ({ id: testId }: ExamDetailProps) => {
+  const router = useRouter()
+
   // Breadcrumbs
   const { setBreadcrumbs } = useBreadcrumbs()
 
@@ -46,6 +51,26 @@ const ExamDetail = ({ id: testId }: ExamDetailProps) => {
       enabled: !!testId
     }
   )
+
+  // Mutation
+  const { mutate: startTest, isPending: startTestLoading } = useStartTest({
+    onSuccess: (data) => {
+      router.push(`/works/${data.data.hash}`)
+    },
+    onError: (error) => {
+      console.error('Error starting test:', error)
+
+      toast.error('Error', {
+        description: error.response?.data.error || error.response?.data.message
+      })
+    }
+  })
+
+  const handleStartTest = () => {
+    if (testDetail?.data.status === 2) {
+      startTest({ testId })
+    }
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -95,20 +120,22 @@ const ExamDetail = ({ id: testId }: ExamDetailProps) => {
       </div>
       <div className="flex justify-center">
         {testDetail?.data.history ? (
-          <Button disabled={testDetail?.data.status === 1} asChild={testDetail?.data.status !== 1}>
-            <Link href={`/dashboard/student/works/${testDetail.data.history.hash}`}>
-              {testDetail.data.history.status === 2 ? 'Lanjut Kerjakan' : 'Lihat Hasil'}
-            </Link>
+          testDetail.data.history.status === 2 ? (
+            <Button disabled={testDetail?.data.status === 1} asChild={testDetail?.data.status !== 1}>
+              <Link href={`/dashboard/student/works/${testDetail.data.history.hash}`}>Lanjut Kerjakan</Link>
+            </Button>
+          ) : (
+            <Button disabled={testDetail?.data.status === 1} asChild={testDetail?.data.status !== 1}>
+              <Link href={`/dashboard/student/works/${testDetail.data.history.hash}/results`}>Lanjut hasil</Link>
+            </Button>
+          )
+        ) : testDetail?.data.status === 2 ? (
+          <Button onClick={handleStartTest} isLoading={startTestLoading}>
+            Kerjakan
           </Button>
         ) : (
-          <Button disabled={testDetail?.data.status !== 2} asChild={testDetail?.data.status === 2}>
-            <Link href={`/dashboard/student/exam/${testId}/start`}>
-              {testDetail?.data.status === 2
-                ? 'Kerjakan'
-                : testDetail?.data.status === 3
-                  ? 'Ujian Sudah Selesai'
-                  : 'Ujian Belum Dimulai'}
-            </Link>
+          <Button disabled={true}>
+            {testDetail?.data.status === 1 ? 'Ujian Belum Dimulai' : 'Ujian Sudah Selesai'}
           </Button>
         )}
       </div>

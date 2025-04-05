@@ -90,6 +90,14 @@ export default {
           ring: 'hsl(var(--sidebar-ring))'
         }
       },
+      animation: {
+        blink: 'blink 1s step-start infinite'
+      },
+      keyframes: {
+        blink: {
+          '50%': { opacity: '0' }
+        }
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
