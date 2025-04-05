@@ -63,8 +63,8 @@ const CardExamResultNumber = ({ hash }: CardExamResultNumberProps) => {
   )
 
   const handleClick = (id: number, index: number) => {
-    setActiveQuestion(id, index)
-    router.push(`/dashboard/student/work/${hash}/result`)
+    setActiveQuestion(id, index + 1)
+    router.push(`/result/${hash}`)
   }
 
   return (
@@ -118,7 +118,7 @@ const CardExamResultNumber = ({ hash }: CardExamResultNumberProps) => {
       </div>
       <div className="flex justify-center">
         <Button asChild>
-          <Link href={`/dashboard/student/work/${hash}/result`}>Lihat Pembahasan</Link>
+          <Link href={`/result/${hash}`}>Lihat Pembahasan</Link>
         </Button>
       </div>
     </div>
