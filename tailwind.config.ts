@@ -91,7 +91,7 @@ export default {
         }
       },
       animation: {
-        blink: 'blink 1s step-start infinite'
+        blink: 'blink 1s step-end infinite'
       },
       keyframes: {
         blink: {
