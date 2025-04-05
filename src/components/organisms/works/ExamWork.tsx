@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import useWorkHashStore from '@/stores/useWorkHashStore'
 
 import FinishTestModal from '@/components/molecules/popup/test/FinishTestModal'
+import TestEndedModal from '@/components/molecules/popup/test/TestEndedModal'
 
 import ExamBottomNavigation from './ExamBottomNavigation'
 import ExamTitle from './ExamTitle'
@@ -40,6 +41,7 @@ const ExamWork = ({ hash }: ExamWorkProps) => {
         <ExamWorkSide setOpenFinishTestModal={handleOpenFinishTestModal} />
       </div>
       <FinishTestModal isOpen={openFinishTestModal} onOpenChange={setOpenFinishTestModal} isTimeout={isTimeout} />
+      <TestEndedModal />
     </>
   )
 }

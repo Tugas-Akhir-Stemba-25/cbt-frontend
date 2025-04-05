@@ -32,7 +32,7 @@ const FinishTestModal = ({ isOpen, onOpenChange, isTimeout = false }: FinishTest
       toast.success('Sukses', {
         description: res.meta.message
       })
-      router.push(`/dashboard/student/work/${hash}/result`)
+      router.push(`/dashboard/student/work/${hash}`)
     },
     onError: (err) => {
       toast.error('Gagal', {
