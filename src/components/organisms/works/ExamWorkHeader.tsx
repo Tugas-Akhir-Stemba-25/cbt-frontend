@@ -14,19 +14,20 @@ import { cn } from '@/utils/shadcn'
 import { formatSeconds } from '@/utils/time'
 
 import { useTimerStore } from '@/stores/useTimerStore'
+import useWorkHashStore from '@/stores/useWorkHashStore'
 
 import { Skeleton } from '@/components/ui/skeleton'
 
-interface ExamWorkHeaderProps {
-  hash: string
-}
+interface ExamWorkHeaderProps {}
 
-const ExamWorkHeader = ({ hash }: ExamWorkHeaderProps) => {
+const ExamWorkHeader = ({}: ExamWorkHeaderProps) => {
   const { remainingSeconds, setRemainingSeconds, decrement } = useTimerStore()
+
+  const { hash } = useWorkHashStore()
 
   const { data, isLoading } = useGetWorkDetail(
     {
-      hash
+      hash: hash as string
     },
     {
       enabled: !!hash
@@ -48,7 +49,7 @@ const ExamWorkHeader = ({ hash }: ExamWorkHeaderProps) => {
   }, [decrement])
 
   return (
-    <div className="flex w-full items-center justify-between rounded-xl bg-background p-5">
+    <div className="col-span-3 flex w-full items-center justify-between rounded-xl bg-background p-5">
       <div className="flex items-center gap-2">
         <Image src="/assets/images/logo-icon.svg" width={48} height={48} alt="logo-icon-luminaqa" />
         <p className="hidden text-lg font-semibold text-primary md:block">LuminaQA</p>
