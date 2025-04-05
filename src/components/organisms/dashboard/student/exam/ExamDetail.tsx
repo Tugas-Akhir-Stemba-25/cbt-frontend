@@ -126,7 +126,7 @@ const ExamDetail = ({ id: testId }: ExamDetailProps) => {
             </Button>
           ) : (
             <Button disabled={testDetail?.data.status === 1} asChild={testDetail?.data.status !== 1}>
-              <Link href={`/dashboard/student/works/${testDetail.data.history.hash}/results`}>Lanjut hasil</Link>
+              <Link href={`/dashboard/student/work/${testDetail.data.history.hash}`}>Lanjut hasil</Link>
             </Button>
           )
         ) : testDetail?.data.status === 2 ? (
