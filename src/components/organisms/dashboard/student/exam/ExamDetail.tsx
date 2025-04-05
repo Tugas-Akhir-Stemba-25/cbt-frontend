@@ -5,17 +5,13 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { format } from 'date-fns'
-import { id } from 'date-fns/locale'
-import { ArrowLeft, Calendar, Clock, Files, User } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { useGetStudentTestDetail } from '@/http/test/get-student-test-detail'
 import { useStartTest } from '@/http/test/start-test'
 
-import { formatSeconds } from '@/utils/time'
-
-import TestStatusBadge from '@/components/atoms/column/badge/TestStatusBadge'
+import ExamDetailCard from '@/components/atoms/card/ExamDetailCard'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -84,38 +80,10 @@ const ExamDetail = ({ id: testId }: ExamDetailProps) => {
         <h3 className="text-[18px] font-semibold">Detail Ujian</h3>
         {isLoading ? (
           <ExamDetailSkeleton />
+        ) : isLoading ? (
+          <ExamDetailSkeleton />
         ) : (
-          <div className="flex h-full w-full flex-col gap-4 rounded-xl border border-neutral-800/10 p-5 dark:border-neutral-50/15">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <h1 className="text-xl font-semibold md:text-2xl">{testDetail?.data.name}</h1>
-                <TestStatusBadge status={testDetail?.data.status ?? 1} />
-              </div>
-              <p className="text-lg">{testDetail?.data.material.name}</p>
-            </div>
-            <div className="grid grid-cols-1 gap-2 text-sm @lg:grid-cols-2">
-              <p className="flex items-center">
-                <User className="mr-2 h-4 w-4" />
-                <span>{testDetail?.data.material.teaching_teacher}</span>
-              </p>
-              <p className="flex items-center">
-                <Clock className="mr-2 h-4 w-4" />
-                <span>{formatSeconds(testDetail?.data.duration || 0, true)}</span>
-              </p>
-              <p className="flex items-center">
-                <Calendar className="mr-2 h-4 w-4" />
-                <span>
-                  {format(new Date(testDetail?.data.start_time || ''), 'dd MMMM yyyy, HH:mm', {
-                    locale: id
-                  })}
-                </span>
-              </p>
-              <p className="flex items-center">
-                <Files className="mr-2 h-4 w-4" />
-                <span>{testDetail?.data.question_count} Soal</span>
-              </p>
-            </div>
-          </div>
+          testDetail?.data && <ExamDetailCard withBadge={false} data={testDetail.data} />
         )}
       </div>
       <div className="flex justify-center">

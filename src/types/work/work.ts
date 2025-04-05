@@ -17,6 +17,12 @@ export interface WorkAnswer {
   test_question_id: number
   test_history_id: number
   flagged: boolean
+  correct?: {
+    id: number
+    test_question_id: number
+    answer: string
+    correct: boolean
+  }
 }
 
 export interface QuestionAnswer {

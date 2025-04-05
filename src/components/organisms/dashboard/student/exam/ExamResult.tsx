@@ -13,6 +13,7 @@ import { useGetWorkResult } from '@/http/work/get-work-result'
 
 import { formatSeconds } from '@/utils/time'
 
+import CardExamResultNumber from '@/components/atoms/card/CardExamResultNumber'
 import CardExamResultStatistic from '@/components/atoms/card/CardExamResultStatistic'
 
 import ExamDetailCard from '../../../../atoms/card/ExamDetailCard'
@@ -133,6 +134,7 @@ const ExamResult = ({ hash }: ExamResultProps) => {
             />
           )}
         </div>
+        <CardExamResultNumber hash={hash} />
       </div>
     </div>
   )
