@@ -1,3 +1,5 @@
+import ExamResult from '@/components/organisms/dashboard/student/exam/ExamResult'
+
 interface Props {
   params: {
     hash: string
@@ -7,7 +9,7 @@ interface Props {
 const page = async (props: Props) => {
   const params = await props.params
 
-  return <div>{params.hash}</div>
+  return <ExamResult hash={params.hash} />
 }
 
 export default page

@@ -28,9 +28,9 @@ const CardStudentTest = ({ data }: CardStudentTest) => {
         <p className="col-span-2 @3xl:col-span-1">Mata Pelajaran :</p>
         <p className="hidden @3xl:block">Guru Pengampu :</p>
         <p className="col-span-2 text-end @3xl:col-span-1 @3xl:text-start">Lama Waktu :</p>
-        <p className="col-span-2 text-[#4B5563] @3xl:col-span-1">{data.material.name}</p>
-        <p className="hidden text-[#4B5563] @3xl:block">{data.material.teaching_teacher}</p>
-        <p className="col-span-2 text-end text-[#4B5563] @3xl:col-span-1 @3xl:text-start">
+        <p className="text-subtle col-span-2 @3xl:col-span-1">{data.material.name}</p>
+        <p className="text-subtle hidden @3xl:block">{data.material.teaching_teacher}</p>
+        <p className="text-subtle col-span-2 text-end @3xl:col-span-1 @3xl:text-start">
           {formatSeconds(data.duration, true)}
         </p>
       </div>

@@ -63,6 +63,7 @@ body {
     --secondary-surface: 34, 89%, 96%;
     --success-surface: 103, 84%, 95%;
     --destructive-surface: 17, 100%, 96%;
+    --subtle: 0, 0%, 15%;
   }
   .dark {
     --background: 224, 71%, 4%;
@@ -118,6 +119,7 @@ body {
     --secondary-surface: 14, 70%, 15%;
     --success-surface: 115, 76%, 10%;
     --destructive-surface: 357, 84%, 15%;
+    --subtle: 0, 0%, 98%;
   }
 }
 

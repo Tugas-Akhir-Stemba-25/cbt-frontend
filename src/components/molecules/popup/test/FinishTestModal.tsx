@@ -1,10 +1,13 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
+import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { useFinishWork } from '@/http/work/finish-work'
+import { getWorkResultKey } from '@/http/work/get-work-result'
 
+import useActiveQuestionStore from '@/stores/useActiveQuestionStore'
 import useWorkHashStore from '@/stores/useWorkHashStore'
 
 import {
@@ -24,8 +27,10 @@ interface FinishTestModalProps {
 
 const FinishTestModal = ({ isOpen, onOpenChange, isTimeout = false }: FinishTestModalProps) => {
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const { hash } = useWorkHashStore()
+  const { clear } = useActiveQuestionStore()
 
   const { mutate: finishTest, isPending } = useFinishWork({
     onSuccess: (res) => {
@@ -33,6 +38,10 @@ const FinishTestModal = ({ isOpen, onOpenChange, isTimeout = false }: FinishTest
         description: res.meta.message
       })
       router.push(`/dashboard/student/work/${hash}`)
+      queryClient.invalidateQueries({
+        queryKey: getWorkResultKey(hash as string)
+      })
+      clear()
     },
     onError: (err) => {
       toast.error('Gagal', {

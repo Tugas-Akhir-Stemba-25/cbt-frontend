@@ -24,8 +24,8 @@ export const testResultColumns: ColumnDef<TestResultFieldRowProps>[] = [
   },
   {
     header: 'Soal Salah',
-    accessorKey: 'wrong_answer',
-    enableSorting: false
+    enableSorting: false,
+    accessorFn: (row) => row.total - (row.correct_answer || 0)
   },
   {
     header: 'Nilai',

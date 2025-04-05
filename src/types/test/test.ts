@@ -54,6 +54,7 @@ export interface TestResult {
   work_time: number
   correct_answer: number
   wrong_answer: number
+  total: number
 }
 
 export interface StudentTestStatistic {

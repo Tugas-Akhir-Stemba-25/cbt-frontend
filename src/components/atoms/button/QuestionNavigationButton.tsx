@@ -18,7 +18,7 @@ const mappingVariant = ({ data, id }: { data: WorkAnswer; id: number }) => {
 
   if (data.test_answer_id) return 'default'
 
-  return 'disabled'
+  return 'subtle'
 }
 
 const QuestionNavigationButton = ({ data, idx }: QuestionNavigationButtonProps) => {

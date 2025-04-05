@@ -55,7 +55,8 @@ const ExamWorkSide = ({ setOpenFinishTestModal }: ExamWorkSideProps) => {
 
   useEffect(() => {
     if (workAnswer?.data && workAnswer.data.length > 0) {
-      if (!activeQuestion) setActiveQuestion(workAnswer.data[0].test_question_id, 1)
+      if (!activeQuestion || !workAnswer.data.find((wa) => wa.test_question_id === activeQuestion.id))
+        setActiveQuestion(workAnswer.data[0].test_question_id, 1)
     }
   }, [workAnswer, setActiveQuestion, activeQuestion])
 

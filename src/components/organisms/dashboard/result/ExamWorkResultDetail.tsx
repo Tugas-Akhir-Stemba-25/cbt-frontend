@@ -3,23 +3,23 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 import { useGetWorkQuestion } from '@/http/work/get-work-question'
+import { useGetWorkResult } from '@/http/work/get-work-result'
 
 import { buildStorageUrl } from '@/utils/common'
+import { cn } from '@/utils/shadcn'
 
 import useActiveQuestionStore from '@/stores/useActiveQuestionStore'
 import { useWorkAnswerStore } from '@/stores/useWorkAnswerStore'
 import useWorkHashStore from '@/stores/useWorkHashStore'
 
-import AnswerButton from '@/components/atoms/button/AnswerButton'
+import AnswerButtonResult from '@/components/atoms/button/AnswerButtonResult'
 import { RadioGroup } from '@/components/ui/radio-group'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import { WorkAnswer, WorkQuestion } from '@/types/work/work'
 
-interface ExamWorkQuestionProps {}
-
-const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
+const ExamWorkResultDetail = () => {
   const [question, setQuestion] = useState<WorkQuestion | null>(null)
   const [answer, setAnswer] = useState<WorkAnswer | null>(null)
 
@@ -31,6 +31,16 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
     isLoading: workQuestionLoading,
     isFetched: workQuestionFetched
   } = useGetWorkQuestion(
+    {
+      hash: hash as string
+    },
+    {
+      enabled: !!hash,
+      refetchOnWindowFocus: false
+    }
+  )
+
+  const { data: workResult } = useGetWorkResult(
     {
       hash: hash as string
     },
@@ -52,12 +62,12 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
   return (
     <>
       {workQuestionLoading || (!workQuestion?.data && !workQuestionFetched) ? (
-        <ExamWorkQuestionSkeleton />
+        <ExamWorkResultDetailSkeleton />
       ) : (
-        <div className="col-span-1 col-start-1 row-start-3 space-y-5 rounded-xl bg-background p-5 md:col-span-2 md:row-start-2">
+        <div className="col-span-1 col-start-1 row-start-4 space-y-5 rounded-xl bg-background p-5 md:col-span-2 md:row-start-3">
           <h2 className="text-base font-semibold md:text-lg">Nomor Soal: {activeQuestion?.no}</h2>
 
-          <ScrollArea className="h-[450px]">
+          <ScrollArea className="h-[450px] pr-4">
             <div className="flex flex-col gap-6">
               {question?.image && (
                 <div className="flex w-full justify-center">
@@ -75,11 +85,26 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
                   __html: question?.question ?? ''
                 }}
               />
-              <div className="flex flex-col">
-                <RadioGroup value={answer?.test_answer_id ? answer?.test_answer_id.toString() : ''}>
-                  {question?.answers.map((ans) => <AnswerButton answer={answer} key={ans.id} data={ans} />)}
-                </RadioGroup>
-              </div>
+              <RadioGroup disabled={true} value={answer?.test_answer_id ? answer?.test_answer_id.toString() : ''}>
+                <div className={cn('grid grid-cols-[1fr_max-content] items-center gap-2')}>
+                  <p className="text-sm font-semibold text-primary">Opsi Jawaban</p>
+                  <p className="text-sm font-semibold text-primary">Jawabanmu</p>
+                  {question?.answers.map((ans) => (
+                    <AnswerButtonResult
+                      isShowAnswer={workResult?.data.is_show_answer}
+                      answer={answer}
+                      key={ans.id}
+                      data={ans}
+                    />
+                  ))}
+                </div>
+              </RadioGroup>
+              {workResult?.data.is_show_answer && (
+                <div className="flex w-full justify-between text-success">
+                  <p>Kunci Jawaban</p>
+                  <p>Opsi {(question?.answers?.findIndex((a) => answer?.correct?.id === a.id) ?? 0) + 1}</p>
+                </div>
+              )}
             </div>
             <ScrollBar />
           </ScrollArea>
@@ -89,9 +114,9 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
   )
 }
 
-export const ExamWorkQuestionSkeleton = () => {
+export const ExamWorkResultDetailSkeleton = () => {
   return (
-    <div className="col-span-1 col-start-1 row-start-3 space-y-5 rounded-xl bg-background p-5 md:col-span-2 md:row-start-2">
+    <div className="col-span-1 col-start-1 row-start-4 space-y-5 rounded-xl bg-background p-5 md:col-span-2 md:row-start-3">
       <Skeleton className="h-8 w-36" />
       <Skeleton className="h-16 w-full" />
       {Array.from({ length: 5 }).map((_, index) => (
@@ -107,4 +132,4 @@ export const ExamWorkQuestionSkeleton = () => {
   )
 }
 
-export default ExamWorkQuestion
+export default ExamWorkResultDetail
