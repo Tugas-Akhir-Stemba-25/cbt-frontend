@@ -1,8 +1,12 @@
 'use client'
 
+import { useEffect } from 'react'
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { ArrowLeft } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { useGetStudentTestDetailByHash } from '@/http/test/get-student-test-detail-by-hash'
 import { useGetWorkResult } from '@/http/work/get-work-result'
@@ -19,6 +23,8 @@ interface ExamResultProps {
 }
 
 const ExamResult = ({ hash }: ExamResultProps) => {
+  const router = useRouter()
+
   const { data: testDetail, isLoading: isTestDetailLoading } = useGetStudentTestDetailByHash(
     {
       hash
@@ -28,7 +34,11 @@ const ExamResult = ({ hash }: ExamResultProps) => {
     }
   )
 
-  const { data: workResult } = useGetWorkResult(
+  const {
+    data: workResult,
+    isLoading: workResultLoading,
+    isFetched: workResultFetched
+  } = useGetWorkResult(
     {
       hash
     },
@@ -37,11 +47,20 @@ const ExamResult = ({ hash }: ExamResultProps) => {
     }
   )
 
+  useEffect(() => {
+    if (!workResultLoading && workResultFetched && workResult?.data.status && workResult?.data.status != 3) {
+      toast.error('Error', {
+        description: 'Ujian belum selesai dikerjakan'
+      })
+      router.push(`/dashboard/student/exam/${testDetail?.data.id}`)
+    }
+  }, [workResult, testDetail, workResultLoading, workResultFetched, router])
+
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <Link href="/dashboard/student/exam" className="flex items-center gap-2 text-sm text-[#4B5563]">
-          <ArrowLeft className="h-4 w-4 text-[#4B5563]" />
+        <Link href="/dashboard/student/exam" className="text-subtle flex items-center gap-2 text-sm">
+          <ArrowLeft className="text-subtle h-4 w-4" />
           Back
         </Link>
       </div>
@@ -52,7 +71,7 @@ const ExamResult = ({ hash }: ExamResultProps) => {
         ) : (
           testDetail?.data && <ExamDetailCard withBadge={false} data={testDetail.data} />
         )}
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 gap-5 @xl:grid-cols-2 @4xl:grid-cols-4">
           {workResult?.data.is_show_grade && (
             <CardExamResultStatistic
               variant="primary"

@@ -288,7 +288,7 @@ const DataTable = <TData extends Record<string, any>>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex flex-col-reverse items-center justify-between gap-3 border-t p-5 text-sm font-medium text-[#4B5563] md:flex-row">
+      <div className="text-subtle flex flex-col-reverse items-center justify-between gap-3 border-t p-5 text-sm font-medium md:flex-row">
         {table.getSelectedRowModel().rows.length > 0 ? (
           <div className="flex items-center gap-4">
             <span>
@@ -309,7 +309,7 @@ const DataTable = <TData extends Record<string, any>>({
             variant="link"
             onClick={() => setPage && setPage((pagination?.current_page || 1) - 1)}
             aria-disabled={pagination?.current_page === 1}
-            className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === 1 ? 'pointer-events-none opacity-50' : ''}`}
+            className={`text-subtle flex items-center gap-2 ${pagination?.current_page === 1 ? 'pointer-events-none opacity-50' : ''}`}
           >
             <ChevronLeft size={20} /> Previous
           </Button>
@@ -346,7 +346,7 @@ const DataTable = <TData extends Record<string, any>>({
             variant="link"
             onClick={() => setPage && setPage((pagination?.current_page || 1) + 1)}
             aria-disabled={pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0}
-            className={`flex items-center gap-2 text-[#4B5563] ${pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0 ? 'pointer-events-none opacity-50' : ''}`}
+            className={`text-subtle flex items-center gap-2 ${pagination?.current_page === pagination?.total_pages || pagination?.total_pages === 0 ? 'pointer-events-none opacity-50' : ''}`}
           >
             Next <ChevronRight size={20} />
           </Button>

@@ -107,8 +107,8 @@ const QuestionCreate = ({ testId }: QuestionCreateProps) => {
   return (
     <div className="flex flex-col gap-5 p-5">
       <div>
-        <Link href={`/dashboard/admin/exam/${testId}/edit`} className="flex items-center gap-2 text-sm text-[#4B5563]">
-          <ArrowLeft className="h-4 w-4 text-[#4B5563]" />
+        <Link href={`/dashboard/admin/exam/${testId}/edit`} className="text-subtle flex items-center gap-2 text-sm">
+          <ArrowLeft className="text-subtle h-4 w-4" />
           Back
         </Link>
       </div>

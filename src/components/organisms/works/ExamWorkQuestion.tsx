@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 
+import Image from 'next/image'
+
 import { useGetWorkQuestion } from '@/http/work/get-work-question'
+
+import { buildStorageUrl } from '@/utils/common'
 
 import useActiveQuestionStore from '@/stores/useActiveQuestionStore'
 import { useWorkAnswerStore } from '@/stores/useWorkAnswerStore'
@@ -55,6 +59,17 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
 
           <ScrollArea className="h-[450px]">
             <div className="flex flex-col gap-6">
+              {question?.image && (
+                <div className="flex w-full justify-center">
+                  <Image
+                    className="w-full object-cover md:w-2/3 lg:w-1/2"
+                    src={buildStorageUrl(question?.image ?? '') as string}
+                    alt="question image"
+                    width={300}
+                    height={300}
+                  />
+                </div>
+              )}
               <p
                 dangerouslySetInnerHTML={{
                   __html: question?.question ?? ''
