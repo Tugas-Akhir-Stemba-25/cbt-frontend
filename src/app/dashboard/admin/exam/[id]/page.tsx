@@ -1,9 +1,9 @@
 import ExamDetail from '@/components/organisms/dashboard/admin/exam/ExamDetail'
 
 interface Props {
-  params: {
+  params: Promise<{
     id: number
-  }
+  }>
 }
 
 const page = async (props: Props) => {

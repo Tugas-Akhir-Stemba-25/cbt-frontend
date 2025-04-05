@@ -1,9 +1,9 @@
 import ExamResult from '@/components/organisms/dashboard/student/exam/ExamResult'
 
 interface Props {
-  params: {
+  params: Promise<{
     hash: string
-  }
+  }>
 }
 
 const page = async (props: Props) => {

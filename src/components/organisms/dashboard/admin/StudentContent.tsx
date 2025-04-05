@@ -124,7 +124,7 @@ const StudentContent = () => {
           <DataTable
             columns={columns}
             data={students}
-            role="student"
+            // role="student"
             placeholder="Cari dari nama, kelas, atau tahun masuk"
           />
         </div>

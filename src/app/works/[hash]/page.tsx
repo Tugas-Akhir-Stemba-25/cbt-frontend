@@ -5,9 +5,9 @@ import { auth } from '@/lib/auth'
 import ExamWork from '@/components/organisms/works/ExamWork'
 
 interface Props {
-  params: {
+  params: Promise<{
     hash: string
-  }
+  }>
 }
 
 const page = async (props: Props) => {

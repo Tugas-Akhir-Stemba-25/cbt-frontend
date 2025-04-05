@@ -1,10 +1,10 @@
 import QuestionEdit from '@/components/organisms/dashboard/admin/exam/question/QuestionEdit'
 
 interface Props {
-  params: {
+  params: Promise<{
     id: number
     questionId: number
-  }
+  }>
 }
 
 const page = async (props: Props) => {

@@ -1,9 +1,9 @@
 import ExamEdit from '@/components/organisms/dashboard/admin/exam/ExamEdit'
 
 interface Props {
-  params: {
+  params: Promise<{
     id: number
-  }
+  }>
 }
 
 const page = async (props: Props) => {

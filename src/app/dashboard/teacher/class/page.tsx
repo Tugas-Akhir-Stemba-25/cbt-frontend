@@ -1,11 +1,11 @@
-import { ContentDashboard } from '@/components/organisms/dashboard/teacher/class/ContentDashboard'
-
+// import { ContentDashboard } from '@/components/organisms/dashboard/teacher/class/ContentDashboard'
 import LayoutTeacher from './layout'
 
 export default async function Test() {
   return (
     <LayoutTeacher>
-      <ContentDashboard />
+      {/* <ContentDashboard /> */}
+      <p>WOTESTKE</p>
     </LayoutTeacher>
   )
 }

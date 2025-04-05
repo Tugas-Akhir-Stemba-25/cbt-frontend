@@ -9,7 +9,9 @@ import GlobalProvider from '@/providers/GlobalProvider'
 
 import './globals.css'
 
-const plusJakartaSans = Plus_Jakarta_Sans()
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin']
+})
 
 export const metadata: Metadata = defineMetadata({
   title: 'LuminaQA - CBT System',

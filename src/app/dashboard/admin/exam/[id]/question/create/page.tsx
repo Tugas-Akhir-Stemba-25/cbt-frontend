@@ -1,9 +1,9 @@
 import QuestionCreate from '@/components/organisms/dashboard/admin/exam/question/QuestionCreate'
 
 interface Props {
-  params: {
+  params: Promise<{
     id: number
-  }
+  }>
 }
 
 const page = async (props: Props) => {
