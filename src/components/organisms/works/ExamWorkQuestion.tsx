@@ -51,8 +51,9 @@ const ExamWorkQuestion = ({}: ExamWorkQuestionProps) => {
 
   return (
     <>
-      <div className="col-span-2 col-start-1 row-start-2 space-y-5 rounded-xl bg-background p-5">
+      <div className="col-span-1 col-start-1 row-start-3 space-y-5 rounded-xl bg-background p-5 md:col-span-2 md:row-start-2">
         <h2 className="text-base font-semibold md:text-lg">Nomor Soal: {activeQuestion?.no}</h2>
+
         <ScrollArea className="h-[450px]">
           <div className="flex flex-col gap-6">
             <p

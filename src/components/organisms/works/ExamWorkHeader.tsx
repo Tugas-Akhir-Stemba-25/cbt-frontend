@@ -49,12 +49,12 @@ const ExamWorkHeader = ({}: ExamWorkHeaderProps) => {
   }, [decrement])
 
   return (
-    <div className="col-span-3 flex w-full items-center justify-between rounded-xl bg-background p-5">
+    <div className="col-span-1 flex w-full items-center justify-between rounded-xl bg-background p-5 md:col-span-3">
       <div className="flex items-center gap-2">
         <Image src="/assets/images/logo-icon.svg" width={48} height={48} alt="logo-icon-luminaqa" />
         <p className="hidden text-lg font-semibold text-primary md:block">LuminaQA</p>
       </div>
-      <div className="text-center font-semibold">
+      <div className="hidden text-center font-semibold md:block">
         <p>
           {format(new Date(), 'EEEE, dd MMMM yyyy', {
             locale: id

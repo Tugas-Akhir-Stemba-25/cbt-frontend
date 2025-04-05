@@ -64,34 +64,41 @@ const ExamBottomNavigation = () => {
   }
 
   return (
-    <div className="col-span-2 row-start-3 flex w-full justify-center gap-6 rounded-xl bg-background p-5">
-      <Button
-        disabled={(activeQuestion?.no ?? 1) === 1 || (workAnswer?.data.length ?? 0) < 1}
-        size={'sm'}
-        className="flex items-center"
-        onClick={handlePreviousQuestion}
-      >
-        <ArrowLeft />
-        <span>Sebelumnya</span>
-      </Button>
-      <Button
-        size={'sm'}
-        onClick={handleFlagQuestion}
-        variant={
-          workAnswer?.data.find((ans) => ans.test_question_id === activeQuestion?.id)?.flagged ? 'secondary' : 'outline'
-        }
-        className="cursor-pointer"
-      >
-        <span>Ragu-Ragu</span>
-      </Button>
-      <Button
-        size={'sm'}
-        className="flex items-center"
-        disabled={(activeQuestion?.no ?? 1) === workAnswer?.data.length || (workAnswer?.data.length ?? 0) < 1}
-        onClick={handleNextQuestion}
-      >
-        <span>Selanjutnya</span>
-        <ArrowRight />
+    <div className="col-span-1 row-start-4 flex w-full flex-col justify-center gap-6 rounded-xl bg-background p-5 md:col-span-2 md:row-start-3">
+      <div className="flex w-full justify-center gap-6">
+        <Button
+          disabled={(activeQuestion?.no ?? 1) === 1 || (workAnswer?.data.length ?? 0) < 1}
+          size={'sm'}
+          className="flex items-center"
+          onClick={handlePreviousQuestion}
+        >
+          <ArrowLeft />
+          <span className="hidden md:inline">Sebelumnya</span>
+        </Button>
+        <Button
+          size={'sm'}
+          onClick={handleFlagQuestion}
+          variant={
+            workAnswer?.data.find((ans) => ans.test_question_id === activeQuestion?.id)?.flagged
+              ? 'secondary'
+              : 'outline'
+          }
+          className="cursor-pointer"
+        >
+          <span>Ragu-Ragu</span>
+        </Button>
+        <Button
+          size={'sm'}
+          className="flex items-center"
+          disabled={(activeQuestion?.no ?? 1) === workAnswer?.data.length || (workAnswer?.data.length ?? 0) < 1}
+          onClick={handleNextQuestion}
+        >
+          <span className="hidden md:inline">Selanjutnya</span>
+          <ArrowRight />
+        </Button>
+      </div>
+      <Button className="inline-block md:hidden" variant={'destructive'}>
+        Akhiri Ujian
       </Button>
     </div>
   )
