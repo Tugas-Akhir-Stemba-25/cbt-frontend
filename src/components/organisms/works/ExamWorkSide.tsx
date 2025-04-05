@@ -6,6 +6,7 @@ import { useGetWorkAnswer } from '@/http/work/get-work-answer'
 import { useGetWorkDetail } from '@/http/work/get-work-detail'
 
 import useActiveQuestionStore from '@/stores/useActiveQuestionStore'
+import { useWorkAnswerStore } from '@/stores/useWorkAnswerStore'
 import useWorkHashStore from '@/stores/useWorkHashStore'
 
 import QuestionNavigationButton from '@/components/atoms/button/QuestionNavigationButton'
@@ -20,6 +21,7 @@ interface ExamWorkSideProps {
 
 const ExamWorkSide = ({ setOpenFinishTestModal }: ExamWorkSideProps) => {
   const { setActiveQuestion, activeQuestion } = useActiveQuestionStore()
+  const { setWorkAnswers, workAnswers } = useWorkAnswerStore()
 
   const { hash } = useWorkHashStore()
 
@@ -57,6 +59,10 @@ const ExamWorkSide = ({ setOpenFinishTestModal }: ExamWorkSideProps) => {
     }
   }, [workAnswer, setActiveQuestion, activeQuestion])
 
+  useEffect(() => {
+    setWorkAnswers(workAnswer?.data ?? null)
+  }, [workAnswer, setWorkAnswers])
+
   return (
     <div className="col-span-1 col-start-1 row-span-2 row-start-2 hidden flex-col gap-3 md:col-start-3 md:flex">
       <div className="flex flex-col gap-2 rounded-xl bg-background md:items-center md:p-5">
@@ -79,7 +85,7 @@ const ExamWorkSide = ({ setOpenFinishTestModal }: ExamWorkSideProps) => {
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-4 lg:grid-cols-5">
             {workAnswerLoading || (!workAnswer?.data && !workAnswerFetched)
               ? Array.from({ length: 10 }).map((_, index) => <Skeleton key={index} className="h-10 rounded-lg" />)
-              : workAnswer?.data.map((item, index) => (
+              : workAnswers?.map((item, index) => (
                   <QuestionNavigationButton key={item.id} data={item} idx={index + 1} />
                 ))}
           </div>

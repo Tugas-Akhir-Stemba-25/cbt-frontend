@@ -6,6 +6,7 @@ import { useStoreWorkAnswer } from '@/http/work/store-work-answer'
 
 import { cn } from '@/utils/shadcn'
 
+import { useWorkAnswerStore } from '@/stores/useWorkAnswerStore'
 import useWorkHashStore from '@/stores/useWorkHashStore'
 
 import { Label } from '@/components/ui/label'
@@ -20,6 +21,7 @@ interface AnswerButtonProps {
 
 const AnswerButton = ({ data, answer }: AnswerButtonProps) => {
   const { hash } = useWorkHashStore()
+  const { editWorkAnswer, workAnswers } = useWorkAnswerStore()
 
   const queryClient = useQueryClient()
 
@@ -37,6 +39,14 @@ const AnswerButton = ({ data, answer }: AnswerButtonProps) => {
   })
 
   const handleStoreAnswer = () => {
+    const answer = workAnswers?.find((ans) => ans.test_question_id === data.test_question_id)
+    editWorkAnswer(
+      {
+        ...answer,
+        test_answer_id: data.id
+      } as WorkAnswer,
+      data.test_question_id
+    )
     storeAnswer({
       hash: hash as string,
       form: {
