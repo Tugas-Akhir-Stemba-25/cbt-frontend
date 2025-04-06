@@ -84,6 +84,10 @@ const ExamDetailForm = ({ form, onSubmit, isEdit, fetchLoading, submitLoading }:
       form.setValue('start_time', `${value}:00`)
       form.setValue('end_time', `${formattedEndTime}:00`)
       form.setValue('duration', duration as number)
+
+      form.trigger('start_time')
+      form.trigger('end_time')
+      form.trigger('duration')
     }
   }
 
@@ -101,6 +105,10 @@ const ExamDetailForm = ({ form, onSubmit, isEdit, fetchLoading, submitLoading }:
 
       form.setValue('end_time', `${value}:00`)
       form.setValue('duration', calculatedDuration)
+
+      form.trigger('end_time')
+      form.trigger('duration')
+      form.trigger('start_time')
     }
   }
 
@@ -118,6 +126,10 @@ const ExamDetailForm = ({ form, onSubmit, isEdit, fetchLoading, submitLoading }:
 
       form.setValue('duration', value)
       form.setValue('end_time', `${formattedEndTime}:00`)
+
+      form.trigger('duration')
+      form.trigger('end_time')
+      form.trigger('start_time')
     }
   }
 
