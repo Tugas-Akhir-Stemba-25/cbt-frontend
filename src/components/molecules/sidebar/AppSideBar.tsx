@@ -116,7 +116,7 @@ const sidebarMenuConfig: MenuGroup[] = [
       },
       {
         title: 'Ujian',
-        path: 'dashboard/teacher/exam',
+        path: '/dashboard/teacher/exam',
         icon: FilesIcon,
         roles: ['teacher']
       }
