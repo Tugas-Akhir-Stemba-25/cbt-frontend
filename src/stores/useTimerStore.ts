@@ -15,5 +15,5 @@ export const useTimerStore = create<TimerStore>((set) => ({
     set((state) => ({
       remainingSeconds: state.remainingSeconds && state.remainingSeconds > 0 ? state.remainingSeconds - 1 : 0
     })),
-  reset: () => set({ remainingSeconds: 0 })
+  reset: () => set({ remainingSeconds: null })
 }))

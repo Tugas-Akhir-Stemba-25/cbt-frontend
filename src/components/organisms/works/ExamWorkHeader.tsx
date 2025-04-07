@@ -43,16 +43,17 @@ const ExamWorkHeader = ({ setOpenFinishTestModal }: ExamWorkHeaderProps) => {
   }, [data, setRemainingSeconds])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      decrement()
-    }, 1000)
+    if (remainingSeconds !== null && remainingSeconds > 0) {
+      const interval = setInterval(() => {
+        decrement()
+      }, 1000)
 
-    return () => clearInterval(interval)
-  }, [decrement])
+      return () => clearInterval(interval)
+    }
+  }, [decrement, remainingSeconds])
 
   useEffect(() => {
-    if (remainingSeconds && remainingSeconds <= 0 && !isLoading && isFetched) {
-      console.log(remainingSeconds)
+    if (remainingSeconds !== null && remainingSeconds <= 0 && !isLoading && isFetched) {
       setOpenFinishTestModal(true)
     }
   }, [remainingSeconds, isLoading, isFetched, setOpenFinishTestModal])
