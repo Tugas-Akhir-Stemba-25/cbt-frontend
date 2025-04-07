@@ -80,15 +80,15 @@ const QuestionEdit = ({ id, questionId }: QuestionEditProps) => {
     setBreadcrumbs([
       {
         label: 'Master Data',
-        href: '/dashboard/admin'
+        href: '/dashboard/teacher'
       },
       {
         label: 'Ujian',
-        href: `/dashboard/admin/exam/${id}`
+        href: `/dashboard/teacher/exam/${id}`
       },
       {
         label: 'Edit Soal',
-        href: `/dashboard/admin/exam/${id}/question/${questionId}/edit`
+        href: `/dashboard/teacher/exam/${id}/question/${questionId}/edit`
       }
     ])
   }, [setBreadcrumbs, questionId, id])
@@ -137,7 +137,7 @@ const QuestionEdit = ({ id, questionId }: QuestionEditProps) => {
   return (
     <div className="flex flex-col gap-5 p-5">
       <div>
-        <Link href={`/dashboard/admin/exam/${id}/edit`} className="text-subtle flex items-center gap-2 text-sm">
+        <Link href={`/dashboard/teacher/exam/${id}/edit`} className="text-subtle flex items-center gap-2 text-sm">
           <ArrowLeft className="text-subtle h-4 w-4" />
           Back
         </Link>

@@ -56,15 +56,15 @@ const ExamDetail = ({ id }: ExamDetailProps) => {
     setBreadcrumbs([
       {
         label: 'Master Data',
-        href: '/dashboard/admin'
+        href: '/dashboard/teacher'
       },
       {
         label: 'Ujian',
-        href: '/dashboard/admin/exam'
+        href: '/dashboard/teacher/exam'
       },
       {
         label: 'Detail Ujian',
-        href: `/dashboard/admin/exam/${id}`
+        href: `/dashboard/teacher/exam/${id}`
       }
     ])
   }, [setBreadcrumbs, id])
@@ -72,7 +72,7 @@ const ExamDetail = ({ id }: ExamDetailProps) => {
   return (
     <div className="flex flex-col gap-5 px-1 py-5 md:px-5">
       <div>
-        <Link href="/dashboard/admin/exam" className="text-subtle flex items-center gap-2 text-sm">
+        <Link href="/dashboard/teacher/exam" className="text-subtle flex items-center gap-2 text-sm">
           <ArrowLeft className="text-subtle h-4 w-4" />
           Back
         </Link>
@@ -81,8 +81,8 @@ const ExamDetail = ({ id }: ExamDetailProps) => {
         <div className="flex flex-col gap-8">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold md:text-lg">Detail Ujian</h3>
-            <Button variant={'ghost'}>
-              <Link href={`/dashboard/admin/exam/${id}/edit`}>
+            <Button variant={'ghost'} asChild>
+              <Link href={`/dashboard/teacher/exam/${id}/edit`}>
                 <Pencil className="h-4 w-4" />
               </Link>
             </Button>

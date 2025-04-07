@@ -123,15 +123,15 @@ const ExamEdit = ({ id }: ExamEditProps) => {
     setBreadcrumbs([
       {
         label: 'Master Data',
-        href: '/dashboard/admin'
+        href: '/dashboard/teacher'
       },
       {
         label: 'Ujian',
-        href: '/dashboard/admin/exam'
+        href: '/dashboard/teacher/exam'
       },
       {
         label: 'Edit Ujian',
-        href: `/dashboard/admin/exam/${id}/edit`
+        href: `/dashboard/teacher/exam/${id}/edit`
       }
     ])
   }, [setBreadcrumbs, id])
@@ -191,7 +191,7 @@ const ExamEdit = ({ id }: ExamEditProps) => {
   }
 
   const handleEdit = (_open: boolean, questionId: number) => {
-    router.push(`/dashboard/admin/exam/${id}/question/${questionId}/edit`)
+    router.push(`/dashboard/teacher/exam/${id}/question/${questionId}/edit`)
   }
 
   const handleDeleteModal = (modalOpen: boolean, id?: number) => {
@@ -203,7 +203,7 @@ const ExamEdit = ({ id }: ExamEditProps) => {
     <>
       <div className="flex flex-col gap-5 p-5">
         <div>
-          <Link href="/dashboard/admin/exam" className="text-subtle flex items-center gap-2 text-sm">
+          <Link href="/dashboard/teacher/exam" className="text-subtle flex items-center gap-2 text-sm">
             <ArrowLeft className="text-subtle h-4 w-4" />
             Back
           </Link>
@@ -254,7 +254,7 @@ const ExamEdit = ({ id }: ExamEditProps) => {
                     action={
                       <>
                         <Button asChild>
-                          <Link href={`/dashboard/admin/exam/${id}/question/create`} className="btn-primary">
+                          <Link href={`/dashboard/teacher/exam/${id}/question/create`} className="btn-primary">
                             Tambah Soal
                           </Link>
                         </Button>
