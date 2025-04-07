@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 
 import TestDurationColumn from '@/components/atoms/column/test/TestDurationColumn'
+import TestHistoryStatusColumn from '@/components/atoms/column/test/TestHistoryStatusColumn'
 
 import { TestResult } from '@/types/test/test'
 
@@ -19,17 +20,30 @@ export const testResultColumns: ColumnDef<TestResultFieldRowProps>[] = [
   },
   {
     header: 'Soal Benar',
-    accessorKey: 'correct_answer',
-    enableSorting: false
+    enableSorting: false,
+    accessorFn: (row) => (row.history && row.history.correct_answer ? row.history.correct_answer : '-')
   },
   {
     header: 'Soal Salah',
     enableSorting: false,
-    accessorFn: (row) => row.total - (row.correct_answer || 0)
+    accessorFn: (row) =>
+      row.history && row.history.total && row.history.correct_answer
+        ? row.history.total - row.history.correct_answer
+        : '-'
+  },
+  {
+    header: 'Total Soal',
+    enableSorting: false,
+    accessorFn: (row) => (row.history && row.history.total ? row.history.total : '-')
   },
   {
     header: 'Nilai',
-    accessorKey: 'grade',
-    enableSorting: false
+    enableSorting: false,
+    accessorFn: (row) => (row.history && row.history.grade ? row.history.grade : '-')
+  },
+  {
+    header: 'Status',
+    enableSorting: false,
+    cell: TestHistoryStatusColumn
   }
 ]

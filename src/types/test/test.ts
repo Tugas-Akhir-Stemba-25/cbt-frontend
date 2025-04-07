@@ -43,18 +43,22 @@ export interface TestStatistic {
   }
 }
 
-export interface TestResult {
+export type TestResult = {
   id: number
   user: {
     id: number
     name: string
+    username: string
   }
-  hash: string
-  grade: number
-  work_time: number
-  correct_answer: number
-  wrong_answer: number
-  total: number
+  history: {
+    hash: string
+    grade: string | null
+    work_time: number | null
+    correct_answer: number | null
+    wrong_answer: number | null
+    total: number | null
+    status: number
+  } | null
 }
 
 export interface StudentTestStatistic {
