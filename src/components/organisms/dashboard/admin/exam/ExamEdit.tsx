@@ -22,6 +22,7 @@ import useMaterialStore from '@/stores/useMaterialStore'
 import { testDetailSchema, TestDetailType } from '@/validators/test/test-detail-validator'
 import { testSettingSchema, TestSettingType } from '@/validators/test/test-setting-validator'
 
+import BulkDeleteQuestionModal from '@/components/molecules/popup/question/BulkDeleteQuestionModal'
 import DeleteQuestionModal from '@/components/molecules/popup/question/DeleteQuestionModal'
 import { Button } from '@/components/ui/button'
 import DataTable from '@/components/ui/datatable'
@@ -49,9 +50,11 @@ const ExamEdit = ({ id }: ExamEditProps) => {
 
   // Modal State
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+  const [openBulkDeleteModal, setOpenBulkDeleteModal] = useState<boolean>(false)
 
   // Selected Data
   const [selectedData, setSelectedData] = useState<QuestionList | null>(null)
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
 
   // Zustand Store
   const { setSelectedMaterial } = useMaterialStore()
@@ -199,6 +202,11 @@ const ExamEdit = ({ id }: ExamEditProps) => {
     setSelectedData(question?.data.find((question) => question.id === id) ?? null)
   }
 
+  const handleBulkDeleteModal = (modalOpen: boolean, ids?: number[]) => {
+    setSelectedIds(question?.data.filter((cls, idx) => ids?.includes(idx)).map((cls) => cls.id) ?? [])
+    setOpenBulkDeleteModal(modalOpen)
+  }
+
   return (
     <>
       <div className="flex flex-col gap-5 p-5">
@@ -251,6 +259,7 @@ const ExamEdit = ({ id }: ExamEditProps) => {
                     setOpenEditModal={handleEdit}
                     setPerPage={setPerPage}
                     setOpenDeleteModal={handleDeleteModal}
+                    setOpenBulkDeleteModal={handleBulkDeleteModal}
                     action={
                       <>
                         <Button asChild>
@@ -276,6 +285,16 @@ const ExamEdit = ({ id }: ExamEditProps) => {
         openModal={openDeleteModal}
         setOpen={setOpenDeleteModal}
         id={selectedData?.id as number}
+      />
+      <BulkDeleteQuestionModal
+        questionKey={{
+          testId: id,
+          page,
+          per_page: perPage
+        }}
+        openModal={openBulkDeleteModal}
+        setOpen={setOpenBulkDeleteModal}
+        ids={selectedIds}
       />
     </>
   )
