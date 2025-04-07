@@ -53,7 +53,9 @@ const ExamResult = ({ hash }: ExamResultProps) => {
       toast.error('Error', {
         description: 'Ujian belum selesai dikerjakan'
       })
-      router.push(`/dashboard/student/exam/${testDetail?.data.id}`)
+      if (testDetail?.data.id) {
+        router.push(`/dashboard/student/exam/${testDetail?.data.id}`)
+      }
     }
   }, [workResult, testDetail, workResultLoading, workResultFetched, router])
 

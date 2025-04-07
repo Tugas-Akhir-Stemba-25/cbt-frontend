@@ -88,9 +88,9 @@ const ExamDetail = ({ id: testId }: ExamDetailProps) => {
       </div>
       <div className="flex justify-center">
         {testDetail?.data.history ? (
-          testDetail.data.history.status === 2 ? (
+          testDetail.data.history.status == 2 ? (
             <Button disabled={testDetail?.data.status === 1} asChild={testDetail?.data.status !== 1}>
-              <Link href={`/dashboard/student/works/${testDetail.data.history.hash}`}>Lanjut Kerjakan</Link>
+              <Link href={`/works/${testDetail.data.history.hash}`}>Lanjut Kerjakan</Link>
             </Button>
           ) : (
             <Button disabled={testDetail?.data.status === 1} asChild={testDetail?.data.status !== 1}>
