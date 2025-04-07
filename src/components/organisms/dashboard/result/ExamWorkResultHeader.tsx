@@ -2,6 +2,7 @@ import React from 'react'
 
 import Image from 'next/image'
 
+import ButtonToggleTheme from '@/components/atoms/ButtonToggleTheme'
 import AvatarCustom from '@/components/molecules/buttons/AvatarCustom'
 
 const ExamWorkResultHeader = () => {
@@ -11,8 +12,10 @@ const ExamWorkResultHeader = () => {
         <Image src="/assets/images/logo-icon.svg" width={48} height={48} alt="logo-icon-luminaqa" />
         <p className="hidden text-lg font-semibold text-primary md:block">LuminaQA</p>
       </div>
-
-      <AvatarCustom withName={true} />
+      <div className="flex items-center gap-3">
+        <ButtonToggleTheme />
+        <AvatarCustom withName={true} />
+      </div>
     </div>
   )
 }

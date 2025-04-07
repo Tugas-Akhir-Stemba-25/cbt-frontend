@@ -22,7 +22,7 @@ const AvatarCustom = ({ withName = false }: AvatarCustomProps) => {
       <DropdownMenuTrigger className="flex items-center gap-3">
         <Avatar className="grid cursor-pointer place-items-center bg-primary">
           <AvatarImage src="" />
-          <AvatarFallback>{session.data?.user.name[0] ?? 'A'}</AvatarFallback>
+          <AvatarFallback className="text-white">{session.data?.user.name[0] ?? 'A'}</AvatarFallback>
         </Avatar>
         {withName && (
           <p className="hidden font-semibold text-muted md:block">{session.data?.user.name ?? 'Anonymous'}</p>

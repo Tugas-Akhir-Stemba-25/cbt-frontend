@@ -47,7 +47,7 @@ const AnswerButtonResult = ({ answer, data, isShowAnswer = false }: AnswerButton
       </Label>
       <Button
         className={cn(
-          'flex w-16 cursor-default items-center justify-center rounded-xl border border-foreground bg-transparent py-6 outline-none',
+          'flex w-16 cursor-default items-center justify-center rounded-xl border border-gray-300 bg-transparent py-6 outline-none',
           {
             '!border-primary-border bg-primary-surface hover:bg-primary-surface':
               answer?.test_answer_id === data.id && !isShowAnswer,

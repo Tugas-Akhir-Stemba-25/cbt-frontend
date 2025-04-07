@@ -13,7 +13,7 @@ export type Work = {
 
 export interface WorkAnswer {
   id: number
-  test_answer_id: number
+  test_answer_id?: number | null
   test_question_id: number
   test_history_id: number
   flagged: boolean

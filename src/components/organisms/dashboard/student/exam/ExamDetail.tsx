@@ -83,7 +83,7 @@ const ExamDetail = ({ id: testId }: ExamDetailProps) => {
         ) : isLoading ? (
           <ExamDetailSkeleton />
         ) : (
-          testDetail?.data && <ExamDetailCard withBadge={false} data={testDetail.data} />
+          testDetail?.data && <ExamDetailCard withBadge={true} data={testDetail.data} />
         )}
       </div>
       <div className="flex justify-center">
@@ -97,7 +97,7 @@ const ExamDetail = ({ id: testId }: ExamDetailProps) => {
               <Link href={`/dashboard/student/work/${testDetail.data.history.hash}`}>Lanjut hasil</Link>
             </Button>
           )
-        ) : testDetail?.data.status === 2 ? (
+        ) : testDetail?.data.status == 2 ? (
           <Button onClick={handleStartTest} isLoading={startTestLoading}>
             Kerjakan
           </Button>
