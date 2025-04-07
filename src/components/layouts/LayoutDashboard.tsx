@@ -1,6 +1,7 @@
 import Image from 'next/image'
+import { redirect } from 'next/navigation'
 
-import { auth } from '@/lib/auth'
+import { auth, signOut } from '@/lib/auth'
 
 import ButtonToggleTheme from '@/components/atoms/ButtonToggleTheme'
 import Breadcrumb from '@/components/atoms/breadcrumb'
@@ -11,6 +12,12 @@ import AvatarCustom from '../molecules/buttons/AvatarCustom'
 
 const LayoutDashboard = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth()
+
+  if (!session?.user) {
+    signOut()
+    return redirect('/login')
+  }
+
   const role = session?.user.role
 
   return (

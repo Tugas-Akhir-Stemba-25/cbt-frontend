@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 import { useSession } from 'next-auth/react'
 
@@ -12,6 +13,10 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
 
 const InitialDashboard = ({ children }: { children: React.ReactNode }) => {
   const session = useSession()
+  const router = useRouter()
+
+  if (!session.data?.user) return router.push('/login')
+
   const role = session?.data?.user.role
 
   return (
