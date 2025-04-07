@@ -32,6 +32,14 @@ const AnswerButton = ({ data, answer }: AnswerButtonProps) => {
       })
     },
     onError: (err) => {
+      const answer = workAnswers?.find((ans) => ans.test_question_id === data.test_question_id)
+      editWorkAnswer(
+        {
+          ...answer,
+          test_answer_id: null
+        } as WorkAnswer,
+        data.test_question_id
+      )
       toast.error('Error Menyimpan Jawaban', {
         description: err.response?.data.meta.message || err.response?.data.meta.error
       })

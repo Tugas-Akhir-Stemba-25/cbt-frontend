@@ -81,7 +81,7 @@ const ExamDetail = ({ id }: ExamDetailProps) => {
         <div className="flex flex-col gap-8">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold md:text-lg">Detail Ujian</h3>
-            <Button variant={'ghost'}>
+            <Button variant={'ghost'} asChild>
               <Link href={`/dashboard/admin/exam/${id}/edit`}>
                 <Pencil className="h-4 w-4" />
               </Link>

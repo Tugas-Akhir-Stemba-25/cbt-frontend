@@ -33,7 +33,7 @@ const ExamWork = ({ hash }: ExamWorkProps) => {
 
   return (
     <>
-      <div className="grid min-h-screen w-screen grid-cols-1 grid-rows-[max-content_max-content_1fr_max-content] gap-3 bg-primary-surface p-3 md:grid-cols-3 md:grid-rows-[max-content_1fr_max-content]">
+      <div className="max-w-screen grid min-h-screen grid-cols-1 grid-rows-[max-content_max-content_1fr_max-content] gap-3 bg-primary-surface p-3 md:grid-cols-3 md:grid-rows-[max-content_1fr_max-content]">
         <ExamWorkHeader setOpenFinishTestModal={handleOpenFinishTestModal} />
         <ExamTitle />
         <ExamWorkQuestion />
