@@ -17,7 +17,6 @@ export interface RestartTestResponse {
 }
 
 export const restartTestHandler = async ({ testId, userId }: RestartTestPayload): Promise<RestartTestResponse> => {
-  console.log('DEBUG >> restartTestHandler:', { testId, userId })
   const response = await api.delete<RestartTestResponse>(`/tests/${testId}/restart`, {
     data: { user_id: userId }
   })

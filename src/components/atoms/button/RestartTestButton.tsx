@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button'
 import { TestResult } from '@/types/test/test'
 
 const TestRestartColumn: React.FC<{ row: { original: TestResult } }> = ({ row }) => {
-  console.log('DEBUG >> row.original', row.original)
   const [open, setOpen] = useState(false)
   const data = row.original
 
