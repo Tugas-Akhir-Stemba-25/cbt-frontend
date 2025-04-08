@@ -1,9 +1,11 @@
 'use client'
 
+import { useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { useRestartTest } from '@/http/test/get-test-restart'
+import { getTestResultKey } from '@/http/test/get-test-result'
 
 import {
   AlertDialog,
@@ -23,11 +25,18 @@ interface RestartTestDialogProps {
 }
 
 const RestartTestDialog = ({ open, onOpenChange, testId, userId, onSuccess }: RestartTestDialogProps) => {
+  const queryClient = useQueryClient()
+
   const { mutate, isPending } = useRestartTest({
     onSuccess: (res) => {
       toast.success('Sukses', {
         description: res.meta.message
       })
+
+      queryClient.invalidateQueries({
+        queryKey: getTestResultKey({ test_id: testId })
+      })
+
       onOpenChange(false)
       onSuccess?.()
     },
