@@ -51,10 +51,8 @@ const ExportResultModal = ({ open, onOpenChange, testId }: ExportResultDialogPro
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-destructive">Export Hasil Ujian</DialogTitle>
-          <DialogDescription className="text-foreground">
-            Dengan melakukan tindakan ini, data yang sudah dihapus tidak dapat dipulihkan kembali.
-          </DialogDescription>
+          <DialogTitle className="text-lg font-bold text-foreground">Export Hasil Ujian</DialogTitle>
+          <DialogDescription className="text-foreground">Export Hasil Ujian dalam Format CSV.</DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-4">
           <DialogClose asChild>
