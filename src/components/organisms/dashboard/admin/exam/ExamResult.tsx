@@ -1,7 +1,10 @@
+import { useState } from 'react'
+
 import { useDebounceValue } from 'usehooks-ts'
 
 import { useGetTestResult } from '@/http/test/get-test-result'
 
+import ExportResultModal from '@/components/molecules/popup/test/ExportResultModal'
 import { Button } from '@/components/ui/button'
 import DataTable from '@/components/ui/datatable'
 
@@ -12,6 +15,8 @@ interface ExamResultProps {
 }
 
 const ExamResult = ({ id }: ExamResultProps) => {
+  const [showExportDialog, setShowExportDialog] = useState(false)
+
   // Table State
   const [search, setSearch] = useDebounceValue<string>('', 250)
   const [page, setPage] = useDebounceValue<number>(1, 250)
@@ -28,11 +33,14 @@ const ExamResult = ({ id }: ExamResultProps) => {
       enabled: !!id
     }
   )
+
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="flex items-center justify-between">
         <h5 className="text-base font-semibold md:text-lg">Hasil Ujian</h5>
-        <Button size={'sm'}>Export</Button>
+        <Button size="sm" onClick={() => setShowExportDialog(true)}>
+          Export
+        </Button>
       </div>
       <div>
         <DataTable
@@ -49,6 +57,8 @@ const ExamResult = ({ id }: ExamResultProps) => {
           isLoading={examsResultLoading}
         />
       </div>
+
+      <ExportResultModal open={showExportDialog} onOpenChange={setShowExportDialog} testId={id} />
     </div>
   )
 }
