@@ -3,14 +3,8 @@ import { AxiosError } from 'axios'
 
 import { api } from '@/lib/axios'
 
-import { Metadata } from '@/types/common/metadata'
+import { GetTeacherCountResponse } from '@/types/common/teacherResponse'
 
-interface GetTeacherCountResponse {
-  meta: Metadata
-  data: {
-    count: number
-  }
-}
 export const TEACHER_COUNT_QUERY_KEY = ['teacher', 'count']
 
 export const getTeacherCountHandler = async (): Promise<GetTeacherCountResponse> => {
