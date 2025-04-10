@@ -9,7 +9,6 @@ import { useGetTeacherCount } from '@/http/teachers/get-teacher-count'
 import { useGetTeacherList } from '@/http/teachers/get-teacher-list'
 
 import CardStatistic from '@/components/atoms/card/CardStatistic'
-import { teacherColumns } from '@/components/constants/columns/teacher-columns'
 import BulkDeleteTeacherModal from '@/components/molecules/popup/teacher/BulkDeleteTeacherModal'
 import CreateTeacherModal from '@/components/molecules/popup/teacher/CreateTeacherModal'
 import DeleteTeacherDialog from '@/components/molecules/popup/teacher/DeleteTeacherModal'
@@ -17,6 +16,7 @@ import EditTeacherDialog from '@/components/molecules/popup/teacher/EditTeacherM
 import { Button } from '@/components/ui/button'
 import DataTable from '@/components/ui/datatable'
 
+import { teacherColumns } from '@/constants/columns/teacher-columns'
 import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
 import { Teacher } from '@/types/teacher/teacher'
 

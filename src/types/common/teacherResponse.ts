@@ -21,3 +21,10 @@ export interface UpdateTeacherResponse {
 export interface BulkDeleteTeacherResponse {
   meta: Metadata
 }
+
+export interface GetTeacherCountResponse {
+  meta: Metadata
+  data: {
+    count: number
+  }
+}

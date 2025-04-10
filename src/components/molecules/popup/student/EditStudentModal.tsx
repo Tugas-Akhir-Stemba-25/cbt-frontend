@@ -8,70 +8,83 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { getClassCountKey } from '@/http/class/get-class-count'
-import { getClassKey, GetClassListParams } from '@/http/class/get-class-list'
-import { useUpdateClass } from '@/http/class/update-class'
+import { STUDENT_COUNT_QUERY_KEY } from '@/http/student/get-student-count'
+import { getStudentKey, StudentParams } from '@/http/student/get-student-list'
+import { useUpdateStudent } from '@/http/student/update-student'
 
-import useMajorStore from '@/stores/useMajorStore'
+// import useClassStore from '@/stores/useClassStore'
 
-import { editClassSchema, EditClassType } from '@/validators/class/edit-class-validator'
+import { editStudentSchema, EditStudentType } from '@/validators/student/edit-student-validator'
 
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-import { Class } from '@/types/class/class-list'
+import { Student } from '@/types/student/student-list'
 
-interface EditClassModalProps {
+interface EditStudentModalProps {
   openModal: boolean
   setOpen: (open: boolean) => void
-  classKey: GetClassListParams
-  data: Class | null
+  studentKey: StudentParams
+  data: Student | null
 }
 
-const EditClassModal = ({ openModal, setOpen, classKey, data }: EditClassModalProps) => {
+const EditStudentModal = ({ openModal, setOpen, studentKey, data }: EditStudentModalProps) => {
   // Form
 
-  const form = useForm<EditClassType>({
+  const form = useForm<EditStudentType>({
     defaultValues: {
       name: '',
-      grad_year: String(new Date().getFullYear())
+      username: '',
+      year_join: ''
     },
-    resolver: zodResolver(editClassSchema),
+    resolver: zodResolver(editStudentSchema),
     mode: 'onChange'
   })
 
-  const { selectedMajor: major_id } = useMajorStore()
+  // const { selectedClass: class_id } = useClassStore()
 
-  // Query Client
   const queryClient = useQueryClient()
 
-  // Mutation
-  const { mutate, isPending } = useUpdateClass({
+  const { mutate, isPending } = useUpdateStudent({
     onSuccess: (res) => {
       setOpen(false)
-      toast.success('Sukses', {
-        description: res.meta.message
+      toast.success('Selamat', {
+        position: 'bottom-center',
+        description: res.meta.message,
+        classNames: {
+          toast: 'bg-success text-white',
+          description: 'text-gray-200',
+          title: 'text-[#56E038]',
+          icon: 'text-[#56E038]'
+        }
       })
       queryClient.invalidateQueries({
-        queryKey: getClassKey(classKey as GetClassListParams)
+        queryKey: getStudentKey(studentKey as StudentParams)
       })
       queryClient.invalidateQueries({
-        queryKey: getClassCountKey({ major_id: major_id as number })
+        queryKey: STUDENT_COUNT_QUERY_KEY
       })
       form.reset()
     },
     onError: (err) => {
-      toast.error('Error', {
-        description: err.response?.data.meta.message || err.response?.data.meta.error
+      toast.error('Yahhh:(', {
+        position: 'bottom-center',
+        description: err.response?.data.meta.error,
+        classNames: {
+          toast: 'bg-error text-white',
+          description: 'text-gray-200',
+          title: 'text-[#FF0000]',
+          icon: 'text-[#FF0000]'
+        }
       })
 
       if (err.response?.status === 422) {
         const errors = err.response.data.meta.error
 
         for (const key in errors) {
-          form.setError(key as keyof EditClassType, {
+          form.setError(key as keyof EditStudentType, {
             type: 'server',
             message: errors[key][0]
           })
@@ -80,7 +93,7 @@ const EditClassModal = ({ openModal, setOpen, classKey, data }: EditClassModalPr
     }
   })
 
-  const onSubmit = (form: EditClassType) => {
+  const handleSubmit = (form: EditStudentType) => {
     mutate({
       form,
       id: data?.id as number
@@ -90,7 +103,8 @@ const EditClassModal = ({ openModal, setOpen, classKey, data }: EditClassModalPr
   useEffect(() => {
     form.reset({
       name: data?.name ?? '',
-      grad_year: String(data?.grad_year) ?? String(new Date().getFullYear())
+      username: data?.username ?? '',
+      year_join: String(data?.year_join) ?? String(new Date().getFullYear())
     })
   }, [data, form])
 
@@ -98,14 +112,14 @@ const EditClassModal = ({ openModal, setOpen, classKey, data }: EditClassModalPr
     <Dialog open={openModal} onOpenChange={setOpen}>
       <DialogContent aria-describedby="modal-description">
         <DialogHeader>
-          <DialogTitle>Ubah Data Kelas</DialogTitle>
+          <DialogTitle>Ubah Data Siswa</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
             className="space-y-6"
             onSubmit={(e) => {
               e.preventDefault()
-              form.handleSubmit(onSubmit)()
+              form.handleSubmit(handleSubmit)()
             }}
           >
             <FormField
@@ -115,7 +129,7 @@ const EditClassModal = ({ openModal, setOpen, classKey, data }: EditClassModalPr
                 <FormItem>
                   <FormLabel>Nama</FormLabel>
                   <FormControl>
-                    <Input type="text" {...field} />
+                    <Input type="text" {...field} placeholder="Nama Siswa" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -123,12 +137,25 @@ const EditClassModal = ({ openModal, setOpen, classKey, data }: EditClassModalPr
             />
             <FormField
               control={form.control}
-              name="grad_year"
+              name="year_join"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tahun Lulus</FormLabel>
+                  <FormLabel>Tahun Masuk</FormLabel>
                   <FormControl>
-                    <Input type="text" {...field} />
+                    <Input type="number" {...field} placeholder="Tahun Masuk" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input type="text" {...field} placeholder="Username" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -157,4 +184,4 @@ const EditClassModal = ({ openModal, setOpen, classKey, data }: EditClassModalPr
   )
 }
 
-export default EditClassModal
+export default EditStudentModal
