@@ -61,7 +61,7 @@ const RestartTestDialog = ({ open, onOpenChange, testId, userId, onSuccess }: Re
           <AlertDialogTitle>Yakin ingin me-restart ujian?</AlertDialogTitle>
         </AlertDialogHeader>
 
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-muted">
           Data jawaban sebelumnya akan dihapus dan siswa dapat mengerjakan ulang.
         </div>
 

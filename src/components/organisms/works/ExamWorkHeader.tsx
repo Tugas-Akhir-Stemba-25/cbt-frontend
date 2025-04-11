@@ -37,8 +37,8 @@ const ExamWorkHeader = ({ setOpenFinishTestModal }: ExamWorkHeaderProps) => {
   )
 
   useEffect(() => {
-    if (data?.data.remaining_seconds) {
-      setRemainingSeconds(data.data.remaining_seconds)
+    if (data?.data.remaining_seconds !== null || data?.data.remaining_seconds !== undefined) {
+      setRemainingSeconds(data?.data.remaining_seconds as number)
     }
   }, [data, setRemainingSeconds])
 
