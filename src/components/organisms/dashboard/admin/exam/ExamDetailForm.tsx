@@ -181,7 +181,7 @@ const ExamDetailForm = ({ form, onSubmit, isEdit, fetchLoading, submitLoading }:
 
           <h3 className="text-lg font-semibold">2. Waktu Ujian</h3>
 
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-5 @2xl:grid-cols-2">
             <FormField
               control={form.control}
               name="date"
