@@ -136,6 +136,7 @@ const ExamDetailForm = ({ form, onSubmit, isEdit, fetchLoading, submitLoading }:
   const handleChangeDate = (date: Date | undefined) => {
     if (date) {
       setDate(date)
+      form.setValue('date', format(date, 'yyyy-MM-dd'))
     }
   }
 
