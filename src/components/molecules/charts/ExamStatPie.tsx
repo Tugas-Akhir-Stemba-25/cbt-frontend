@@ -72,7 +72,7 @@ export function ExamStatPie({ totals }: ExamStatPieProps) {
                         <tspan x={viewBox.cx} y={viewBox.cy} className="fill-primary text-3xl font-bold">
                           {totalVisitors.toLocaleString()}
                         </tspan>
-                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground">
+                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted">
                           Ujian
                         </tspan>
                       </text>

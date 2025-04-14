@@ -24,7 +24,7 @@ export default function ContentDashboard() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex w-full flex-col gap-4 md:flex-row md:gap-6">
+      <div className="flex w-full flex-col gap-4 @xl:flex-row @2xl:gap-6">
         <CardStatistic
           title="Total Kelas"
           value={data?.total_classes ?? '-'}
@@ -41,7 +41,7 @@ export default function ContentDashboard() {
         />
       </div>
 
-      <div className="flex w-full flex-col gap-4 md:flex-row md:gap-6">
+      <div className="flex w-full flex-col gap-4 @2xl:flex-row @2xl:gap-6">
         <ExamStatPie
           totals={{
             finished: testByStatus[3] ?? 0,
