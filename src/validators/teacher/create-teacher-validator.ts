@@ -14,6 +14,7 @@ export const createTeacherSchema = z.object({
       message: 'Username harus berupa string'
     })
     .min(1, { message: 'Username harus diisi' })
+    .regex(/^\S+$/, { message: 'Password tidak boleh mengandung spasi' })
     .max(255),
   password: z.string().min(1, { message: 'Password harus diisi' })
 })

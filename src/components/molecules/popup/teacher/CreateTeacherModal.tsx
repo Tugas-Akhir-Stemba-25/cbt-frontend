@@ -61,9 +61,15 @@ const CreateTeacherModal = ({ openModal, setOpen, teacherKey }: AddDataModalProp
       form.reset()
     },
     onError: (err) => {
+      const errors = err.response?.data?.meta?.error as Record<string, string[]>
+
+      const messages = Object.values(errors).flat()
+
+      const description = messages.join(' • ')
+
       toast.error('Yahhh:(', {
         position: 'bottom-center',
-        description: err.response?.data.meta.message,
+        description: description,
         classNames: {
           toast: 'bg-destructive text-white',
           description: 'text-gray-200'
@@ -75,7 +81,7 @@ const CreateTeacherModal = ({ openModal, setOpen, teacherKey }: AddDataModalProp
 
         for (const key in errors) {
           form.setError(key as keyof CreateTeacherType, {
-            type: 'manual',
+            type: 'server',
             message: errors[key][0]
           })
         }

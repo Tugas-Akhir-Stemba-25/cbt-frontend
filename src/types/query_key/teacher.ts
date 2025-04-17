@@ -2,6 +2,7 @@ export interface TeacherParams {
   page?: number
   per_page?: number
   search?: string
+  teacherId?: number
 }
 
 export const TEACHERS = {

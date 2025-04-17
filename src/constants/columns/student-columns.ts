@@ -21,6 +21,7 @@ export const studentColumns: ColumnDef<StudentFieldRowProps>[] = [
   },
   {
     accessorKey: 'username',
-    header: 'Username'
+    header: 'Username',
+    enableSorting: false
   }
 ]
