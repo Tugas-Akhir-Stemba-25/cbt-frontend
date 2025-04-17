@@ -52,7 +52,12 @@ export function ExamStatPie({ totals }: ExamStatPieProps) {
     <Card className="flex basis-1/3 flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-base font-semibold">Statistik Ujian</CardTitle>
-        <CardDescription className="text-sm text-muted">Februari 2025</CardDescription>
+        <CardDescription className="text-sm text-muted">
+          {new Date().toLocaleDateString('id-ID', {
+            month: 'long',
+            year: 'numeric'
+          })}
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
@@ -67,7 +72,7 @@ export function ExamStatPie({ totals }: ExamStatPieProps) {
                         <tspan x={viewBox.cx} y={viewBox.cy} className="fill-primary text-3xl font-bold">
                           {totalVisitors.toLocaleString()}
                         </tspan>
-                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground">
+                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted">
                           Ujian
                         </tspan>
                       </text>

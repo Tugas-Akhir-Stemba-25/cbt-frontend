@@ -20,7 +20,7 @@ const ExamList = ({ filter, search }: ExamListProps) => {
 
   return (
     // <div className="h-full">
-    <ScrollArea className="h-[420px] w-full @3xl:h-[332px]">
+    <ScrollArea className="h-[420px] w-full @3xl:h-[460px]">
       <div className="flex flex-col gap-3">
         {isLoading ? (
           <>

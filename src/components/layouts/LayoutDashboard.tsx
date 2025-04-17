@@ -26,17 +26,17 @@ const LayoutDashboard = async ({ children }: { children: React.ReactNode }) => {
       <AppSidebar role={role || 'siswa'} />
       {/* <SidebarInset> */}
       <div className="relative w-full @container">
-        <header className="sticky left-0 right-0 top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b bg-background px-4">
+        <header className="sticky left-0 right-0 top-0 z-30 grid h-16 shrink-0 grid-cols-3 items-center border-b bg-background px-4 md:grid-cols-2">
           <div className="flex items-center gap-4">
             <SidebarTrigger />
             <Breadcrumb className="hidden md:block" />
           </div>
 
-          <div className="text-md block text-center font-bold md:hidden">
+          <div className="text-md block justify-self-center text-center font-bold md:hidden">
             <Image src="/assets/images/logo-icon.svg" width={48} height={48} alt="logo-icon-luminaqa" />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-self-end">
             <ButtonToggleTheme />
             <AvatarCustom />
           </div>
