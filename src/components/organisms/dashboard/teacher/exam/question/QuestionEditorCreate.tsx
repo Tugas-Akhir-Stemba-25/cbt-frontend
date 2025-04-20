@@ -123,7 +123,7 @@ const QuestionEditorCreate = ({
                         <div className="flex flex-col gap-2">
                           {answers.map((ans, index) => (
                             <div key={index} className="flex w-full items-center gap-1">
-                              <FormLabel className="h-full w-24 rounded border border-gray-200 bg-slate-100 py-3 text-center">
+                              <FormLabel className="h-full w-24 rounded border border-gray-200 bg-slate-100 py-3 text-center dark:border-gray-700 dark:bg-tableColour">
                                 Opsi {index + 1}
                               </FormLabel>
                               <Input
