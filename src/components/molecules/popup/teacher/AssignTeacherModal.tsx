@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { useAssignTeacherClass } from '@/http/teachers/assign-teacher'
+import { getTeacherClassKey } from '@/http/teachers/get-teacher-class'
 
 import useClassStore from '@/stores/useClassStore'
 
@@ -23,6 +25,7 @@ interface AddDataModalProps {
 
 const AssignTeacherModal = ({ openModal, setOpen, data }: AddDataModalProps) => {
   const { selectedClass } = useClassStore()
+  const queryClient = useQueryClient()
 
   const form = useForm<AssignTeacherType>({
     defaultValues: {
@@ -45,6 +48,7 @@ const AssignTeacherModal = ({ openModal, setOpen, data }: AddDataModalProps) => 
           icon: 'text-[#56E038]'
         }
       })
+      queryClient.invalidateQueries({ queryKey: getTeacherClassKey(data) })
     },
     onError: (error) => {
       setOpen(false)
@@ -86,13 +90,13 @@ const AssignTeacherModal = ({ openModal, setOpen, data }: AddDataModalProps) => 
           >
             <DialogFooter className="flex items-center gap-4">
               <DialogClose asChild>
-                <Button variant="subtle" className="flex-1 rounded-md px-4 py-2 dark:bg-tableColour">
+                <Button variant="subtle" className="w-full flex-1 rounded-md px-4 py-2 dark:bg-tableColour">
                   Batal
                 </Button>
               </DialogClose>
               <Button
                 type="submit"
-                className="flex-1 rounded-md"
+                className="w-full flex-1 rounded-md"
                 isLoading={isPending}
                 disabled={!form.formState.isValid}
               >
