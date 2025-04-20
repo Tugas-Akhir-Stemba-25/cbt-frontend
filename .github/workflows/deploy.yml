@@ -1,0 +1,27 @@
+name: CBT Frontend Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSHKEY }}
+          script: |
+            echo "Deploying to server..."
+            cd /var/www/html/cbt-frontend
+            git checkout main
+            git fetch origin
+            git pull origin main
+            /home/ubuntu/.nvm/versions/node/v22.14.0/bin/pnpm install
+            /home/ubuntu/.nvm/versions/node/v22.14.0/bin/pnpm run build
+            /home/ubuntu/.nvm/versions/node/v22.14.0/bin/pm2 reload ecosystem.config.js
+            echo "Deployment completed."

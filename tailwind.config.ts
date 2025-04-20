@@ -21,24 +21,53 @@ export default {
           foreground: 'hsl(var(--popover-foreground))'
         },
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))'
+          DEFAULT: 'hsla(var(--primary))',
+          foreground: 'hsla(var(--primary-foreground))',
+          bg: 'hsla(var(--primary-bg))',
+          border: 'hsla(var(--primary-border))',
+          icon: 'hsla(var(--primary-icon))',
+          surface: 'hsla(var(--primary-surface))'
+        },
+        success: {
+          DEFAULT: 'hsla(var(--success))',
+          surface: 'hsla(var(--success-surface))'
+          // foreground: 'hsla(var(--success-foreground))',
+          // bg: 'hsla(var(--success-bg))',
+          // border: 'hsla(var(--success-border))',
+          // icon: 'hsla(var(--success-icon))'
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))'
+          DEFAULT: 'hsla(var(--secondary))',
+          foreground: 'hsla(var(--secondary-foreground))',
+          bg: 'hsla(var(--secondary-bg))',
+          border: 'hsla(var(--secondary-border))',
+          icon: 'hsla(var(--secondary-icon))',
+          surface: 'hsla(var(--secondary-surface))'
+        },
+        tableColour: {
+          DEFAULT: 'hsla(var(--th-colour))',
+          selected: 'hsla(var(--td-selected))'
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))'
+          DEFAULT: 'hsla(var(--muted))',
+          foreground: 'hsla(var(--muted-foreground))',
+          border: 'hsla(var(--muted-border))'
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))'
+          DEFAULT: 'hsla(var(--accent))',
+          foreground: 'hsla(var(--accent-foreground))'
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))'
+          DEFAULT: 'hsla(var(--destructive))',
+          foreground: 'hsla(var(--destructive-foreground))',
+          bg: 'hsla(var(--destructive-bg))',
+          border: 'hsla(var(--destructive-border))',
+          icon: 'hsla(var(--destructive-icon))',
+          surface: 'hsla(var(--destructive-surface))'
+        },
+        disabled: {
+          DEFAULT: 'hsla(var(--disabled))',
+          foreground: 'hsla(var(--disabled-foreground))'
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -49,6 +78,24 @@ export default {
           '3': 'hsl(var(--chart-3))',
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))'
+        },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar-background))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          primary: 'hsl(var(--sidebar-primary))',
+          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          ring: 'hsl(var(--sidebar-ring))'
+        }
+      },
+      animation: {
+        blink: 'blink 1s step-end infinite'
+      },
+      keyframes: {
+        blink: {
+          '50%': { opacity: '0' }
         }
       },
       borderRadius: {
@@ -58,5 +105,5 @@ export default {
       }
     }
   },
-  plugins: [require('tailwindcss-animate')]
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/container-queries')]
 } satisfies Config

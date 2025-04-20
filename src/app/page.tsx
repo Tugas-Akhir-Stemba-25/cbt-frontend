@@ -1,5 +1,5 @@
-import InitialComponent from '@/components/organisms/InitialComponent'
+import { redirect } from 'next/navigation'
 
-export default function Home() {
-  return <InitialComponent />
+export default function Page() {
+  return redirect('/dashboard')
 }

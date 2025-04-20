@@ -16,7 +16,7 @@ Frontend application the will be use for CBT SYSTEM
 1. Clone this repository
 
    ```sh
-   git clone https://github.com/Mediko-id/cms-system.git
+   git clone https://github.com/Tugas-Akhir-Stemba-25/cbt-frontend.git
    ```
 
 2. Install dependencies
@@ -27,7 +27,13 @@ Frontend application the will be use for CBT SYSTEM
    pnpm install
    ```
 
-3. Run app
+3. Copy Environment Variable
+
+   ```sh
+   cp .env.example .env.local
+   ```
+
+4. Run app
 
    ```sh
    pnpm dev

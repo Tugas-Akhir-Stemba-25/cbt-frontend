@@ -1,0 +1,155 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+import { PlusIcon } from 'lucide-react'
+import { useDebounceValue } from 'usehooks-ts'
+
+import { useGetTestList } from '@/http/test/get-test-list'
+
+import useMaterialStore from '@/stores/useMaterialStore'
+
+import MaterialCombobox from '@/components/atoms/combobox/MaterialCombobox'
+import BulkDeleteTestModal from '@/components/molecules/popup/test/BulkDeleteTestModal'
+import DeleteTestModal from '@/components/molecules/popup/test/DeleteTestModal'
+import { Button } from '@/components/ui/button'
+import DataTable from '@/components/ui/datatable'
+
+import { testColumns } from '@/constants/columns/test-columns'
+import { useBreadcrumbs } from '@/providers/BreadCrumbProvider'
+import { Test } from '@/types/test/test-list'
+
+const ExamContent = () => {
+  const router = useRouter()
+
+  // Zustand Store
+  const { selectedMaterial } = useMaterialStore()
+
+  // Breadcrumbs
+  const { setBreadcrumbs } = useBreadcrumbs()
+
+  // Table State
+  const [search, setSearch] = useDebounceValue<string>('', 250)
+  const [page, setPage] = useDebounceValue<number>(1, 250)
+  const [perPage, setPerPage] = useDebounceValue<number>(10, 250)
+
+  // Modal State
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+  const [openBulkDeleteModal, setOpenBulkDeleteModal] = useState<boolean>(false)
+
+  // Selected Data
+  const [selectedData, setSelectedData] = useState<Test | null>(null)
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
+
+  // Get Class
+  const { data: exams, isLoading: examsLoading } = useGetTestList(
+    {
+      material_id: selectedMaterial as number,
+      search,
+      page,
+      per_page: perPage
+    },
+    {
+      enabled: !!selectedMaterial
+    }
+  )
+
+  const handleEditModal = (_modalOpen: boolean, id?: number) => {
+    router.push(`/dashboard/teacher/exam/${id}/edit`)
+  }
+
+  const handleDeleteModal = (modalOpen: boolean, id?: number) => {
+    setOpenDeleteModal(modalOpen)
+    setSelectedData(exams?.data.find((classData) => classData.id === id) ?? null)
+  }
+
+  const handleBulkDeleteModal = (modalOpen: boolean, ids?: number[]) => {
+    setSelectedIds(exams?.data.filter((cls, idx) => ids?.includes(idx)).map((cls) => cls.id) ?? [])
+    setOpenBulkDeleteModal(modalOpen)
+  }
+
+  const handleDetail = (_modelOpen: boolean, id?: number) => {
+    router.push(`/dashboard/teacher/exam/${id}`)
+  }
+
+  useEffect(() => {
+    setBreadcrumbs([
+      {
+        label: 'Master Data',
+        href: '/dashboard/teacher'
+      },
+      {
+        label: 'Ujian',
+        href: '/dashboard/teacher/exam'
+      }
+    ])
+  }, [setBreadcrumbs])
+
+  return (
+    <>
+      <div>
+        <p>Data Ujian</p>
+      </div>
+      <div className="flex flex-col justify-start gap-5 py-5">
+        {/* datatable */}
+        <DataTable
+          columns={testColumns}
+          data={exams?.data ?? []}
+          placeholder="Cari Ujian"
+          showDetail={true}
+          setOpenDetailModal={handleDetail}
+          filter={
+            <>
+              <MaterialCombobox />
+            </>
+          }
+          setSearch={setSearch}
+          pagination={exams?.meta.pagination}
+          setPage={setPage}
+          setPerPage={setPerPage}
+          isLoading={examsLoading}
+          setOpenEditModal={handleEditModal}
+          setOpenDeleteModal={handleDeleteModal}
+          setOpenBulkDeleteModal={handleBulkDeleteModal}
+          action={
+            <>
+              <Button asChild>
+                <Link href={`/dashboard/teacher/exam/create`}>
+                  <PlusIcon className="h-4 w-4" />
+                  Tambah Data
+                </Link>
+              </Button>
+            </>
+          }
+        />
+      </div>
+      <DeleteTestModal
+        openModal={openDeleteModal}
+        setOpen={setOpenDeleteModal}
+        id={selectedData?.id as number}
+        testKey={{
+          material_id: selectedMaterial as number,
+          page,
+          per_page: perPage,
+          search
+        }}
+      />
+      <BulkDeleteTestModal
+        openModal={openBulkDeleteModal}
+        setOpen={setOpenBulkDeleteModal}
+        ids={selectedIds}
+        testKey={{
+          material_id: selectedMaterial as number,
+          page,
+          per_page: perPage,
+          search
+        }}
+      />
+    </>
+  )
+}
+
+export default ExamContent
