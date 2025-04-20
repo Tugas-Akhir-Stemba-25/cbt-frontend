@@ -13,6 +13,7 @@ interface TeacherParams {
   per_page?: number
   sort_by?: string
   sort_order?: 'asc' | 'desc'
+  teacherId?: number
 }
 
 export const getTeacherKey = (params: TeacherParams): string[] => {
