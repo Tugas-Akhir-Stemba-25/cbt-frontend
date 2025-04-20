@@ -1,3 +1,4 @@
+// QuestionNavigationButton.tsx
 import { cn } from '@/utils/shadcn'
 
 import useActiveQuestionStore from '@/stores/useActiveQuestionStore'
@@ -11,13 +12,18 @@ interface QuestionNavigationButtonProps {
   idx: number
 }
 
+// 🔁 PERBAIKAN: ubah urutan kondisi
 const mappingVariant = ({ data, id }: { data: WorkAnswer; id: number }) => {
-  if (id === data.test_question_id) return 'surface'
-
+  // 1. Kalau ragu-ragu, tampilkan sebagai 'secondary' (menang dari apapun termasuk active)
   if (data.flagged) return 'secondary'
 
+  // 2. Kalau ini soal aktif, tampilkan 'surface'
+  if (id === data.test_question_id) return 'surface'
+
+  // 3. Kalau sudah dijawab, tampilkan 'default'
   if (data.test_answer_id) return 'default'
 
+  // 4. Kalau belum dikerjakan, tampilkan 'subtle'
   return 'subtle'
 }
 
@@ -29,17 +35,7 @@ const QuestionNavigationButton = ({ data, idx }: QuestionNavigationButtonProps) 
   }
 
   return (
-    <Button
-      onClick={handleClick}
-      variant={mappingVariant({ data, id: activeQuestion?.id as number })}
-      className={cn({
-        // 'bg-primary-surface border border-primary-border':
-        //   activeQuestion?.id === data.test_question_id && !data.flagged,
-        // 'border border-secondary-border bg-secondary text-secondary-foreground hover:bg-secondary hover:text-secondary-foreground':
-        //   data.flagged,
-        // 'bg-accent': activeQuestion?.id !== data.test_question_id
-      })}
-    >
+    <Button onClick={handleClick} variant={mappingVariant({ data, id: activeQuestion?.id as number })} className={cn()}>
       {idx}
     </Button>
   )
