@@ -17,11 +17,18 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           script: |
             echo "Deploying to server..."
+
+            echo "SETTING UP NVM"
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            nvm use 22
+
+            echo "NVM version: $(nvm --version)"
             cd /var/www/html/cbt-frontend
             git checkout main
             git fetch origin
             git pull origin main
-            /home/ubuntu/.nvm/versions/node/v22.14.0/bin/pnpm install
-            /home/ubuntu/.nvm/versions/node/v22.14.0/bin/pnpm run build
-            /home/ubuntu/.nvm/versions/node/v22.14.0/bin/pm2 reload ecosystem.config.js
+            pnpm install
+            pnpm run build
+            pm2 startOrReload ecosystem.config.js
             echo "Deployment completed."
