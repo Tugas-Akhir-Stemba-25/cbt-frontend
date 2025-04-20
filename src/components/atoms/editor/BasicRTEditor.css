@@ -1,0 +1,31 @@
+.ql-toolbar,
+.ql-container {
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db; /* tailwind gray-300 */
+}
+
+.dark .ql-toolbar {
+  background-color: #1f2937; /* tailwind gray-800 */
+  border-color: #374151; /* gray-700 */
+  color: #f3f4f6; /* gray-100 */
+}
+
+.dark .ql-toolbar .ql-picker-label,
+.dark .ql-toolbar .ql-stroke {
+  color: #f3f4f6;
+  stroke: #f3f4f6;
+}
+
+.dark .ql-container {
+  background-color: #111827;
+  border-color: #374151;
+}
+
+.dark .ql-editor {
+  color: #f9fafb;
+  min-height: 200px;
+}
+
+.ql-editor:focus {
+  outline: none;
+}
